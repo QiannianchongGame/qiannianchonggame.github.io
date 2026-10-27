@@ -1,4 +1,10 @@
 {
+  "deskmates": {
+    "file": "assets/photos/deskmates.webp",
+    "overlay": "date",
+    "targets": [{ "collection": "files", "id": "c1_photo_deskmates" }],
+    "prompt": "Using the established character sheet, preserve Lin Wan (bottom-left, short bob) and He Man (top-right, longer straight hair). Exactly two girls at one classroom desk, Lin Wan at left holding a pen and He Man at right turning a shared exercise book. Neutral expressions, natural separate hands, worn classroom, soft afternoon window light, ordinary 1999 compact-camera film snapshot, muted colors, no readable generated text or date. Story source: Xu Jia's April 9 test photograph, developed and scanned April 11; Lin Wan's note on the back records their mathematics lesson."
+  },
   "birthday": {
     "file": "assets/photos/birthday.webp",
     "overlay": "date",

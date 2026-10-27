@@ -1,0 +1,3830 @@
+{
+  "puzzles": {
+    "c0_tag": "8b1f0263eb0bf95c8730e2f6a18cb1b1285667e361c690fbf3aaa20dc46de5f7",
+    "c0_bios": "0b064b6893ce730a3d52d8fc0c07fffb9c5a0c2d5e95be849a7535df288b11cc",
+    "c0_login": "84baceb7cb7e53318b5229f3f587ddb19f96644cd4a784293d299b2516217779",
+    "c1_p_tid": "e1468fa0bd7fda5d8ece5b2adfa4fff4e1d0444e3633512b8ee97f4db06b95f1",
+    "c1_p_host": "64d4957903bc3737e837098ae28e9b6a3b8d38bc33b3838fd9fd48205c72897f",
+    "c1_p_alibi": "a2669b3380cf9de9541fc45f57c92bf1127f45e38b436f5c3c43b89ddbe07523",
+    "c1_admin": "4af3118cacf9546dfb8070c9514ff653ad3e266ac365406fe7a41cd0ed7cb6d5",
+    "c1_p_rail": "fffc973a27c4a1d87d251db760f49d09f362051552ffd7131813b3608d15d957",
+    "c1_p_letter": "57357ee3d3f11859cbae3da9586e58f520e7602a7daf697dae1a161a8081111f",
+    "c1_gexun": "7991c9b466708f21dae6b5d996b3a42c597a34927dd8239c9302efa0eadfbbc5",
+    "c2_bpnum": "8dbe9879ed777dae9819fb5079dab87081800593c050808e82090f4a5ecbe0ea",
+    "c2_pager": "2e11537b185c7e5218f84cc729c70a5c40fefd68576e7e4b268da3094dc1531a",
+    "c2_booth": "e43166eb74ce4ccfa95ab1f6bf8cda9876d9d8d49d9b5f4a6287463a08c98773",
+    "c2_xsig": "e2585d8412d09f90b9d739de43bb70df968db42f2071a881e652449505d782d6",
+    "c2_lan": "2171f5fbaaeab95b3e296e3eafb0c70527373c7d194ced54b248d3a4e2dccca4",
+    "c2_photo": "83067d6f4b4d857f34aef6ace682b11bd5a0451afe98c0c3a12c0c67b425f771",
+    "c2_timeline": "10bdb3b9ace7eaca9a88d4d4a8bf627db21fa2614448bb9c44c2bbfafcc248e5",
+    "c3_p_repair": "d2f33d618fc58365788f10b454fdc3ff0c9048bf6761c083da66eb63df7e1d3a",
+    "c3_p_y2kmail": "0f5ee044ae02dc72cc0a66650666ef7ba1bdb8761a2d136646e22e8aa66d3ef3",
+    "c3_p_clientclock": "aa63efae1c4e014048a6919424e4aba81f16de5145a605cccf3ed04374a83a61",
+    "c3_p_seat": "0af611fa9951ea57ad022d1cad98f04c9af720e3979d5724bd386f4b28eee809",
+    "c3_p_card": "24c73dbd846490ed79fa720151ffb5c1418e34e0b63cb77eb8e93c57b0bb22fa",
+    "c3_p_oldplace": "5764cd589bed24bc7fb574b4b7c24f353df7213b086443962e5bfa304b8b4579",
+    "c3_p_wflogin": "d9e3a69b74599fe89b59d9d53176187d6571a1f2e4dda263d639cb537ddc21ba",
+    "c3_p_jys": "a47fd8c39bb2d347f3c80c9c86fe6d24230d853e1f40ae40d793f54f5317b20f",
+    "c4_p_wavlock": "9e2df2f7008b0f13e717d43da4872ac8c1a1ed8edf9972862daed38ea1426b8b",
+    "c4_p_tape": "9c55685b31a67414b681985c9bbfa544e84fe92e913fd1c6aeb5a611bc32fec2",
+    "c4_p_room": "3990deebfc382057503ab4c1e2b1bfb7e80c14655e2510771d91bb125eba7ed7",
+    "c4_p_grade": "4b8fccfb4cf0c654fced7b50c7ecbac7a7e0d75d4e8464326f95e437e55a2daf",
+    "c4_p_keys": "a794eb202cbdcd1226b5864397a367eac31a5f4274833b9cc42b9905b69d73a8",
+    "c4_p_familypw": "6d8a2e9920cf36e795e03100e5fc2e718783cab5c22cb16b3ea5a72371ccefe0",
+    "c4_p_father": "2f98f766bf2fd674c7ff6eba65fa9a65982c60c2942155613971fab07f97c21f",
+    "c5_p_typo": "928f2351aa04d3cd011a391b4ba797251bda5df20ffbbe429a04015386c981c0",
+    "c5_p_ime": "5d05ae0f0c92756db25b45d86b4b2a3ea85f76670f7bcac90c2ef1dff6edd441",
+    "c5_p_typist": "02f1d62b2717fa0525f84f41797a72b5832b5cc71a7e7acbcd75e989c75b9983",
+    "c5_p_gxdate": "353408b0991f012c47a654a7304e2628624909903a41da78aa53d46e57af0f05",
+    "c5_p_bday": "a961d7bb091ac8a374d641eeb657a6055bf2b03bace31b0d21f635c20e3a36f1",
+    "c5_p_night": "6e7e87f7246b08a7f157445953fac7e0fd6380c6a336ce0ce720ca3077233f8f",
+    "c5_p_lie1": "f2f6ceef072995f7d0fd560e24febd7d80e036b01a02d0554d5e5c277b87e9b4",
+    "c5_p_lie2": "090a6f440238ef77538d0e3530a7b224a4de7f8fa00f6420d63d07449472bf28",
+    "c6_p_lastpoem": "90903b91cd28e9af5e45d36573a7636cba3537f74614f5fe525ef1ab09d7cac7",
+    "c6_p_zip": "dfe5ecd421c7e8456d4bff3b3bc85f94c9bb41a4f12ffcf086e8d4adc9b92037",
+    "c6_p_evidence": "22660356989fac16c1244b2014e241a330f9a40724e5ed422a8e0525ca62c004",
+    "c6_p_wanfeng": "c06f7cbf5a6e294235cff06c754de3861972ef9129c928513e9ac454b61d3ec3"
+  },
+  "boards": {
+    "c1_final": {
+      "slots": {
+        "date": "w_0621",
+        "where": "w_tower",
+        "cause": "w_rail",
+        "verdict": "w_acc",
+        "rumor": "w_sui",
+        "c1": "w_xiuxue",
+        "c2": "w_teacher",
+        "acct": "w_sysop",
+        "host": "w_jf07",
+        "city": "w_sc",
+        "deleter": "w_xj",
+        "blame": "w_xj"
+      },
+      "words": {
+        "w_0620": "6 月 20 日",
+        "w_0621": "6 月 21 日",
+        "w_0517": "5 月 17 日",
+        "w_tower": "水塔",
+        "w_lab": "实验楼",
+        "w_jxl": "教学楼",
+        "w_rail": "生锈的栏杆断了",
+        "w_jump": "她自己跳了下去",
+        "w_push": "有人推了她",
+        "w_acc": "意外",
+        "w_sui": "自杀",
+        "w_murder": "他杀",
+        "w_xiuxue": "因为“精神有问题”休学过",
+        "w_kaichu": "被开除过",
+        "w_teacher": "某位男老师",
+        "w_monitor": "班长",
+        "w_sysop": "sysop",
+        "w_jia": "jia",
+        "w_wanfeng": "wanfeng",
+        "w_jf07": "7 号机（JF-07）",
+        "w_jf03": "3 号机（JF-03）",
+        "w_tsg": "图书馆电脑（TSG-01）",
+        "w_sc": "省城",
+        "w_wc": "梧城",
+        "w_xj": "许嘉",
+        "w_hl": "韩立",
+        "w_hm": "何蔓",
+        "w_zt": "周婷"
+      },
+      "requires": "ch1 & seen_t1137 & seen_t1168 & solved_c1_admin & solved_c1_gexun",
+      "placeholders": [
+        "acct",
+        "blame",
+        "c1",
+        "c2",
+        "cause",
+        "city",
+        "date",
+        "deleter",
+        "host",
+        "rumor",
+        "verdict",
+        "where"
+      ]
+    },
+    "c2_final": {
+      "slots": {
+        "t_page": "w_2341",
+        "msg": "w_msg",
+        "booth": "w_booth",
+        "xwho": "w_xujia",
+        "jiawhere": "w_jf03",
+        "fake": "w_fake",
+        "net": "w_lan",
+        "campus": "w_oncampus",
+        "jiaroom": [
+          "w_jifang",
+          "w_jf03"
+        ],
+        "proof": "w_log",
+        "alibi": "w_fail"
+      },
+      "words": {
+        "w_2341": "23:41",
+        "w_2358": "23:58",
+        "w_0001": "00:01",
+        "w_0027": "00:27",
+        "w_msg": "零点后水塔见",
+        "w_msg2": "零点前操场见",
+        "w_msg3": "新年快乐，我想你",
+        "w_booth": "七中操场东侧的 IC 卡电话亭",
+        "w_gate": "七中校门口的电话亭",
+        "w_netbar": "千禧网吧",
+        "w_guard": "七中传达室",
+        "w_xujia": "许嘉",
+        "w_surui": "苏芮",
+        "w_xiaoyu": "陈小雨",
+        "w_song": "宋知远",
+        "w_jf03": "机房 3 号机",
+        "w_lib": "图书馆的电脑",
+        "w_home": "家里的电脑",
+        "w_fake": "冒充他",
+        "w_typo": "打错了字母",
+        "w_self": "写了自己名字的缩写",
+        "w_lan": "学校内网",
+        "w_wan": "梧城信息港拨号",
+        "w_oncampus": "就在校园里",
+        "w_offcampus": "在校外",
+        "w_jifang": "机房",
+        "w_hall": "礼堂",
+        "w_playground": "操场",
+        "w_log": "服务器日志",
+        "w_guardword": "门卫的证词",
+        "w_photo": "那张合影",
+        "w_fail": "不成立",
+        "w_ok": "成立"
+      },
+      "requires": "ch2 & solved_c2_pager & solved_c2_booth & solved_c2_xsig & solved_c2_lan & solved_c2_photo",
+      "onSolve": {
+        "note": "c2_n_final"
+      },
+      "placeholders": [
+        "alibi",
+        "booth",
+        "campus",
+        "fake",
+        "jiaroom",
+        "jiawhere",
+        "msg",
+        "net",
+        "proof",
+        "t_page",
+        "xwho"
+      ]
+    },
+    "c3_final": {
+      "slots": {
+        "saw": "w_zt",
+        "told": "w_szy",
+        "typed": "w_sr",
+        "seat": "w_7",
+        "acct": "w_wanfeng",
+        "place": "w_willow",
+        "host": "w_jys",
+        "year": "w_1900",
+        "why": "w_nopatch",
+        "target": "w_three",
+        "next": "w_sr"
+      },
+      "words": {
+        "w_zt": "周婷",
+        "w_szy": "宋知远",
+        "w_sr": "苏芮",
+        "w_hm": "何蔓",
+        "w_xj": "许嘉",
+        "w_cxy": "陈小雨",
+        "w_6": "6",
+        "w_7": "7",
+        "w_8": "8",
+        "w_3": "3",
+        "w_wanfeng": "晚风（wanfeng）",
+        "w_y2k": "千年虫（Y2K）",
+        "w_sysop": "站长（sysop）",
+        "w_willow": "北岸柳树下",
+        "w_south": "南岸码头",
+        "w_ticket": "溜冰场售票亭",
+        "w_jys": "JYS-486",
+        "w_jf03": "JF-03",
+        "w_jf07": "JF-07",
+        "w_dial": "校外拨号",
+        "w_1900": "1900",
+        "w_2000": "2000",
+        "w_1980": "1980",
+        "w_nopatch": "没打千年虫补丁",
+        "w_cmos": "主板电池没电了",
+        "w_server": "服务器时钟坏了",
+        "w_three": "当年写谣言帖的三个人",
+        "w_night": "千禧夜留在操场的人",
+        "w_admin": "管理 BBS 的人"
+      },
+      "requires": "ch3 & solved_c3_p_seat & solved_c3_p_oldplace & solved_c3_p_jys & solved_c3_p_card",
+      "onSolve": {},
+      "placeholders": [
+        "acct",
+        "host",
+        "next",
+        "place",
+        "saw",
+        "seat",
+        "target",
+        "told",
+        "typed",
+        "why",
+        "year"
+      ]
+    },
+    "c4_final": {
+      "slots": {
+        "place": "w_bc",
+        "cause": "w_choke",
+        "voice": "w_v3",
+        "reader": "w_lw",
+        "ip": "w_ip200",
+        "room": "w_jys",
+        "refuser": "w_hl",
+        "keyholder": "w_hl",
+        "file": "w_grade",
+        "relation": "w_daughter",
+        "car": "w_pickup",
+        "culprit": "w_hl"
+      },
+      "words": {
+        "w_bc": "广播站",
+        "w_tower": "水塔",
+        "w_lake": "东湖",
+        "w_jf": "微机室",
+        "w_choke": "窒息",
+        "w_fall": "坠落",
+        "w_drown": "溺水",
+        "w_v3": "第三个。归零。",
+        "w_vice": "冰会记得。",
+        "w_vlie": "不会在有人说谎了。",
+        "w_lw": "林晚",
+        "w_sr": "苏芮",
+        "w_lj": "李静",
+        "w_zt": "周婷",
+        "w_ip200": "192.168.1.200",
+        "w_ip103": "192.168.1.103",
+        "w_ip107": "192.168.1.107",
+        "w_ip115": "192.168.1.115",
+        "w_jys": "计算机教研室",
+        "w_xzs": "校长室",
+        "w_tsg": "图书馆",
+        "w_hl": "韩立",
+        "w_xj": "许嘉",
+        "w_gqb": "顾秋白",
+        "w_grade": "高三成绩库",
+        "w_jiaoan": "教案",
+        "w_form": "家庭情况登记表",
+        "w_daughter": "女儿",
+        "w_student": "学生",
+        "w_niece": "外甥女",
+        "w_pickup": "爸爸接女儿放学",
+        "w_affair": "师生关系不正当",
+        "w_ride": "老师顺路送学生回家"
+      },
+      "requires": "ch4 & solved_c4_p_tape & solved_c4_p_room & solved_c4_p_grade & solved_c4_p_keys & solved_c4_p_father",
+      "onSolve": {
+        "note": "c4_n_board"
+      },
+      "placeholders": [
+        "car",
+        "cause",
+        "culprit",
+        "file",
+        "ip",
+        "keyholder",
+        "place",
+        "reader",
+        "refuser",
+        "relation",
+        "room",
+        "voice"
+      ]
+    },
+    "c5_final": {
+      "slots": {
+        "ime": "w_py",
+        "xjime": "w_wb",
+        "typist": [
+          "w_hm",
+          "w_qm"
+        ],
+        "told": [
+          "w_hm",
+          "w_qm"
+        ],
+        "bday": [
+          "w_hm",
+          "w_qm"
+        ],
+        "keyrole": "w_kdb",
+        "carry": "w_disk",
+        "drink": "w_tea",
+        "tape": "w_wf",
+        "y2k": [
+          "w_hm",
+          "w_qm"
+        ],
+        "motive": "w_post",
+        "why": "w_persuade"
+      },
+      "words": {
+        "w_py": "拼音",
+        "w_wb": "五笔",
+        "w_qw": "区位码",
+        "w_hm": "何蔓",
+        "w_qm": "青蔓",
+        "w_hl": "韩立",
+        "w_xj": "许嘉",
+        "w_gqb": "顾秋白",
+        "w_lj": "李静",
+        "w_kdb": "计算机课代表",
+        "w_xcwy": "宣传委员",
+        "w_bz": "班长",
+        "w_disk": "作业软盘",
+        "w_tapeobj": "磁带",
+        "w_tea": "奶茶",
+        "w_soda": "汽水",
+        "w_wf": "晚风",
+        "w_third": "第三个",
+        "w_post": "谣言帖",
+        "w_hlsecret": "韩立的隐瞒",
+        "w_persuade": "查出了她，劝她自首",
+        "w_expose": "要揭发韩立",
+        "w_quarrel": "和她吵了架"
+      },
+      "requires": "ch5 & solved_c5_p_typist & solved_c5_p_gxdate & solved_c5_p_bday & solved_c5_p_night & solved_c5_p_lie1 & solved_c5_p_lie2",
+      "onSolve": {
+        "note": "c5_n_final"
+      },
+      "placeholders": [
+        "bday",
+        "carry",
+        "drink",
+        "ime",
+        "keyrole",
+        "motive",
+        "tape",
+        "told",
+        "typist",
+        "why",
+        "xjime",
+        "y2k"
+      ]
+    }
+  },
+  "dialogues": {
+    "c0_d_hello": {
+      "trigger": "start",
+      "contact": "heman",
+      "steps": [
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null,
+          "choice": [
+            {
+              "replies": 1
+            },
+            {
+              "replies": 2
+            }
+          ]
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null,
+          "puzzle": "c0_tag"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null,
+          "choice": [
+            {
+              "replies": 2
+            },
+            {
+              "replies": 1
+            }
+          ]
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "me"
+        },
+        {
+          "type": "npc"
+        }
+      ]
+    },
+    "c0_d_bios": {
+      "trigger": "solved_c0_bios",
+      "contact": "heman",
+      "steps": [
+        {
+          "type": "me"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "me"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        }
+      ]
+    },
+    "c1_d_start": {
+      "trigger": "ch1",
+      "contact": "heman",
+      "steps": [
+        {
+          "type": "me"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null,
+          "choice": [
+            {
+              "replies": 3
+            },
+            {
+              "replies": 1
+            }
+          ]
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null,
+          "action": {
+            "note": "c1_n_start"
+          }
+        }
+      ]
+    },
+    "c1_d_xiazhi": {
+      "trigger": "seen_t1168",
+      "contact": "heman",
+      "steps": [
+        {
+          "type": "me"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null,
+          "choice": [
+            {
+              "replies": 2
+            },
+            {
+              "replies": 2
+            }
+          ]
+        }
+      ]
+    },
+    "c1_d_delnotice": {
+      "trigger": "seen_t1139 & !seen_t1137",
+      "contact": "heman",
+      "steps": [
+        {
+          "type": "me"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        }
+      ]
+    },
+    "c1_d_rumor": {
+      "trigger": "seen_t1137",
+      "contact": "heman",
+      "steps": [
+        {
+          "type": "me"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null,
+          "choice": [
+            {
+              "replies": 3
+            },
+            {
+              "replies": 2
+            }
+          ]
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        }
+      ]
+    },
+    "c1_d_host": {
+      "trigger": "solved_c1_p_host",
+      "contact": "heman",
+      "steps": [
+        {
+          "type": "me"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "me"
+        },
+        {
+          "type": "npc"
+        }
+      ]
+    },
+    "c1_d_alibi": {
+      "trigger": "solved_c1_p_alibi",
+      "contact": "heman",
+      "steps": [
+        {
+          "type": "me"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        }
+      ]
+    },
+    "c1_d_admin": {
+      "trigger": "solved_c1_admin",
+      "contact": "heman",
+      "steps": [
+        {
+          "type": "me"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null,
+          "choice": [
+            {
+              "replies": 2
+            },
+            {
+              "replies": 3,
+              "action": {
+                "note": "c1_n_lastlogin"
+              }
+            }
+          ]
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        }
+      ]
+    },
+    "c1_d_gexun": {
+      "trigger": "solved_c1_gexun",
+      "contact": "heman",
+      "steps": [
+        {
+          "type": "me"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null,
+          "choice": [
+            {
+              "replies": 2
+            },
+            {
+              "replies": 2
+            }
+          ]
+        }
+      ]
+    },
+    "c1_d_unsent": {
+      "trigger": "seen_c1_unsent",
+      "contact": "heman",
+      "steps": [
+        {
+          "type": "me"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "me"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "me"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        }
+      ]
+    },
+    "c1_d_end": {
+      "trigger": "board_c1_final",
+      "contact": "heman",
+      "steps": [
+        {
+          "type": "me"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        }
+      ]
+    },
+    "c2_d_morning": {
+      "trigger": "ch2",
+      "contact": "heman",
+      "steps": [
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "me"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null,
+          "choice": [
+            {
+              "replies": 2
+            },
+            {
+              "replies": 2
+            }
+          ]
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null,
+          "action": {
+            "note": "c2_n_start"
+          }
+        }
+      ]
+    },
+    "c2_d_memory": {
+      "trigger": "ch2 & (seen_t1500 | seen_c2_photo | seen_c2_notes1231 | seen_c2_program)",
+      "contact": "heman",
+      "steps": [
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null,
+          "choice": [
+            {
+              "replies": 2
+            },
+            {
+              "replies": 2
+            }
+          ]
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null,
+          "action": {
+            "note": "c2_n_heman"
+          }
+        }
+      ]
+    },
+    "c2_d_nudge": {
+      "trigger": "ch2 & seen_t1500 & !seen_c2_notes1231",
+      "contact": "heman",
+      "steps": [
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        }
+      ]
+    },
+    "c2_d_notes": {
+      "trigger": "ch2 & seen_c2_notes1231",
+      "contact": "heman",
+      "steps": [
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null,
+          "choice": [
+            {
+              "replies": 2
+            },
+            {
+              "replies": 2
+            }
+          ]
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null,
+          "choice": [
+            {
+              "replies": 2
+            },
+            {
+              "replies": 2
+            }
+          ]
+        },
+        {
+          "type": "npc"
+        }
+      ]
+    },
+    "c2_d_pager": {
+      "trigger": "solved_c2_pager",
+      "contact": "heman",
+      "steps": [
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null,
+          "choice": [
+            {
+              "replies": 2
+            },
+            {
+              "replies": 2
+            }
+          ]
+        },
+        {
+          "type": "npc"
+        }
+      ]
+    },
+    "c2_d_booth": {
+      "trigger": "solved_c2_booth",
+      "contact": "heman",
+      "steps": [
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        }
+      ]
+    },
+    "c2_d_notx": {
+      "trigger": "solved_c2_xsig",
+      "contact": "heman",
+      "steps": [
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null,
+          "choice": [
+            {
+              "replies": 2
+            },
+            {
+              "replies": 2
+            }
+          ]
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        }
+      ]
+    },
+    "c2_d_lan": {
+      "trigger": "solved_c2_lan",
+      "contact": "heman",
+      "steps": [
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        }
+      ]
+    },
+    "c2_d_photo": {
+      "trigger": "solved_c2_photo",
+      "contact": "heman",
+      "steps": [
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        }
+      ]
+    },
+    "c2_d_timeline": {
+      "trigger": "solved_c2_timeline",
+      "contact": "heman",
+      "steps": [
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        }
+      ]
+    },
+    "c2_d_board": {
+      "trigger": "ch2 & solved_c2_pager & solved_c2_booth & solved_c2_xsig & solved_c2_lan & solved_c2_photo & !board_c2_final",
+      "contact": "heman",
+      "steps": [
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "sys"
+        }
+      ]
+    },
+    "c3_d_morning": {
+      "trigger": "ch3",
+      "contact": "heman",
+      "steps": [
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "me"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "me"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "me"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null,
+          "action": {
+            "note": "c3_n_today"
+          }
+        }
+      ]
+    },
+    "c3_d_confess": {
+      "trigger": "ch3 & seen_c3_gx_0213",
+      "contact": "heman",
+      "steps": [
+        {
+          "type": "me"
+        },
+        {
+          "type": "me"
+        },
+        {
+          "type": null
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null,
+          "choice": [
+            {
+              "replies": 2
+            },
+            {
+              "replies": 2
+            }
+          ]
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null,
+          "action": {
+            "note": "c3_n_confess"
+          }
+        }
+      ]
+    },
+    "c3_d_y2kmail": {
+      "trigger": "ch3 & solved_c3_p_y2kmail",
+      "contact": "heman",
+      "steps": [
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        }
+      ]
+    },
+    "c3_d_clock": {
+      "trigger": "ch3 & solved_c3_p_clientclock",
+      "contact": "heman",
+      "steps": [
+        {
+          "type": "me"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        }
+      ]
+    },
+    "c3_d_wf": {
+      "trigger": "ch3 & seen_c3_mail_wf",
+      "contact": "heman",
+      "steps": [
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        }
+      ]
+    },
+    "c3_d_deadlogin": {
+      "trigger": "ch3 & solved_c3_p_wflogin",
+      "contact": "heman",
+      "steps": [
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        }
+      ]
+    },
+    "c3_d_rui": {
+      "trigger": "ch3 & seen_c3_gx_0216",
+      "contact": "heman",
+      "steps": [
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        }
+      ]
+    },
+    "c3_d_card": {
+      "trigger": "ch3 & solved_c3_p_card",
+      "contact": "heman",
+      "steps": [
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null
+        },
+        {
+          "type": "npc"
+        }
+      ]
+    },
+    "c3_d_jys": {
+      "trigger": "ch3 & solved_c3_p_jys",
+      "contact": "heman",
+      "steps": [
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        }
+      ]
+    },
+    "c3_d_end": {
+      "trigger": "board_c3_final",
+      "contact": "heman",
+      "steps": [
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        }
+      ]
+    },
+    "c4_d_morning": {
+      "trigger": "ch4",
+      "contact": "heman",
+      "steps": [
+        {
+          "type": "npc"
+        },
+        {
+          "type": "me"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "me"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        }
+      ]
+    },
+    "c4_d_tape": {
+      "trigger": "solved_c4_p_tape",
+      "contact": "heman",
+      "steps": [
+        {
+          "type": "me"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        }
+      ]
+    },
+    "c4_d_rui": {
+      "trigger": "ch4 & seen_c4_gx_rui_0320",
+      "contact": "heman",
+      "steps": [
+        {
+          "type": "me"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        }
+      ]
+    },
+    "c4_d_room": {
+      "trigger": "solved_c4_p_room",
+      "contact": "heman",
+      "steps": [
+        {
+          "type": "me"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        }
+      ]
+    },
+    "c4_d_keys": {
+      "trigger": "solved_c4_p_keys",
+      "contact": "heman",
+      "steps": [
+        {
+          "type": "me"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        }
+      ]
+    },
+    "c4_d_pw": {
+      "trigger": "ch4 & seen_c4_note0327 & !solved_c4_p_familypw",
+      "contact": "heman",
+      "steps": [
+        {
+          "type": "me"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        }
+      ]
+    },
+    "c4_d_grade": {
+      "trigger": "solved_c4_p_grade",
+      "contact": "heman",
+      "steps": [
+        {
+          "type": "me"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        }
+      ]
+    },
+    "c4_d_father": {
+      "trigger": "solved_c4_p_father",
+      "contact": "heman",
+      "steps": [
+        {
+          "type": "me"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        }
+      ]
+    },
+    "c4_d_close": {
+      "trigger": "board_c4_final",
+      "contact": "heman",
+      "steps": [
+        {
+          "type": "me"
+        },
+        {
+          "type": null
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null,
+          "choice": [
+            {
+              "replies": 2,
+              "action": {
+                "ending": "A"
+              }
+            },
+            {
+              "replies": 3,
+              "action": {
+                "set": [
+                  "c4_continue"
+                ],
+                "note": "c4_n_doubt"
+              }
+            },
+            {
+              "replies": 3,
+              "action": {
+                "set": [
+                  "c4_continue"
+                ],
+                "note": "c4_n_doubt"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "c5_d_heman1": {
+      "trigger": "ch5",
+      "contact": "heman",
+      "steps": [
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "me"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null,
+          "choice": [
+            {
+              "replies": 2
+            },
+            {
+              "replies": 1
+            }
+          ]
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null,
+          "action": {
+            "note": "c5_n_start"
+          }
+        }
+      ]
+    },
+    "c5_d_heman2": {
+      "trigger": "ch5 & seen_c5_f_letter",
+      "contact": "heman",
+      "steps": [
+        {
+          "type": "npc"
+        },
+        {
+          "type": "me"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null,
+          "choice": [
+            {
+              "replies": 3
+            },
+            {
+              "replies": 2
+            }
+          ]
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        }
+      ]
+    },
+    "c5_d_heman3": {
+      "trigger": "ch5 & c5_got_keyhalf & dlg_c5_d_xuning2",
+      "contact": "heman",
+      "steps": [
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "sys"
+        },
+        {
+          "type": null,
+          "puzzle": "c5_p_lie1"
+        },
+        {
+          "type": "me"
+        },
+        {
+          "type": null
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null,
+          "choice": [
+            {
+              "replies": 2,
+              "action": {
+                "set": [
+                  "c5_hid_xuning"
+                ]
+              }
+            },
+            {
+              "replies": 2
+            }
+          ]
+        },
+        {
+          "type": "npc"
+        }
+      ]
+    },
+    "c5_d_heman4": {
+      "trigger": "ch5 & solved_c5_p_typist",
+      "contact": "heman",
+      "steps": [
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null,
+          "choice": [
+            {
+              "replies": 3,
+              "action": {
+                "set": [
+                  "c5_asked_tape"
+                ]
+              }
+            },
+            {
+              "replies": 2
+            }
+          ]
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null,
+          "action": {
+            "note": "c5_n_slip"
+          }
+        }
+      ]
+    },
+    "c5_d_heman5": {
+      "trigger": "ch5 & (seen_c5_f_recent | seen_c5_f_qmdir | seen_c5_f_zip)",
+      "contact": "heman",
+      "steps": [
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null,
+          "choice": [
+            {
+              "replies": 4,
+              "action": {
+                "set": [
+                  "c5_told_zip"
+                ]
+              }
+            },
+            {
+              "replies": 2,
+              "action": {
+                "set": [
+                  "c5_hid_zip"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "c5_d_xuning1": {
+      "trigger": "ch5",
+      "contact": "xuning",
+      "steps": [
+        {
+          "type": "sys"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null,
+          "action": {
+            "set": [
+              "c5_got_report"
+            ]
+          }
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null,
+          "action": {
+            "set": [
+              "c5_got_gate"
+            ]
+          }
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null,
+          "action": {
+            "set": [
+              "c5_got_clip"
+            ]
+          }
+        },
+        {
+          "type": null,
+          "choice": [
+            {
+              "replies": 2
+            },
+            {
+              "replies": 1
+            }
+          ]
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null,
+          "action": {
+            "note": "c5_n_xuning"
+          }
+        }
+      ]
+    },
+    "c5_d_xuning2": {
+      "trigger": "ch5 & seen_c5_f_n0402 & dlg_c5_d_xuning1",
+      "contact": "xuning",
+      "steps": [
+        {
+          "type": "me"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null,
+          "action": {
+            "set": [
+              "c5_got_keyhalf"
+            ]
+          }
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null,
+          "choice": [
+            {
+              "replies": 2
+            },
+            {
+              "replies": 1
+            }
+          ]
+        }
+      ]
+    },
+    "c5_d_xuning3": {
+      "trigger": "ch5 & solved_c5_p_typist & solved_c5_p_bday & dlg_c5_d_xuning1",
+      "contact": "xuning",
+      "steps": [
+        {
+          "type": "me"
+        },
+        {
+          "type": "me"
+        },
+        {
+          "type": null
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null,
+          "choice": [
+            {
+              "replies": 2
+            },
+            {
+              "replies": 2
+            }
+          ]
+        }
+      ]
+    },
+    "c5_d_xuning4": {
+      "trigger": "ch5 & solved_c5_p_lie2 & dlg_c5_d_xuning1",
+      "contact": "xuning",
+      "steps": [
+        {
+          "type": "me"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "me"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null,
+          "action": {
+            "note": "c5_n_toboard"
+          }
+        }
+      ]
+    },
+    "c6_d_xuning1": {
+      "trigger": "ch6",
+      "contact": "xuning",
+      "steps": [
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null,
+          "action": {
+            "set": [
+              "c6_got_notebook"
+            ]
+          }
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null,
+          "choice": [
+            {
+              "replies": 3
+            },
+            {
+              "replies": 1
+            }
+          ]
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null,
+          "action": {
+            "note": "c6_n_pager"
+          }
+        }
+      ]
+    },
+    "c6_d_heman1": {
+      "trigger": "ch6 & !c5_told_zip",
+      "contact": "heman",
+      "steps": [
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null,
+          "choice": [
+            {
+              "replies": 2
+            },
+            {
+              "replies": 2
+            }
+          ]
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null,
+          "action": {
+            "note": "c6_n_heman"
+          }
+        }
+      ]
+    },
+    "c6_d_heman1z": {
+      "trigger": "ch6 & c5_told_zip",
+      "contact": "heman",
+      "steps": [
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null,
+          "choice": [
+            {
+              "replies": 2
+            },
+            {
+              "replies": 2
+            }
+          ]
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null,
+          "action": {
+            "note": "c6_n_heman"
+          }
+        }
+      ]
+    },
+    "c6_d_choice": {
+      "trigger": "ch6 & seen_c6_f_letter",
+      "contact": "heman",
+      "steps": [
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null,
+          "choice": [
+            {
+              "replies": 2,
+              "action": {
+                "set": [
+                  "c6_route_b"
+                ]
+              }
+            },
+            {
+              "replies": 2,
+              "action": {
+                "set": [
+                  "c6_route_c"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "c6_d_end_b": {
+      "trigger": "c6_route_b",
+      "contact": "heman",
+      "steps": [
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null
+        },
+        {
+          "type": "sys"
+        },
+        {
+          "type": null
+        },
+        {
+          "type": null,
+          "action": {
+            "ending": "B"
+          }
+        }
+      ]
+    },
+    "c6_d_xuning2": {
+      "trigger": "c6_route_c",
+      "contact": "xuning",
+      "steps": [
+        {
+          "type": "me"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "me"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        }
+      ]
+    },
+    "c6_d_confront": {
+      "trigger": "c6_route_c",
+      "contact": "heman",
+      "steps": [
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null,
+          "puzzle": "c6_p_evidence"
+        },
+        {
+          "type": null
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null,
+          "choice": [
+            {
+              "replies": 2
+            },
+            {
+              "replies": 2
+            }
+          ]
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null,
+          "action": {
+            "set": [
+              "c6_confessed"
+            ],
+            "note": "c6_n_confess"
+          }
+        }
+      ]
+    },
+    "c6_d_xuning3": {
+      "trigger": "c6_confessed & dlg_c6_d_xuning2",
+      "contact": "xuning",
+      "steps": [
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null,
+          "action": {
+            "set": [
+              "c6_found_box"
+            ]
+          }
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": "npc"
+        },
+        {
+          "type": null
+        },
+        {
+          "type": null,
+          "action": {
+            "ending": "C"
+          }
+        }
+      ]
+    }
+  },
+  "poems": {
+    "poem1": "灯\n\n机房的灯总是最后一盏\n我从操场走过去\n数到三楼第三扇窗\n它还亮着",
+    "poem2": "落叶\n\n梧桐落叶的时候没有声音\n我捡了一片 夹进新发的课本\n新的城市 新的同桌\n叶子的背面\n还是旧的颜色",
+    "poem3": "五月\n\n他们说话的时候看着别处\n我数窗台上的雨点\n一　二　三\n没有一滴\n是落给我的",
+    "poem4": "夏至\n\n一年里最长的白天\n我在水塔上等它慢慢变暗\n晚风从操场那边吹过来\n吹乱了作业本也吹乱了我\n他们说的话我都听见了\n可是明天会有人站出来\n叫出我的名字\n我就不用再躲在影子里了",
+    "poem5": "王旁青头戋五一\n你说每个字都能拆开\n那我的名字呢\n木　木　日　免\n原来是一个黄昏\n落在两棵树上",
+    "poem6": "它站在操场北边\n比所有人都高一点\n我爬上去\n不是为了看远处\n是为了让远处\n也能看见我",
+    "poem7": "你把橡皮切成两半\n大的那一半给我\n从那以后\n我写错的字\n有一半\n是你替我擦掉的",
+    "poem8": "冰面下面\n鱼也在过冬\n它们听不见\n上面有人在转圈\n笑声一层一层落下去\n变成很细的裂纹",
+    "poem9": "操场上的雾还没有散\n值日生把椅子一把一把放下来\n窗玻璃上有人用手指写了半个名字\n太阳出来以后\n它就慢慢不见了\n我想做那半个名字\n被看见一会儿\n就够了",
+    "poem10": "他把机箱打开\n像打开一只很旧的钟\n里面落满了灰\n他说别怕　都是能修好的\n我站在旁边递螺丝\n一颗　两颗\n没有人知道\n这是我们一个星期里\n最长的一次说话",
+    "poem11": "你打字的时候\n屏幕上那一小竖\n一直在闪\n像一个人站在门口\n想进来\n又怕吵醒谁",
+    "poem12": "傍晚的水塔很高\n高到能看见整条梧桐路\n我数着路灯一盏一盏亮起来\n数到第七盏的时候\n就会有人从路口走过来\n抬起头叫我下去吃饭"
+  },
+  "clockLogs": [
+    {
+      "user": "sysop",
+      "time": "1998-10-08 15:12:30",
+      "ip": "192.168.1.103",
+      "host": "-",
+      "requires": "ch1"
+    },
+    {
+      "user": "jia",
+      "time": "1998-10-08 15:30:02",
+      "ip": "192.168.1.103",
+      "host": "-",
+      "requires": "ch1"
+    },
+    {
+      "user": "hanli",
+      "time": "1998-10-08 15:40:51",
+      "ip": "192.168.1.200",
+      "host": "-",
+      "requires": "ch1"
+    },
+    {
+      "user": "leilei",
+      "time": "1998-10-08 16:04:12",
+      "ip": "192.168.1.121",
+      "host": "-",
+      "requires": "ch1"
+    },
+    {
+      "user": "wanfeng",
+      "time": "1998-11-02 17:45:10",
+      "ip": "192.168.1.150",
+      "host": "-",
+      "requires": "ch1"
+    },
+    {
+      "user": "wanfeng",
+      "time": "1998-11-03 19:31:22",
+      "ip": "61.153.27.88",
+      "host": "-",
+      "requires": "ch1"
+    },
+    {
+      "user": "qingman",
+      "time": "1998-11-05 12:40:18",
+      "ip": "192.168.1.112",
+      "host": "-",
+      "requires": "ch1"
+    },
+    {
+      "user": "jia",
+      "time": "1998-12-03 17:25:40",
+      "ip": "192.168.1.103",
+      "host": "-",
+      "requires": "ch1"
+    },
+    {
+      "user": "wanfeng",
+      "time": "1999-03-14 21:40:03",
+      "ip": "61.153.27.88",
+      "host": "-",
+      "requires": "ch1"
+    },
+    {
+      "user": "jia",
+      "time": "1999-03-15 07:00:11",
+      "ip": "192.168.1.103",
+      "host": "-",
+      "requires": "ch1"
+    },
+    {
+      "user": "sysop",
+      "time": "1999-05-14 17:48:02",
+      "ip": "192.168.1.103",
+      "host": "-",
+      "requires": "ch1"
+    },
+    {
+      "user": "jia",
+      "time": "1999-05-15 17:38:21",
+      "ip": "192.168.1.103",
+      "host": "-",
+      "requires": "ch1"
+    },
+    {
+      "user": "hanli",
+      "time": "1999-05-16 10:12:44",
+      "ip": "192.168.1.200",
+      "host": "-",
+      "requires": "ch1"
+    },
+    {
+      "user": "hanli",
+      "time": "1999-05-17 12:20:13",
+      "ip": "192.168.1.200",
+      "host": "-",
+      "requires": "ch1"
+    },
+    {
+      "user": "leilei",
+      "time": "1999-05-17 20:38:31",
+      "ip": "192.168.1.121",
+      "host": "-",
+      "requires": "ch1"
+    },
+    {
+      "user": "xiaoyu",
+      "time": "1999-05-17 20:43:12",
+      "ip": "192.168.1.130",
+      "host": "-",
+      "requires": "ch1"
+    },
+    {
+      "user": "zhaopeng",
+      "time": "1999-05-17 20:49:40",
+      "ip": "192.168.1.124",
+      "host": "-",
+      "requires": "ch1"
+    },
+    {
+      "user": "sysop",
+      "time": "1999-05-17 20:58:41",
+      "ip": "192.168.1.107",
+      "host": "-",
+      "requires": "ch1"
+    },
+    {
+      "user": "majun",
+      "time": "1999-05-17 22:29:05",
+      "ip": "61.153.33.90",
+      "host": "-",
+      "requires": "ch1"
+    },
+    {
+      "user": "hanli",
+      "time": "1999-05-18 08:30:05",
+      "ip": "192.168.1.200",
+      "host": "-",
+      "requires": "ch1"
+    },
+    {
+      "user": "hanli",
+      "time": "1999-05-18 18:10:27",
+      "ip": "192.168.1.200",
+      "host": "-",
+      "requires": "ch1"
+    },
+    {
+      "user": "jia",
+      "time": "1999-05-19 07:46:10",
+      "ip": "192.168.1.103",
+      "host": "-",
+      "requires": "ch1"
+    },
+    {
+      "user": "sysop",
+      "time": "1999-05-19 07:48:33",
+      "ip": "192.168.1.103",
+      "host": "-",
+      "requires": "ch1"
+    },
+    {
+      "user": "wanfeng",
+      "time": "1999-05-20 22:28:40",
+      "ip": "61.153.27.88",
+      "host": "-",
+      "requires": "ch1"
+    },
+    {
+      "user": "wanfeng",
+      "time": "1999-06-20 22:09:47",
+      "ip": "61.153.27.88",
+      "host": "-",
+      "requires": "ch1"
+    },
+    {
+      "user": "jia",
+      "time": "1999-06-22 06:48:19",
+      "ip": "192.168.1.103",
+      "host": "-",
+      "requires": "ch1"
+    },
+    {
+      "user": "sysop",
+      "time": "1999-06-22 07:25:10",
+      "ip": "192.168.1.103",
+      "host": "-",
+      "requires": "ch1"
+    },
+    {
+      "user": "hanli",
+      "time": "1999-06-22 08:05:41",
+      "ip": "192.168.1.200",
+      "host": "-",
+      "requires": "ch1"
+    },
+    {
+      "user": "qingman",
+      "time": "1999-06-22 21:05:33",
+      "ip": "61.153.30.12",
+      "host": "-",
+      "requires": "ch1"
+    },
+    {
+      "user": "tingting",
+      "time": "1999-06-23 00:28:13",
+      "ip": "61.153.17.42",
+      "host": "-",
+      "requires": "ch1"
+    },
+    {
+      "user": "yuanfang",
+      "time": "1999-06-25 20:01:55",
+      "ip": "61.153.20.5",
+      "host": "-",
+      "requires": "ch1"
+    },
+    {
+      "user": "hanli",
+      "time": "1999-06-28 16:55:02",
+      "ip": "192.168.1.200",
+      "host": "-",
+      "requires": "ch1"
+    },
+    {
+      "user": "jia",
+      "time": "1999-08-30 19:50:30",
+      "ip": "192.168.1.103",
+      "host": "-",
+      "requires": "ch1"
+    },
+    {
+      "user": "sysop",
+      "time": "1999-08-30 19:58:12",
+      "ip": "192.168.1.103",
+      "host": "-",
+      "requires": "ch1"
+    },
+    {
+      "user": "jia",
+      "time": "1999-12-20 18:31:05",
+      "ip": "192.168.1.103",
+      "host": "JF-03",
+      "requires": "ch2"
+    },
+    {
+      "user": "xiaoyu",
+      "time": "1999-12-20 19:02:44",
+      "ip": "61.153.22.15",
+      "host": "-",
+      "requires": "ch2"
+    },
+    {
+      "user": "majun",
+      "time": "1999-12-20 19:38:10",
+      "ip": "61.153.33.90",
+      "host": "-",
+      "requires": "ch2"
+    },
+    {
+      "user": "jia",
+      "time": "1999-12-27 21:56:31",
+      "ip": "192.168.1.103",
+      "host": "JF-03",
+      "requires": "ch2"
+    },
+    {
+      "user": "xiaorui",
+      "time": "1999-12-27 20:58:02",
+      "ip": "61.153.26.71",
+      "host": "-",
+      "requires": "ch2"
+    },
+    {
+      "user": "jia",
+      "time": "1999-12-29 21:55:40",
+      "ip": "192.168.1.103",
+      "host": "JF-03",
+      "requires": "ch2"
+    },
+    {
+      "user": "liuyang",
+      "time": "1999-12-30 19:46:12",
+      "ip": "61.153.40.8",
+      "host": "-",
+      "requires": "ch2"
+    },
+    {
+      "user": "xiaorui",
+      "time": "1999-12-31 16:02:31",
+      "ip": "61.153.26.71",
+      "host": "-",
+      "requires": "ch2"
+    },
+    {
+      "user": "leilei",
+      "time": "1999-12-31 17:48:09",
+      "ip": "61.153.12.33",
+      "host": "-",
+      "requires": "ch2"
+    },
+    {
+      "user": "tingting",
+      "time": "1999-12-31 18:05:33",
+      "ip": "61.153.17.42",
+      "host": "-",
+      "requires": "ch2"
+    },
+    {
+      "user": "sunqian",
+      "time": "1999-12-31 18:13:50",
+      "ip": "61.153.19.8",
+      "host": "-",
+      "requires": "ch2"
+    },
+    {
+      "user": "xiaorui",
+      "time": "1999-12-31 18:16:20",
+      "ip": "61.153.26.71",
+      "host": "-",
+      "requires": "ch2"
+    },
+    {
+      "user": "tingting",
+      "time": "1999-12-31 18:20:41",
+      "ip": "61.153.17.42",
+      "host": "-",
+      "requires": "ch2"
+    },
+    {
+      "user": "liuyang",
+      "time": "1999-12-31 19:15:20",
+      "ip": "61.153.40.8",
+      "host": "-",
+      "requires": "ch2"
+    },
+    {
+      "user": "jia",
+      "time": "1999-12-31 21:52:13",
+      "ip": "192.168.1.103",
+      "host": "JF-03",
+      "requires": "ch2"
+    },
+    {
+      "user": "jia",
+      "time": "1999-12-31 22:30:01",
+      "ip": "192.168.1.103",
+      "host": "JF-03",
+      "requires": "ch2"
+    },
+    {
+      "user": "xiaoyu",
+      "time": "1999-12-31 23:12:55",
+      "ip": "61.153.22.15",
+      "host": "-",
+      "requires": "ch2"
+    },
+    {
+      "user": "jia",
+      "time": "1999-12-31 23:29:48",
+      "ip": "192.168.1.103",
+      "host": "JF-03",
+      "requires": "ch2"
+    },
+    {
+      "user": "jia",
+      "time": "1999-12-31 23:35:02",
+      "ip": "192.168.1.103",
+      "host": "JF-03",
+      "requires": "ch2"
+    },
+    {
+      "user": "jia",
+      "time": "1999-12-31 23:40:11",
+      "ip": "192.168.1.103",
+      "host": "JF-03",
+      "requires": "ch2"
+    },
+    {
+      "user": "jia",
+      "time": "1999-12-31 23:45:30",
+      "ip": "192.168.1.103",
+      "host": "JF-03",
+      "requires": "ch2"
+    },
+    {
+      "user": "liuyang",
+      "time": "1999-12-31 23:51:40",
+      "ip": "61.153.40.8",
+      "host": "-",
+      "requires": "ch2"
+    },
+    {
+      "user": "jia",
+      "time": "1999-12-31 23:55:00",
+      "ip": "192.168.1.103",
+      "host": "JF-03",
+      "requires": "ch2"
+    },
+    {
+      "user": "xiaoyu",
+      "time": "1999-12-31 23:55:03",
+      "ip": "61.153.22.15",
+      "host": "-",
+      "requires": "ch2"
+    },
+    {
+      "user": "jia",
+      "time": "1999-12-31 23:59:30",
+      "ip": "192.168.1.103",
+      "host": "JF-03",
+      "requires": "ch2"
+    },
+    {
+      "user": "jia",
+      "time": "2000-01-01 00:00:04",
+      "ip": "192.168.1.103",
+      "host": "JF-03",
+      "requires": "ch2"
+    },
+    {
+      "user": "jia",
+      "time": "2000-01-01 00:00:47",
+      "ip": "192.168.1.103",
+      "host": "JF-03",
+      "requires": "ch2"
+    },
+    {
+      "user": "jia",
+      "time": "2000-01-01 00:05:12",
+      "ip": "192.168.1.103",
+      "host": "JF-03",
+      "requires": "ch2"
+    },
+    {
+      "user": "jia",
+      "time": "2000-01-01 00:12:30",
+      "ip": "192.168.1.103",
+      "host": "JF-03",
+      "requires": "ch2"
+    },
+    {
+      "user": "jia",
+      "time": "2000-01-01 00:20:08",
+      "ip": "192.168.1.103",
+      "host": "JF-03",
+      "requires": "ch2"
+    },
+    {
+      "user": "Y2K",
+      "time": "2000-01-01 00:27:41",
+      "ip": "192.168.1.200",
+      "host": "JYS-486",
+      "requires": "ch2"
+    },
+    {
+      "user": "liuyang",
+      "time": "2000-01-01 00:35:16",
+      "ip": "61.153.40.8",
+      "host": "-",
+      "requires": "ch2"
+    },
+    {
+      "user": "jia",
+      "time": "2000-01-01 00:38:02",
+      "ip": "192.168.1.103",
+      "host": "JF-03",
+      "requires": "ch2"
+    },
+    {
+      "user": "xiaoyu",
+      "time": "2000-01-01 00:47:22",
+      "ip": "61.153.22.15",
+      "host": "-",
+      "requires": "ch2"
+    },
+    {
+      "user": "jia",
+      "time": "2000-01-01 01:00:00",
+      "ip": "192.168.1.103",
+      "host": "JF-03",
+      "requires": "ch2"
+    },
+    {
+      "user": "majun",
+      "time": "2000-01-01 01:05:40",
+      "ip": "61.153.33.90",
+      "host": "-",
+      "requires": "ch2"
+    },
+    {
+      "user": "jia",
+      "time": "2000-01-01 01:30:15",
+      "ip": "192.168.1.103",
+      "host": "JF-03",
+      "requires": "ch2"
+    },
+    {
+      "user": "jia",
+      "time": "2000-01-01 01:57:44",
+      "ip": "192.168.1.103",
+      "host": "JF-03",
+      "requires": "ch2"
+    },
+    {
+      "user": "leilei",
+      "time": "2000-01-01 08:41:27",
+      "ip": "61.153.12.33",
+      "host": "-",
+      "requires": "ch2"
+    },
+    {
+      "user": "sunqian",
+      "time": "2000-01-01 09:10:05",
+      "ip": "61.153.19.8",
+      "host": "-",
+      "requires": "ch2"
+    },
+    {
+      "user": "zhaopeng",
+      "time": "2000-01-01 09:39:51",
+      "ip": "61.153.21.4",
+      "host": "-",
+      "requires": "ch2"
+    },
+    {
+      "user": "majun",
+      "time": "2000-01-01 10:00:33",
+      "ip": "61.153.33.90",
+      "host": "-",
+      "requires": "ch2"
+    },
+    {
+      "user": "liuyang",
+      "time": "2000-01-01 10:16:02",
+      "ip": "61.153.28.6",
+      "host": "-",
+      "requires": "ch2"
+    },
+    {
+      "user": "xiaorui",
+      "time": "2000-01-01 10:52:10",
+      "ip": "61.153.26.71",
+      "host": "-",
+      "requires": "ch2"
+    },
+    {
+      "user": "jia",
+      "time": "2000-01-01 13:22:18",
+      "ip": "61.153.9.120",
+      "host": "-",
+      "requires": "ch2"
+    },
+    {
+      "user": "yuanfang",
+      "time": "2000-01-01 14:05:51",
+      "ip": "61.153.11.205",
+      "host": "-",
+      "requires": "ch2"
+    },
+    {
+      "user": "leilei",
+      "time": "2000-01-01 14:27:40",
+      "ip": "61.153.12.33",
+      "host": "-",
+      "requires": "ch2"
+    },
+    {
+      "user": "sunqian",
+      "time": "2000-01-02 10:12:40",
+      "ip": "61.153.19.8",
+      "host": "-",
+      "requires": "ch2"
+    },
+    {
+      "user": "xiaorui",
+      "time": "2000-01-02 10:38:15",
+      "ip": "61.153.26.71",
+      "host": "-",
+      "requires": "ch2"
+    },
+    {
+      "user": "leilei",
+      "time": "2000-01-02 11:20:02",
+      "ip": "61.153.12.33",
+      "host": "-",
+      "requires": "ch2"
+    },
+    {
+      "user": "xiaoyu",
+      "time": "2000-01-02 12:05:41",
+      "ip": "61.153.22.15",
+      "host": "-",
+      "requires": "ch2"
+    },
+    {
+      "user": "lijing",
+      "time": "2000-01-02 12:56:19",
+      "ip": "61.153.24.140",
+      "host": "-",
+      "requires": "ch2"
+    },
+    {
+      "user": "jia",
+      "time": "2000-01-02 13:40:09",
+      "ip": "61.153.9.120",
+      "host": "-",
+      "requires": "ch2"
+    },
+    {
+      "user": "sysop",
+      "time": "2000-01-02 13:58:30",
+      "ip": "61.153.9.120",
+      "host": "-",
+      "requires": "ch2"
+    },
+    {
+      "user": "majun",
+      "time": "2000-01-02 14:01:55",
+      "ip": "61.153.33.90",
+      "host": "-",
+      "requires": "ch2"
+    },
+    {
+      "user": "yuanfang",
+      "time": "2000-01-02 18:26:00",
+      "ip": "61.153.11.205",
+      "host": "-",
+      "requires": "ch2"
+    },
+    {
+      "user": "qingman",
+      "time": "2000-01-02 19:31:12",
+      "ip": "61.153.30.66",
+      "host": "-",
+      "requires": "ch2"
+    },
+    {
+      "user": "xiaorui",
+      "time": "2000-01-03 20:25:44",
+      "ip": "61.153.26.71",
+      "host": "-",
+      "requires": "ch2"
+    },
+    {
+      "user": "sunqian",
+      "time": "2000-01-03 20:40:02",
+      "ip": "61.153.19.8",
+      "host": "-",
+      "requires": "ch2"
+    },
+    {
+      "user": "majun",
+      "time": "2000-01-03 20:52:18",
+      "ip": "61.153.33.90",
+      "host": "-",
+      "requires": "ch2"
+    },
+    {
+      "user": "qingman",
+      "time": "2000-01-03 21:47:30",
+      "ip": "61.153.30.66",
+      "host": "-",
+      "requires": "ch2"
+    },
+    {
+      "user": "leilei",
+      "time": "2000-01-03 21:58:00",
+      "ip": "61.153.12.33",
+      "host": "-",
+      "requires": "ch2"
+    },
+    {
+      "user": "xiaoyu",
+      "time": "2000-01-04 17:55:20",
+      "ip": "192.168.1.118",
+      "host": "JF-18",
+      "requires": "ch2"
+    },
+    {
+      "user": "liuyang",
+      "time": "2000-01-04 19:18:40",
+      "ip": "61.153.28.6",
+      "host": "-",
+      "requires": "ch2"
+    },
+    {
+      "user": "jia",
+      "time": "2000-01-04 19:36:51",
+      "ip": "192.168.1.103",
+      "host": "JF-03",
+      "requires": "ch2"
+    },
+    {
+      "user": "xiaorui",
+      "time": "2000-01-05 12:27:05",
+      "ip": "192.168.1.112",
+      "host": "JF-12",
+      "requires": "ch2"
+    },
+    {
+      "user": "majun",
+      "time": "2000-01-05 21:26:33",
+      "ip": "61.153.33.90",
+      "host": "-",
+      "requires": "ch2"
+    },
+    {
+      "user": "jia",
+      "time": "2000-01-06 08:12:33",
+      "ip": "192.168.1.103",
+      "host": "JF-03",
+      "requires": "ch3"
+    },
+    {
+      "user": "xiaorui",
+      "time": "2000-01-06 12:18:40",
+      "ip": "192.168.1.111",
+      "host": "JF-11",
+      "requires": "ch3"
+    },
+    {
+      "user": "liuyang",
+      "time": "2000-01-08 19:05:44",
+      "ip": "61.153.12.209",
+      "host": "-",
+      "requires": "ch3"
+    },
+    {
+      "user": "sunqian",
+      "time": "2000-01-10 22:31:02",
+      "ip": "61.153.40.66",
+      "host": "-",
+      "requires": "ch3"
+    },
+    {
+      "user": "leilei",
+      "time": "2000-01-12 17:20:19",
+      "ip": "61.153.7.31",
+      "host": "-",
+      "requires": "ch3"
+    },
+    {
+      "user": "majun",
+      "time": "2000-01-16 15:02:58",
+      "ip": "192.168.1.122",
+      "host": "JF-22",
+      "requires": "ch3"
+    },
+    {
+      "user": "jia",
+      "time": "2000-01-16 21:47:13",
+      "ip": "192.168.1.103",
+      "host": "JF-03",
+      "requires": "ch3"
+    },
+    {
+      "user": "zhaopeng",
+      "time": "2000-01-18 13:15:40",
+      "ip": "192.168.1.150",
+      "host": "TSG-01",
+      "requires": "ch3"
+    },
+    {
+      "user": "qingman",
+      "time": "2000-01-22 22:09:51",
+      "ip": "61.153.33.18",
+      "host": "-",
+      "requires": "ch3"
+    },
+    {
+      "user": "sysop",
+      "time": "2000-01-25 10:02:11",
+      "ip": "192.168.1.103",
+      "host": "JF-03",
+      "requires": "ch3"
+    },
+    {
+      "user": "jia",
+      "time": "2000-01-28 22:40:05",
+      "ip": "192.168.1.103",
+      "host": "JF-03",
+      "requires": "ch3"
+    },
+    {
+      "user": "leilei",
+      "time": "2000-02-01 07:20:37",
+      "ip": "61.153.7.31",
+      "host": "-",
+      "requires": "ch3"
+    },
+    {
+      "user": "leilei",
+      "time": "2000-02-04 23:58:21",
+      "ip": "61.153.7.31",
+      "host": "-",
+      "requires": "ch3"
+    },
+    {
+      "user": "xiaoyu",
+      "time": "2000-02-05 09:30:48",
+      "ip": "61.153.20.144",
+      "host": "-",
+      "requires": "ch3"
+    },
+    {
+      "user": "qingman",
+      "time": "2000-02-05 10:11:02",
+      "ip": "61.153.33.18",
+      "host": "-",
+      "requires": "ch3"
+    },
+    {
+      "user": "yuanfang",
+      "time": "2000-02-05 11:18:26",
+      "ip": "61.153.51.92",
+      "host": "-",
+      "requires": "ch3"
+    },
+    {
+      "user": "jia",
+      "time": "2000-02-08 15:05:39",
+      "ip": "192.168.1.103",
+      "host": "JF-03",
+      "requires": "ch3"
+    },
+    {
+      "user": "xiaoyu",
+      "time": "2000-02-10 07:15:16",
+      "ip": "192.168.1.150",
+      "host": "TSG-01",
+      "requires": "ch3"
+    },
+    {
+      "user": "majun",
+      "time": "2000-02-12 20:28:09",
+      "ip": "61.153.18.240",
+      "host": "-",
+      "requires": "ch3"
+    },
+    {
+      "user": "Y2K",
+      "time": "2000-02-12 18:34:51",
+      "ip": "192.168.1.200",
+      "host": "JYS-486",
+      "requires": "ch3"
+    },
+    {
+      "user": "yuanfang",
+      "time": "2000-02-12 20:41:27",
+      "ip": "61.153.51.92",
+      "host": "-",
+      "requires": "ch3"
+    },
+    {
+      "user": "yuanfang",
+      "time": "2000-02-13 15:19:08",
+      "ip": "61.153.51.92",
+      "host": "-",
+      "requires": "ch3"
+    },
+    {
+      "user": "jia",
+      "time": "2000-02-13 19:40:22",
+      "ip": "192.168.1.103",
+      "host": "JF-03",
+      "requires": "ch3"
+    },
+    {
+      "user": "yuanfang",
+      "time": "2000-02-13 22:58:40",
+      "ip": "61.153.51.92",
+      "host": "-",
+      "requires": "ch3"
+    },
+    {
+      "user": "xiaorui",
+      "time": "2000-02-14 07:10:05",
+      "ip": "192.168.1.150",
+      "host": "TSG-01",
+      "requires": "ch3"
+    },
+    {
+      "user": "majun",
+      "time": "2000-02-14 12:46:33",
+      "ip": "192.168.1.122",
+      "host": "JF-22",
+      "requires": "ch3"
+    },
+    {
+      "user": "lijing",
+      "time": "2000-02-14 13:02:47",
+      "ip": "192.168.1.150",
+      "host": "TSG-01",
+      "requires": "ch3"
+    },
+    {
+      "user": "yuanfang",
+      "time": "2000-02-14 16:40:12",
+      "ip": "192.168.1.106",
+      "host": "JF-06",
+      "requires": "ch3"
+    },
+    {
+      "user": "liuyang",
+      "time": "2000-02-14 17:18:30",
+      "ip": "192.168.1.102",
+      "host": "JF-02",
+      "requires": "ch3"
+    },
+    {
+      "user": "wanfeng",
+      "time": "2000-02-14 19:52:07",
+      "ip": "192.168.1.200",
+      "host": "JYS-486",
+      "requires": "ch3"
+    },
+    {
+      "user": "yuanfang",
+      "time": "2000-02-14 19:58:14",
+      "ip": "61.153.51.92",
+      "host": "-",
+      "requires": "ch3"
+    },
+    {
+      "user": "Y2K",
+      "time": "2000-02-14 21:14:39",
+      "ip": "192.168.1.200",
+      "host": "JYS-486",
+      "requires": "ch3"
+    },
+    {
+      "user": "leilei",
+      "time": "2000-02-14 21:29:50",
+      "ip": "61.153.7.31",
+      "host": "-",
+      "requires": "ch3"
+    },
+    {
+      "user": "majun",
+      "time": "2000-02-14 22:03:12",
+      "ip": "61.153.18.240",
+      "host": "-",
+      "requires": "ch3"
+    },
+    {
+      "user": "xiaoyu",
+      "time": "2000-02-15 07:48:02",
+      "ip": "192.168.1.150",
+      "host": "TSG-01",
+      "requires": "ch3"
+    },
+    {
+      "user": "majun",
+      "time": "2000-02-15 13:06:15",
+      "ip": "192.168.1.122",
+      "host": "JF-22",
+      "requires": "ch3"
+    },
+    {
+      "user": "jia",
+      "time": "2000-02-15 21:03:00",
+      "ip": "192.168.1.103",
+      "host": "JF-03",
+      "requires": "ch3"
+    },
+    {
+      "user": "jia",
+      "time": "2000-02-16 07:12:44",
+      "ip": "192.168.1.103",
+      "host": "JF-03",
+      "requires": "ch3"
+    },
+    {
+      "user": "xiaorui",
+      "time": "2000-02-16 20:45:31",
+      "ip": "61.153.28.75",
+      "host": "-",
+      "requires": "ch3"
+    },
+    {
+      "user": "xiaoyu",
+      "time": "2000-02-17 12:05:58",
+      "ip": "192.168.1.150",
+      "host": "TSG-01",
+      "requires": "ch3"
+    },
+    {
+      "user": "zhaopeng",
+      "time": "2000-02-19 16:30:44",
+      "ip": "192.168.1.130",
+      "host": "JF-30",
+      "requires": "ch3"
+    },
+    {
+      "user": "sunqian",
+      "time": "2000-02-19 23:05:10",
+      "ip": "61.153.40.66",
+      "host": "-",
+      "requires": "ch3"
+    },
+    {
+      "user": "leilei",
+      "time": "2000-02-20 11:05:27",
+      "ip": "61.153.7.31",
+      "host": "-",
+      "requires": "ch3"
+    },
+    {
+      "user": "hanli",
+      "time": "2000-03-06 15:38:20",
+      "ip": "192.168.1.200",
+      "host": "JYS-486",
+      "requires": "ch4"
+    },
+    {
+      "user": "Y2K",
+      "time": "2000-03-14 21:51:30",
+      "ip": "192.168.1.200",
+      "host": "JYS-486",
+      "requires": "ch4"
+    },
+    {
+      "user": "xiaorui",
+      "time": "2000-03-15 12:21:47",
+      "ip": "192.168.1.115",
+      "host": "JF-15",
+      "requires": "ch4"
+    },
+    {
+      "user": "jia",
+      "time": "2000-03-15 12:29:02",
+      "ip": "192.168.1.103",
+      "host": "JF-03",
+      "requires": "ch4"
+    },
+    {
+      "user": "majun",
+      "time": "2000-03-15 21:30:05",
+      "ip": "192.168.1.122",
+      "host": "JF-22",
+      "requires": "ch4"
+    },
+    {
+      "user": "lijing",
+      "time": "2000-03-19 18:40:12",
+      "ip": "61.153.33.71",
+      "host": "梧城信息港拨号",
+      "requires": "ch4"
+    },
+    {
+      "user": "xiaorui",
+      "time": "2000-03-19 21:06:33",
+      "ip": "61.153.37.88",
+      "host": "梧城信息港拨号",
+      "requires": "ch4"
+    },
+    {
+      "user": "hanli",
+      "time": "2000-03-20 16:45:31",
+      "ip": "192.168.1.200",
+      "host": "JYS-486",
+      "requires": "ch4"
+    },
+    {
+      "user": "xiaorui",
+      "time": "2000-03-20 20:47:12",
+      "ip": "192.168.1.115",
+      "host": "JF-15",
+      "requires": "ch4"
+    },
+    {
+      "user": "jia",
+      "time": "2000-03-20 22:24:40",
+      "ip": "61.153.20.146",
+      "host": "梧城信息港拨号",
+      "requires": "ch4"
+    },
+    {
+      "user": "Y2K",
+      "time": "2000-03-20 22:31:02",
+      "ip": "192.168.1.200",
+      "host": "JYS-486",
+      "requires": "ch4"
+    },
+    {
+      "user": "leilei",
+      "time": "2000-03-20 22:38:47",
+      "ip": "61.153.52.9",
+      "host": "梧城信息港拨号",
+      "requires": "ch4"
+    },
+    {
+      "user": "liuyang",
+      "time": "2000-03-20 23:02:11",
+      "ip": "61.153.18.230",
+      "host": "梧城信息港拨号",
+      "requires": "ch4"
+    },
+    {
+      "user": "xiaoyu",
+      "time": "2000-03-21 11:58:30",
+      "ip": "192.168.1.131",
+      "host": "JF-31",
+      "requires": "ch4"
+    },
+    {
+      "user": "sysop",
+      "time": "2000-03-21 12:48:02",
+      "ip": "192.168.1.103",
+      "host": "JF-03",
+      "requires": "ch4"
+    },
+    {
+      "user": "hanli",
+      "time": "2000-03-21 15:55:40",
+      "ip": "192.168.1.200",
+      "host": "JYS-486",
+      "requires": "ch4"
+    },
+    {
+      "user": "liuyang",
+      "time": "2000-03-22 21:38:15",
+      "ip": "61.153.18.230",
+      "host": "梧城信息港拨号",
+      "requires": "ch4"
+    },
+    {
+      "user": "jia",
+      "time": "2000-03-23 12:44:10",
+      "ip": "192.168.1.103",
+      "host": "JF-03",
+      "requires": "ch4"
+    },
+    {
+      "user": "zhaopeng",
+      "time": "2000-03-29 12:15:20",
+      "ip": "192.168.1.109",
+      "host": "JF-09",
+      "requires": "ch4"
+    },
+    {
+      "user": "liuyang",
+      "time": "2000-04-01 23:50:14",
+      "ip": "61.153.88.21",
+      "host": "梧城信息港",
+      "requires": "ch5"
+    },
+    {
+      "user": "xiaoyu",
+      "time": "2000-04-02 19:12:40",
+      "ip": "61.153.40.66",
+      "host": "梧城信息港",
+      "requires": "ch5"
+    },
+    {
+      "user": "xiaoyu",
+      "time": "2000-04-02 19:40:03",
+      "ip": "61.153.40.66",
+      "host": "梧城信息港",
+      "requires": "ch5"
+    },
+    {
+      "user": "qingman",
+      "time": "2000-04-02 20:46:51",
+      "ip": "61.153.22.87",
+      "host": "梧城信息港",
+      "requires": "ch5"
+    },
+    {
+      "user": "jia",
+      "time": "2000-04-02 22:24:30",
+      "ip": "192.168.1.103",
+      "host": "JF-03",
+      "requires": "ch5"
+    },
+    {
+      "user": "hanli",
+      "time": "2000-04-03 17:30:11",
+      "ip": "192.168.1.200",
+      "host": "JYS-486",
+      "requires": "ch5"
+    },
+    {
+      "user": "qingman",
+      "time": "2000-04-03 21:12:40",
+      "ip": "61.153.22.87",
+      "host": "梧城信息港",
+      "requires": "ch5"
+    },
+    {
+      "user": "leilei",
+      "time": "2000-04-04 12:10:05",
+      "ip": "61.153.17.130",
+      "host": "梧城信息港",
+      "requires": "ch5"
+    },
+    {
+      "user": "sysop",
+      "time": "2000-04-04 16:02:31",
+      "ip": "192.168.1.103",
+      "host": "JF-03",
+      "requires": "ch5"
+    },
+    {
+      "user": "jia",
+      "time": "2000-04-04 16:05:12",
+      "ip": "192.168.1.103",
+      "host": "JF-03",
+      "requires": "ch5"
+    }
+  ]
+}

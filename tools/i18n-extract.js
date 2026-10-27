@@ -8,7 +8,7 @@ const vm = require('vm');
 const root = path.join(__dirname, '..');
 const dir = path.join(root, 'src', 'content');
 const outDir = path.join(root, 'src', 'i18n', 'zh');
-const order = ['base', 'ch0', 'ch1', 'ch2', 'ch3', 'ch4', 'ch5', 'ch6'];
+const order = ['base', 'ch0', 'ch1', 'ch2', 'ch3', 'ch4', 'ch5', 'ch6', 'story'];
 
 const TEXT_KEYS = new Set(['num', 'name', 'intro', 'sub', 'avatar', 'desc', 'nick', 'title', 'sig', 'gender', 'text', 'html', 'caption', 'comment',
   'label', 'prompt', 'placeholder', 'solvedText', 'wrongText', 'npc', 'me', 'sys', 'subject', 'body', 'source', 'toast', 'where', 'homeNotice', 'homeSource', 'group']);

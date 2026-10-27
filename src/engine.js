@@ -20,12 +20,13 @@ const Y2K = (() => {
   const D = {
     chapters: [], apps: {}, contacts2026: {}, boot: {}, files: [], threads: [], loginLog: [], mails: [], pages: [],
     users: [], bbsBoards: [], adminSections: {}, bbsMeta: {}, userExtras: [], gxAccount: {}, gxContacts: [], gxLogs: [],
-    puzzles: {}, boards: {}, dialogues: [], mails2026: [], items2026: [], notes: {}, collectibles: {}, endings: {}, screensaver: [],
+    puzzles: {}, boards: {}, dialogues: [], mails2026: [], items2026: [], notes: {}, collectibles: {}, endings: {}, screensaver: [], journal: {}, readings: [],
   };
   function add(o) {
     const push = (k, arr) => { if (arr) D[k].push(...arr); };
     push('chapters', o.chapters); push('files', o.files); push('dialogues', o.dialogues); push('mails2026', o.mails2026);
     push('items2026', o.items2026); push('screensaver', o.screensaver); push('userExtras', o.userExtras);
+    push('readings', o.readings); Object.assign(D.journal, o.journal || {});
     Object.assign(D.apps, o.apps || {}); Object.assign(D.contacts2026, o.contacts2026 || {}); Object.assign(D.boot, o.boot || {});
     for (const k of ['puzzles', 'boards', 'notes', 'collectibles', 'endings']) Object.assign(D[k], o[k] || {});
     if (o.bbs) {
@@ -204,7 +205,7 @@ const Y2K = (() => {
       v: VER, player: player || _t('老K'), flags: { start: true }, opened: {}, hints: {}, notes: [], noteCh: {}, collected: [],
       dlg: {}, dlgQ: {}, chat: {}, unread: {}, wait: {}, mails: [], mailRead: {}, items: [], itemSeen: {}, boardFill: {},
       seenBoards: {}, seenAsk: {}, chapter: null, chTime: null, stage: 'off', clock: '1900-01-01 00:00', clockAt: Date.now(),
-      showHidden: false, playMs: 0, created: Date.now(), newNotes: 0, newBoards: 0, sound: true,
+      showHidden: false, playMs: 0, created: Date.now(), newNotes: 0, newBoards: 0, sound: true, readingSeen: {},
     };
   }
   const compiled = {};
@@ -347,6 +348,7 @@ const Y2K = (() => {
     ui.tab = 'msg'; ui.chat = null; ui.mail = null; ui.item = null;
     ui._viewKey = null; ui.scroll = {}; ui.menuView = null;
     ui.noteTab = 'questions'; ui.noteQuery = ''; ui.itemQuery = '';
+    ui.reading = null; ui.clueScope = 'current'; ui.clueGroups = {};
     hideTitle();
     renderScreen(); renderAll(); dirty();
   }
@@ -509,6 +511,7 @@ const Y2K = (() => {
       h('h1', { text: e.title }),
       h('div', { class: 'body', html: fmt(e.html) }),
       h('div', { class: 'acts' },
+        ['C', 'H'].includes(id) ? h('button', { class: 'tbtn', text: _t('回到 3 号机'), onclick: () => { closeOverlay(); renderAll(); showCards(); } }) : null,
         LS.get(KEY.pre) ? h('button', { class: 'tbtn', text: _t('回到结局前继续'), onclick: () => { const o = readSave('pre'); if (o) loadState(o); } }) : null,
         h('button', { class: 'tbtn', text: _t('返回标题画面'), onclick: () => { closeOverlay(); showTitle(); } }))));
     sfx('boot');
@@ -738,7 +741,7 @@ const Y2K = (() => {
       sheet.append(h('h2', { text: b.title }), h('div', { class: 'intro', html: fmt(b.intro || _t('先点一个空格，再点下方的词语填进去；也可以直接把词语拖进空格。右键（或再点一次空格后点"清空"）可以清除。全部填对才算通过。')) }));
       const hn = S.hints['board_' + id] || 0;
       (b.hints || []).slice(0, hn).forEach((t, i) => sheet.append(h('div', { class: 'hintbox', html: `<b>${_t('提示')} ${i + 1}：</b>` + fmt(t) })));
-      if (done()) sheet.append(h('div', { class: 'solved', html: _t('✔ 推理成立。') + (b.solvedText ? '<br>' + fmt(b.solvedText) : '') }));
+      if (done()) sheet.append(h('div', { class: 'solved', html: (id === 'c4_final' ? _t('已整理，仍待核验。') : _t('✔ 推理成立。')) + (b.solvedText ? '<br>' + fmt(b.solvedText) : '') }));
       sheet.append(bar, txt);
       if (!done()) {
         const bank = h('div', { class: 'bank' });
@@ -785,7 +788,7 @@ const Y2K = (() => {
   // ============================================================
   // 2026 手机
   // ============================================================
-  const ui = { tab: 'msg', chat: null, mail: null, item: null, phoneOpen: false, menuView: null, scroll: {}, noteTab: 'questions', noteQuery: '', itemQuery: '' };
+  const ui = { tab: 'msg', chat: null, mail: null, item: null, phoneOpen: false, menuView: null, scroll: {}, noteTab: 'questions', noteQuery: '', itemQuery: '', reading: null, clueScope: 'current', clueGroups: {} };
   let running = {}, typing = {}, FAST = false;
   function pushChat(c, m) {
     const t = phoneNow();
@@ -873,6 +876,112 @@ const Y2K = (() => {
   }
   function searchText(value) { return strip(fmt(value)).normalize('NFKC').toLocaleLowerCase(); }
 
+
+  // 只导航到已经开放的资料，仍走原有的文件锁、后台登录和谜题入口。
+  function goEvidence(source) {
+    if (!source) return;
+    if (['item', 'mail'].includes(source.type)) {
+      const list = source.type === 'item' ? S.items : S.mails;
+      if (!list.includes(source.id)) return toast(_t('这份资料尚未收到。'));
+      ui.tab = source.type === 'item' ? 'items' : 'mail'; ui.chat = null; ui.reading = null;
+      ui.item = source.type === 'item' ? source.id : null; ui.mail = source.type === 'mail' ? source.id : null;
+      renderPhone(); return;
+    }
+    if (source.type === 'chat') { ui.tab = 'msg'; ui.chat = source.id; ui.reading = null; ui.item = null; ui.mail = null; renderPhone(); return; }
+    if (source.type === 'board') { if (D.boards[source.id] && test(D.boards[source.id].requires)) openBoard(source.id); return; }
+    if (S.stage !== 'win') return;
+    if (source.type === 'file') {
+      const f = D.files.find(f => f.id === source.id); if (!f || !test(f.requires)) return;
+      if (narrow()) togglePhone(false);
+      if (f.deleted && !S.flags['restored_' + f.id]) openRecycle(); else openFile(f);
+    } else if (source.type === 'props') {
+      const f = D.files.find(f => f.id === source.id); if (f && test(f.requires)) showProps(f);
+    } else if (source.type === 'url') {
+      if (narrow()) togglePhone(false); openIE(source.value);
+    } else if (source.type === 'gx') {
+      if (narrow()) togglePhone(false); withLock((D.apps.gexun || {}).lock, openGexun);
+    }
+  }
+  function sourceButton(source, label) { return h('button', { class: 'ph-source', type: 'button', text: label || _t('查看原件'), onclick: () => goEvidence(source) }); }
+  function noteChapter(id) { const m = /^c([0-6])_/.exec(id); return m ? 'ch' + m[1] : (S.noteCh[id] || S.chapter); }
+  function noteSource(id) {
+    const has = a => a && [].concat(a.note || []).includes(id);
+    for (const f of D.files) { if (has(f.onOpen)) return { type: 'file', id: f.id }; if (has(f.onProps)) return { type: 'props', id: f.id }; }
+    for (const t of D.threads) if (has(t.onOpen) || has(t.onSource)) return { type: 'url', value: '/thread.asp?id=' + t.id };
+    for (const m of D.mails2026) if (has(m.onOpen)) return { type: 'mail', id: m.id };
+    for (const it of D.items2026) if (has(it.onOpen)) return { type: 'item', id: it.id };
+    for (const l of D.gxLogs) if (has(l.onOpen)) return { type: 'gx', id: l.id };
+    return null;
+  }
+  function renderJournal(body) {
+    const journal = D.journal[S.chapter]; if (!journal) return;
+    const next = (journal.steps || []).find(s => !test(s.until));
+    body.append(h('section', { class: 'ph-journal' },
+      h('div', { class: 'k', text: _t('本章调查') }), h('h3', { text: journal.question }),
+      h('p', { text: next ? next.text : _t('这一章已经整理完。可以回看原件，或继续手机里的对话。') }),
+      next && next.source ? sourceButton(next.source, _t('前往资料')) : null));
+    const facts = (journal.facts || []).filter(f => test(f.requires));
+    if (facts.length) body.append(h('details', { class: 'ph-facts', open: true },
+      h('summary', { text: _t('目前能确认的事') + ' · ' + facts.length }),
+      h('ul', {}, facts.map(f => h('li', { text: f.text })))));
+  }
+  function renderClues(body, controls) {
+    const results = h('div', { class: 'ph-search-results' });
+    const scope = h('select', { class: 'ph-scope', 'aria-label': _t('线索范围') },
+      h('option', { value: 'current', text: _t('本章线索') }), h('option', { value: 'all', text: _t('全部已发现线索') }));
+    D.chapters.filter(c => S.notes.some(id => noteChapter(id) === c.id)).forEach(c => scope.append(h('option', { value: c.id, text: c.num + ' · ' + c.name })));
+    scope.value = ui.clueScope;
+    const show = query => {
+      results.innerHTML = ''; const q = searchText(query).trim();
+      const ids = S.notes.slice().reverse().filter(id => {
+        if (!D.notes[id]) return false;
+        const ch = noteChapter(id), c = D.chapters.find(c => c.id === ch);
+        return (ui.clueScope === 'all' || ch === (ui.clueScope === 'current' ? S.chapter : ui.clueScope))
+          && (!q || searchText((c ? c.num + ' ' + c.name : '') + ' ' + D.notes[id].text).includes(q));
+      });
+      for (const c of D.chapters.slice().reverse()) {
+        const group = ids.filter(id => noteChapter(id) === c.id); if (!group.length) continue;
+        const opened = !!q || ui.clueScope !== 'all' || c.id === S.chapter || !!ui.clueGroups[c.id];
+        const section = h('details', { class: 'ph-clue-group', open: opened },
+          h('summary', { text: c.num + ' · ' + c.name + ' · ' + group.length }));
+        section.addEventListener('toggle', () => { ui.clueGroups[c.id] = section.open; });
+        group.forEach(id => {
+          const source = noteSource(id);
+          section.append(h('div', { class: 'ph-card', 'data-note': id },
+            h('div', { class: 'k', text: c.num }), h('div', { html: fmt(D.notes[id].text) }), source ? sourceButton(source) : null));
+        });
+        results.append(section);
+      }
+      if (!ids.length) results.append(h('div', { class: 'ph-card done', text: q ? _t('没有找到。') : _t('这里还没有线索。可以切换范围回看之前的记录。') }));
+      body.scrollTop = 0;
+    };
+    scope.onchange = () => { ui.clueScope = scope.value; show(ui.noteQuery); };
+    controls.append(scope, phoneSearch(_t('搜索') + ' ' + _t('线索'), 'noteQuery', show)); body.append(results); show(ui.noteQuery);
+  }
+  function renderReadings(body) {
+    const readings = D.readings.filter(r => test(r.requires));
+    if (ui.reading) {
+      const r = readings.find(r => r.id === ui.reading);
+      if (!r) { ui.reading = null; return; }
+      S.readingSeen = S.readingSeen || {}; S.readingSeen[r.id] = true;
+      const f = r.file && D.files.find(f => f.id === r.file && test(f.requires));
+      const article = h('article', { class: 'ph-reading' },
+        h('div', { class: 'ph-reading-source', text: r.date + ' · ' + r.source }),
+        f ? h('div', { class: 'ph-reading-original', html: fmt(f.html || '<pre>' + esc(f.text || '') + '</pre>') }) : null,
+        h('div', { html: fmt(r.html) }));
+      body.append(article); bindImageZoom(article); save('auto'); return;
+    }
+    body.append(h('div', { class: 'ph-reading-hint', text: _t('这些是资料里的日常片段。读过的会留在这里，可以随时回来。') }));
+    D.chapters.forEach(c => {
+      const rows = readings.filter(r => r.chapter === c.id); if (!rows.length) return;
+      body.append(h('div', { class: 'ph-sec', text: c.num + ' · ' + c.name }));
+      rows.forEach(r => body.append(h('button', { class: 'ph-reading-tile', type: 'button', onclick: () => { ui.reading = r.id; renderPhone(); } },
+        h('span', { text: r.title }), h('small', { text: (S.readingSeen || {})[r.id] ? _t('已读') : _t('未读') }),
+        r.intro ? h('p', { text: r.intro }) : null)));
+    });
+    if (!readings.length) body.append(h('div', { class: 'ph-empty', text: _t('读到相应的原始资料以后，旧事会慢慢出现。') }));
+  }
+
   function renderPhone() {
     const ph = $('#phone'); if (!ph || !S) return;
     const t = phoneNow();
@@ -885,13 +994,13 @@ const Y2K = (() => {
     const badges = { msg: unreadMsg || (waiting ? '!' : 0), mail: unreadMail, items: newItems, notes: S.newNotes, boards: S.newBoards, menu: 0 };
     const tabs = $('#phTabs'); tabs.innerHTML = '';
     [['msg', _t('消息')], ['mail', _t('邮件')], ['items', _t('物品')], ['notes', _t('笔记')], ['boards', _t('推理')], ['menu', _t('菜单')]].forEach(([k, n]) => {
-      const b = h('button', { class: ui.tab === k ? 'on' : '', html: phIcon(k) + `<span>${n}</span>`, onclick: () => { ui.tab = k; ui.chat = null; ui.mail = null; ui.item = null; ui.menuView = null; if (k === 'notes') S.newNotes = 0; if (k === 'boards') S.newBoards = 0; renderPhone(); } });
+      const b = h('button', { class: ui.tab === k ? 'on' : '', html: phIcon(k) + `<span>${n}</span>`, onclick: () => { ui.tab = k; ui.chat = null; ui.mail = null; ui.item = null; ui.menuView = null; ui.reading = null; if (k === 'notes') S.newNotes = 0; if (k === 'boards') S.newBoards = 0; renderPhone(); } });
       if (badges[k]) b.append(h('span', { class: 'badge', text: String(badges[k]) }));
       tabs.append(b);
     });
-    const fab = $('#phoneFab'); if (fab) { fab.innerHTML = phIcon('phone'); const n = unreadMsg + unreadMail + (waiting ? 1 : 0); if (n) fab.append(h('span', { class: 'badge', text: String(n) })); }
+    const fab = $('#phoneFab'); if (fab) { fab.hidden = narrow() && ui.phoneOpen; fab.innerHTML = phIcon('phone'); const n = unreadMsg + unreadMail + (waiting ? 1 : 0); if (n) fab.append(h('span', { class: 'badge', text: String(n) })); }
     const head = $('#phHead'), body = $('#phBody'), foot = $('#phFoot');
-    const viewKey = ui.tab + ':' + (ui.chat || ui.mail || ui.item || ui.menuView || (ui.tab === 'notes' ? ui.noteTab : ''));
+    const viewKey = ui.tab + ':' + (ui.chat || ui.mail || ui.item || ui.menuView || (ui.tab === 'notes' ? ui.noteTab + ':' + (ui.reading || '') : ''));
     const sameView = ui._viewKey === viewKey;
     const keepBottom = body.scrollHeight - body.scrollTop - body.clientHeight < 40;
     const prevScroll = body.scrollTop;
@@ -992,26 +1101,27 @@ const Y2K = (() => {
         showItems(ui.itemQuery);
       }
     } else if (ui.tab === 'notes') {
-      title(_t('笔记'), currentChapterLabel());
+      const reading = D.readings.find(r => r.id === ui.reading && test(r.requires));
+      title(reading ? reading.title : _t('笔记'), currentChapterLabel(), reading ? () => { ui.reading = null; renderPhone(); } : null);
       const asks = Object.entries(D.puzzles).filter(([id, p]) => p.ask && test(p.requires) && !solved(id));
       const total = Object.keys(D.collectibles).length;
       const controls = h('div', { class: 'ph-note-controls' });
       const pages = h('div', { class: 'ph-note-tabs', 'aria-label': _t('笔记') });
-      [['questions', _t('待解决的问题'), asks.length], ['clues', _t('线索'), S.notes.length], ['poems', _t('林晚的诗稿'), S.collected.length + ' / ' + total]].forEach(([key, label, count]) => {
-        pages.append(h('button', { type: 'button', class: key === ui.noteTab ? 'on' : '', 'aria-pressed': key === ui.noteTab ? 'true' : 'false', onclick: () => { ui.noteTab = key; renderPhone(); } }, h('span', { text: label }), h('small', { text: count })));
+      [['questions', _t('待解决的问题'), asks.length], ['clues', _t('线索'), S.notes.length], ['readings', _t('旧事'), D.readings.filter(r => test(r.requires)).length], ['poems', _t('林晚的诗稿'), S.collected.length + ' / ' + total]].forEach(([key, label, count]) => {
+        pages.append(h('button', { type: 'button', class: key === ui.noteTab ? 'on' : '', 'aria-pressed': key === ui.noteTab ? 'true' : 'false', onclick: () => { ui.noteTab = key; ui.reading = null; renderPhone(); } }, h('span', { text: label }), h('small', { text: count })));
       });
       controls.append(pages); body.append(controls);
       if (ui.noteTab === 'questions') {
+        renderJournal(body);
         if (!asks.length) body.append(h('div', { class: 'ph-card done', text: _t('暂时没有。去 3 号机里找找线索，或者看看推理板。') }));
-        asks.forEach(([id, p]) => body.append(h('div', { class: 'ph-card q', role: 'button', tabindex: 0, onclick: () => askPuzzle(id, null, true), onkeydown: (e) => { if (e.key === 'Enter') askPuzzle(id, null, true); } }, h('div', { class: 'k', text: _t('点击作答') }), h('div', { html: fmt(p.title) }))));
+        const addQuestions = (list, host) => list.forEach(([id, p]) => host.append(h('div', { class: 'ph-card q', role: 'button', tabindex: 0, onclick: () => askPuzzle(id, null, true), onkeydown: (e) => { if (e.key === 'Enter') askPuzzle(id, null, true); } }, h('div', { class: 'k', text: _t('点击作答') }), h('div', { html: fmt(p.title) }))));
+        addQuestions(asks.filter(([id]) => noteChapter(id) === S.chapter), body);
+        const old = asks.filter(([id]) => noteChapter(id) !== S.chapter);
+        if (old.length) { const fold = h('details', { class: 'ph-facts' }, h('summary', { text: _t('之前未解的问题') + ' · ' + old.length })); addQuestions(old, fold); body.append(fold); }
       } else if (ui.noteTab === 'clues') {
-        const results = h('div', { class: 'ph-search-results' });
-        const showClues = query => {
-          results.innerHTML = ''; const q = searchText(query).trim();
-          S.notes.slice().reverse().forEach(n => { const note = D.notes[n]; if (!note) return; const c = D.chapters.find(x => x.id === S.noteCh[n]); const chapter = c ? c.num : ''; if (q && !searchText(chapter + ' ' + note.text).includes(q)) return; results.append(h('div', { class: 'ph-card' }, h('div', { class: 'k', text: chapter }), h('div', { html: fmt(note.text) }))); });
-          if (!results.children.length) results.append(h('div', { class: 'ph-card done', text: S.notes.length ? _t('没有找到。') : _t('发现重要线索时，会自动记在这里。') }));
-        };
-        controls.append(phoneSearch(_t('搜索') + ' ' + _t('线索'), 'noteQuery', showClues)); body.append(results); showClues(ui.noteQuery);
+        renderClues(body, controls);
+      } else if (ui.noteTab === 'readings') {
+        renderReadings(body);
       } else {
         S.collected.forEach(cid => { const c = D.collectibles[cid]; if (!c) return; body.append(h('div', { class: 'ph-card' }, h('div', { class: 'k', text: c.where || '' }), h('div', { style: { fontWeight: 600 }, html: fmt(c.title) }), h('div', { style: { whiteSpace: 'pre-wrap', fontFamily: 'var(--font-hand)', fontSize: '15px', marginTop: '4px' }, html: fmt(c.text || '') }))); });
         if (!S.collected.length) body.append(h('div', { class: 'ph-card done', text: _t('林晚的诗散落在 3 号机的各个角落。有的藏得很深。') }));
@@ -1329,7 +1439,7 @@ const Y2K = (() => {
   function closeAllWins() { wins.forEach(w => { w.el.remove(); w.o.onClose && w.o.onClose(w); }); wins = []; }
   function dragify(el, handle, win) {
     handle.addEventListener('pointerdown', (e) => {
-      if (e.target.closest('button') || el.classList.contains('max')) return;
+      if (e.target.closest('button') || el.classList.contains('max') || (e.pointerType === 'mouse' && e.button !== 0)) return;
       const dk = desktop(); const r = el.getBoundingClientRect(), dr = dk.getBoundingClientRect();
       const ox = e.clientX - r.left, oy = e.clientY - r.top;
       handle.setPointerCapture(e.pointerId);

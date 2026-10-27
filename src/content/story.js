@@ -1,0 +1,138 @@
+// 中文叙事第二版。主线谜题仍由各章定义；旧事只在相应资料已读后开放。
+(() => {
+  const file = id => ({ type: 'file', id });
+  const url = value => ({ type: 'url', value });
+  const item = id => ({ type: 'item', id });
+  const gx = id => ({ type: 'gx', id });
+  Y2K.add({
+    files: [
+      { id: 'c1_photo_deskmates', path: 'C:/我的文档/照片/课后_990409.jpg', type: 'img', date: '1999-04-11 18:20', requires: 'ch1 & solved_c1_gexun',
+        caption: '许嘉试拍相机时留下的一张。林晚在左，何蔓在右。4 月 11 日冲印后由许嘉扫描，扫描件随 BBS 图片备份保存。',
+        html: '<div class="photo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 420"><text x="610" y="398" text-anchor="end" font-family="monospace" font-size="16" fill="#ff9a2e">99 4 9</text></svg></div><p>照片背面的字也录在文件备注里。</p>',
+        props: { '备注': '许嘉试机照，1999.4.9。背面，林晚的字：青蔓说只问一道，结果把本子翻到了最后。拍完才发现，他连我的草稿也照进去了。不许登校刊。' } },
+      { id: 'c4_unread_script', path: 'C:/我的文档/校刊/未播稿_000319.txt', type: 'txt', date: '2000-03-19 20:15', requires: 'ch4',
+        text: '早播结尾，试写\n\n今天的最后一首歌，送给最近睡不好的同学。\n\n（删）\n有人问：一句话没有署名，是不是就不算自己说的。\n（删）\n\n如果把以前说过的话重新读一遍，会不会听出当时没听到的东西。\n\n不能这样播。老师会问指的是什么，婷婷家里也会听见。\n先照原稿念：明天早上七点，我们再见。\n\n苏芮　3.19' },
+    ],
+    readings: [
+      { id: 'r1_deskmates', chapter: 'ch1', title: '只问一道题', date: '1999-04-09', requires: 'ch1 & solved_c1_gexun', file: 'c1_photo_deskmates',
+        source: '许嘉的照片备份及照片背面录文', intro: '一张没有登进校刊的试机照。',
+        html: '<p>林晚手里拿着笔，何蔓正在翻她的草稿本。两个人都没有看镜头。</p><div class="paper hand"><p>青蔓说只问一道，结果把本子翻到了最后。<br>拍完才发现，他连我的草稿也照进去了。不许登校刊。</p><p>—— 晚</p></div><p>扫描记录下面还有许嘉的一行备注：「不登。原片已还。她说分数题可以留着，别把人留在网页上。」</p><p>林晚愿意教何蔓做题，也会嫌她问得太多。这张照片没有拍到她后来拿回草稿本的样子。</p>' },
+      { id: 'r2_program', chapter: 'ch2', title: '压轴以前', date: '1999-12-30', requires: 'ch2 & seen_c2_program', source: '晚会节目单背面的排练便笺，随节目单一起录入',
+        html: '<div class="paper hand"><p>压轴前记得喝水。<br>别再盯着实验楼窗口，灯亮不亮也得唱完。</p><p>小芮说白衣服上台显亮，围巾可以借给她主持用。合照的时候记得拿回来。</p><p>明年毕业以后，应该就没有这种全班等着听我唱完的时候了。<br>最后一句别抢，站住。</p><p>—— 婷，12.30</p></div><p>节目单正面写着演出顺序。背面这几行，没有面向观众的感叹号。</p>' },
+      { id: 'r3_statement', chapter: 'ch3', title: '没有署名的说明', date: '2000-02-13', requires: 'ch3 & seen_c3_gx_0213', source: '鸽讯修复段中，宋知远发给许嘉的草稿附件；未发送到论坛',
+        html: '<div class="paper"><p>我把自己知道的事当成了谈资。那些事又不是我编的，我当时这样想。</p><p>可她在旧学校接受过什么治疗，凭什么要由我在一屋子人面前讲出来。我没有问过她。</p><p>这份说明如果发出去，大家会知道是我们三个。婷婷已经不在了，我现在说，像把责任分给一个不能回答的人。</p><p>如果不说，又只剩下许嘉的名字。</p><p>————</p><p>这里本来应该签名。</p></div><p>附件到这里结束。聊天窗口里，他接着问许嘉，报警以后，学校会不会知道。</p>' },
+      { id: 'r4_script', chapter: 'ch4', title: '没有播出的结尾', date: '2000-03-19', requires: 'ch4 & seen_c4_gx_rui_0320', file: 'c4_unread_script', source: '广播站未播稿；许嘉参与校刊排版时留下的备份',
+        intro: '删去的句子，比保留下来的长。',
+        html: '<p>这份稿子写于苏芮遇害前一天。末尾留着一行字：「先照原稿念。」</p><p>回放记录里，第二天的早播确实用了旧结尾。她把每个字都念清楚了，没有念出被划掉的那一段。</p><p>三月二十一日清晨，许嘉仍然向她的鸽讯窗口发过消息。只有他发出的几行，没有回复。</p>' },
+      { id: 'r5_shelf', chapter: 'ch5', title: '书柜的第二层', date: '2026-10-31', requires: 'ch5 & dlg_c5_d_xuning1', source: '许宁随复印件发来的补充邮件',
+        html: '<p>父亲把我的奖状放在书柜第二层，哥哥的东西在上面。后来我的奖状放不下，就装进抽屉。那一层一直没有动。</p><p>高三报志愿时，我想去省城学设计。他让我等一等，说刚查到一个号码，不能中断。我把填好的表拿走了，第二天自己交给老师。</p><p>他不是不关心我。后来我搬家，他来装了两天的灯。可那时我总觉得，活着的人做什么都可以等。</p><p>前几年我不愿意提哥哥。每次说起他，就得先证明他没有杀人，好像再普通的回忆也要有人批准。</p><p>你查清以后，可以先告诉我吗。我想自己读完，再决定怎样跟别人说。</p><p style="text-align:right">许宁</p>' },
+      { id: 'r6_margin', chapter: 'ch6', title: '日记旁的一页纸', date: '2000-04-01', requires: 'c6_found_box', source: '韩立于 2000 年 4 月 1 日交给许嘉，夹在林晚日记内；终章由警方从铁盒中取出',
+        html: '<div class="paper"><p>许嘉：</p><p>日记交给你。我不该再只挑自己承受得住的部分看。</p><p>六月二十一日，我到他们班上说过话。原先写好的那句话，就在口袋里。站上去以后，先想到的是同事会问什么、家里怎么交代。</p><p>我说不要传播没有根据的话。下面的人没有一个反对。我看见晚晚看着我，还是把稿纸折了回去。</p><p>放学以后，她没有问我为什么。只问，等一下还来接我吗。</p><p>我去处理一件本来可以第二天做的事，回去得晚。以后许多次，想起这句，都会想如果先去接她就好了。</p><p>这些话不能替她回答，也不能替我解释。你保留原来的日记。如果有人需要知道，就让他看完整的。</p><p style="text-align:right">韩立<br>2000.4.1</p></div>' },
+    ],
+    bbs: { mails: [{ id: 'story_delivered_draft', from: 'wanfeng', to: 'jia', date: '1999-06-20 22:31', subject: '未发送草稿（2026 年本机投递）', requires: 'ending_H', body: "<p class=\"faded\">此信在 2026 年整理时写入本机收件箱，保留原草稿时间，未通过网络发送。</p><p class=\"mono\">站内信 · 草稿箱<br>收信人：jia<br>保存时间：1999-06-20 22:31<br>状态：未发送</p><div class=\"paper hand\"><p>嘉：</p><p>今天发了《夏至》。有几句是写给你看的，也不全是。你要是没读懂，先别问何蔓，她每次都以为自己懂了。</p><p>明天有件事。等过去以后，我想跟你说另一件。</p><p>你借走的书先别还。第七十三页那个折角，是我折的，收回前面那句不许折书的话。</p><p>还有，数学卷子上我涂掉的一大块，不是不会做，是算到最后发现第一行抄错了。别把我想得太聪明。</p><p>你给我的半块橡皮还够用。以后有新的，也先不用。</p><p>晚风</p></div>" }] },
+    journal: {
+      ch0: { question: '这台电脑原来属于谁，怎样才能重新打开？',
+        steps: [
+          { until: 'solved_c0_tag', text: '先读何蔓的信和机箱资产标签，再回复手机里的问题。', source: item('c0_it_tag') },
+          { until: 'solved_c0_bios', text: '照片记录了许嘉的十七岁生日。将它和标签上的密码提示对照。', source: item('c0_it_photo') },
+          { until: 'solved_c0_login', text: '桌面便签说“用我的方式打”。看看键盘下面的字根卡。', source: item('c0_it_card') },
+        ], facts: [
+          { requires: 'solved_c0_tag', text: '3 号机兼作校园 BBS 服务器，管理员是许嘉。' },
+          { requires: 'solved_c0_bios', text: '机器停在 2000 年 4 月 5 日早上，发现许嘉的那一天。' },
+        ] },
+      ch1: { question: '冒用许嘉账号发帖的人，当时坐在哪里？',
+        steps: [
+          { until: 'seen_t1139', text: '先从站务公告寻找删帖记录。页面里留下了帖子的编号线索。', source: url('/board.asp?id=zhanwu') },
+          { until: 'seen_t1137', text: '删帖公告不能代替原帖。尝试从旧地址进入被隐藏的帖子。', source: url('/thread.asp?id=1139') },
+          { until: 'solved_c1_p_alibi', text: '对照发帖时间与许嘉的竞赛资料，核实他是否可能在现场。', source: file('c1_ticket') },
+          { until: 'solved_c1_admin', text: '回收站保存着旧的站务交接文件。后台能提供独立于回忆的记录。', source: file('c1_handover') },
+          { until: 'solved_c1_gexun', text: '聊天登录与《三月》有关。先看完整的诗，再看字的位置。', source: url('/board.asp?id=wenxue') },
+          { until: 'board_c1_final', text: '把账号、机器和人分开。去推理页整理目前能够确认的事。', source: { type: 'board', id: 'c1_final' } },
+        ], facts: [
+          { requires: 'seen_t1137', text: '谣言使用站长账号发出，账号的名字并不能证明操作者。' },
+          { requires: 'solved_c1_p_host', text: '发帖来源是学校机房 JF-07。' },
+          { requires: 'solved_c1_p_alibi', text: '许嘉在省城考试，原帖却从校内发出。' },
+          { requires: 'solved_c1_admin', text: '后台记录可用来核对登录时间，需与其他材料相互印证。' },
+        ] },
+      ch2: { question: '跨年那晚，一条署名 X 的传呼怎样把周婷引向水塔？',
+        steps: [
+          { until: 'seen_c2_notes1231', text: '先读许嘉的跨年调查笔记，找到他保存的寻呼资料。', source: file('c2_notes1231') },
+          { until: 'solved_c2_bpnum', text: '寻呼记录里有很多号码。论坛中的一段私人留言能确认周婷的呼机号。', source: url('/thread.asp?id=1410') },
+          { until: 'solved_c2_pager', text: '把呼机号、代码表和 23:41 的记录放在一起。', source: file('c2_pagerlog') },
+          { until: 'solved_c2_booth', text: '旧号码经历过升位。电子黄页保留了规则和地址。', source: file('c2_ypreadme') },
+          { until: 'solved_c2_xsig', text: '署名只是线索。核对 23:41 前后，许嘉的账号和机器在哪里。', source: url('/admin/log.asp') },
+          { until: 'solved_c2_lan', text: '《第一个》出现的时间早于公开发现死者。核对账号的注册地址。', source: url('/user.asp?id=Y2K') },
+          { until: 'solved_c2_photo', text: '合影与背面名单互相对照。水渍遮住的名字，要从其他记录核实。', source: file('c2_photo') },
+          { until: 'board_c2_final', text: '将传呼、离场和注册时间拼到推理板，保留仍不确定的部分。', source: { type: 'board', id: 'c2_final' } },
+        ], facts: [
+          { requires: 'solved_c2_pager', text: '有人冒用熟悉的落款，把周婷约去水塔。' },
+          { requires: 'solved_c2_booth', text: '传呼来自操场东侧电话亭。' },
+          { requires: 'solved_c2_xsig', text: '同一时刻，许嘉账号在机房服务器上活动，仍需注意日志的证明范围。' },
+          { requires: 'solved_c2_lan', text: '千年虫从校内网络注册。' },
+        ] },
+      ch3: { question: '有人用已经去世的林晚的账号，给宋知远发了什么？',
+        steps: [
+          { until: 'solved_c3_p_repair', text: '修复鸽讯损坏的会话段，先看宋知远出事前一晚说了什么。', source: file('c3_damaged') },
+          { until: 'solved_c3_p_y2kmail', text: '站内信可按发信人或日期排序。宋知远提到的威胁，未必排在二月。', source: url('/admin/mail.asp') },
+          { until: 'solved_c3_p_clientclock', text: '许嘉的开发日志解释了站内信时间与登录时间的区别。', source: file('c3_devlog') },
+          { until: 'solved_c3_p_seat', text: '用登记表核对宋知远承认的座位安排。', source: file('c3_signin') },
+          { until: 'solved_c3_p_oldplace', text: '“老地方”在一年前的集体活动资料里出现过。', source: file('c3_photo_ice') },
+          { until: 'solved_c3_p_jys', text: '将晚风的登录记录与错误年份并看，追到具体机器的位置。', source: url('/admin/log.asp') },
+          { until: 'solved_c3_p_card', text: '苏芮提到一张电子贺卡。到贺卡目录里查看。', source: file('c3_card_yf') },
+          { until: 'board_c3_final', text: '区分本人、账号与操作机器，整理东湖一案。', source: { type: 'board', id: 'c3_final' } },
+        ], facts: [
+          { requires: 'seen_c3_gx_0213', text: '宋知远承认，谣言由他、周婷和苏芮共同参与。' },
+          { requires: 'solved_c3_p_clientclock', text: '1900 是发信电脑的错误年份，登录日志仍用服务器时间。' },
+          { requires: 'solved_c3_p_wflogin', text: '晚风账号在林晚去世后被他人使用。' },
+          { requires: 'solved_c3_p_jys', text: '发信机器是教研室的 JYS-486。' },
+        ] },
+      ch4: { question: '广播、教研室和钥匙之间，还缺哪一层证据？',
+        steps: [
+          { until: 'seen_c4_wav0321', text: '广播回放有部分被下线。先读论坛的录音说明，找到保存位置。', source: url('/board.asp?id=xiaoyuan') },
+          { until: 'solved_c4_p_tape', text: '在播放器中调整速度，听清广播开头。', source: file('c4_wav0321') },
+          { until: 'solved_c4_p_room', text: '整改清单列出了唯一未修正年份的机器。', source: file('c4_y2klist') },
+          { until: 'solved_c4_p_keys', text: '实验楼有锁。钥匙登记表上并不只有一个名字。', source: file('c4_keys') },
+          { until: 'solved_c4_p_grade', text: '核对调查笔记中的成绩库时间，注意机器时间与真实年份。', source: file('c4_note0327') },
+          { until: 'solved_c4_p_father', text: '家庭登记与校刊来稿能相互核对。先读作文，再解登记文件。', source: file('c4_essay') },
+          { until: 'board_c4_final', text: '将目前推断填入推理板。它仍需要独立的不在场材料检验。', source: { type: 'board', id: 'c4_final' } },
+          { until: 'c4_continue', text: '新邮件来自许嘉的妹妹。读完原件照片，再决定是否结案。', source: { type: 'mail', id: 'c4_m_xuning1' } },
+        ], facts: [
+          { requires: 'solved_c4_p_tape', text: '“第三个。归零。”由定时广播播放。' },
+          { requires: 'solved_c4_p_room', text: '电脑属于韩立，实际操作者仍需核实。' },
+          { requires: 'solved_c4_p_father', text: '韩立是林晚的父亲；流言曲解了父女关系。' },
+          { requires: 'seen_c4_m_xuning1', text: '值班记录对韩立的跨年行踪提出了独立证明。' },
+        ] },
+      ch5: { question: '许嘉留下的遗书，究竟是谁打出来的？',
+        steps: [
+          { until: 'solved_c5_p_typo', text: '读遗书原文，再对照许嘉平时的文件。错字类型比语气可靠。', source: file('c5_f_letter') },
+          { until: 'solved_c5_p_ime', text: '许嘉写过五笔和拼音各自会打错什么字。', source: file('c5_f_imestat') },
+          { until: 'solved_c5_p_typist', text: '把遗书的同音字与现有聊天对照。先确认规律，不凭一个字认人。', source: file('c5_f_handover') },
+          { until: 'solved_c5_p_gxdate', text: '备份索引保存了被删除会话的日期。按说明恢复。', source: file('c5_f_gxidx') },
+          { until: 'solved_c5_p_bday', text: '旧用户备份和日记第九页解释了账号密码的由来。', source: file('c5_f_diary') },
+          { until: 'solved_c5_p_night', text: '门卫记录、会话删除和遗书保存时间，可以拼出清明夜。', source: item('c5_it_gatebook') },
+          { until: 'solved_c5_p_lie1', text: '许宁找到半页钥匙登记表。与旧表、同学录对照，再与何蔓核实。', source: item('c5_it_keyhalf') },
+          { until: 'solved_c5_p_lie2', text: '何蔓提到的磁带标签，在公开报道里没有出现。核对警方说明。', source: item('c5_it_report') },
+          { until: 'board_c5_final', text: '把输入习惯、钥匙、会话备份和未公开细节放到一起。', source: { type: 'board', id: 'c5_final' } },
+        ], facts: [
+          { requires: 'solved_c5_p_ime', text: '遗书的同音错字与许嘉平时的五笔习惯不符。' },
+          { requires: 'solved_c5_p_gxdate', text: '圣诞夜，许嘉只把三个名字告诉了何蔓。' },
+          { requires: 'solved_c5_p_lie1', text: '何蔓持有钥匙，与她早先的说法不一致。' },
+          { requires: 'solved_c5_p_lie2', text: '她知道未对外公布的磁带细节。' },
+        ] },
+      ch6: { question: '许嘉最后留下的数字，能把证据带到谁的手中？',
+        steps: [
+          { until: 'c6_got_notebook', text: '先读许宁发来的工作日志，保留数字的原始顺序。', source: { type: 'chat', id: 'xuning' } },
+          { until: 'solved_c6_p_lastpoem', text: '压缩包注释提到“她最后的一首诗”。从发帖时间确认是哪首。', source: url('/board.asp?id=wenxue') },
+          { until: 'solved_c6_p_zip', text: '结合日志数字与那首诗的行、字位置，解开清明.zip。', source: file('c5_f_zip') },
+          { until: 'seen_c6_f_letter', text: '先读许嘉写给后来者的信，再决定把地址告诉谁。', source: file('c6_f_letter') },
+          { until: 'c6_route_c | c6_route_b', text: '手机消息里需要你作出选择。证据位置关系到旧物能否被保全。', source: { type: 'chat', id: 'heman' } },
+          { until: 'c6_confessed', text: '若要对质，每一项指控都需要一条能够支持它的证据。', source: { type: 'chat', id: 'heman' } },
+        ], facts: [
+          { requires: 'solved_c6_p_zip', text: '许嘉预先留存了电子副本。密码的解法来自林晚自己的诗。' },
+          { requires: 'seen_c6_f_letter', text: '原件藏在水塔检修口；他在最后一次谈话前准备了后路。' },
+          { requires: 'c6_confessed', text: '何蔓承认伪造遗书、删除会话及四起案件。' },
+          { requires: 'c6_found_box', text: '铁盒中的原件被警方取得，可以核验电子记录。' },
+        ] },
+    },
+  });
+})();

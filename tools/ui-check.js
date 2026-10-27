@@ -122,7 +122,7 @@ async function run(browser, name) {
     for (let i = 1; i <= 14; i++) if (!numbers.includes(String(i))) bad.push('c2_photo: missing person ' + i);
     return { count: Object.keys(window.Y2K_PHOTOS || {}).length, bad };
   });
-  assert.equal(photoAudit.count, 11);
+  assert.equal(photoAudit.count, 12);
   assert.deepEqual(photoAudit.bad, []);
   console.log(`${name}: 写实照片资源、离线解码和关键证据文字通过`);
   await q.evaluate(() => {

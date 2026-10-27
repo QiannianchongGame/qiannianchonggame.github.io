@@ -5,7 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
 const dir = path.join(__dirname, '..', 'src', 'content');
-const order = ['base.js', 'ch0.js', 'ch1.js', 'ch2.js', 'ch3.js', 'ch4.js', 'ch5.js', 'ch6.js'];
+const order = ['base.js', 'ch0.js', 'ch1.js', 'ch2.js', 'ch3.js', 'ch4.js', 'ch5.js', 'ch6.js', 'story.js'];
 const chunks = [];
 for (const f of order) {
   const p = path.join(dir, f);

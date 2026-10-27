@@ -6,7 +6,7 @@ const vm = require('vm');
 
 const root = path.join(__dirname, '..');
 const dir = path.join(root, 'src', 'content');
-const order = ['base.js', 'ch0.js', 'ch1.js', 'ch2.js', 'ch3.js', 'ch4.js', 'ch5.js', 'ch6.js'];
+const order = ['base.js', 'ch0.js', 'ch1.js', 'ch2.js', 'ch3.js', 'ch4.js', 'ch5.js', 'ch6.js', 'story.js'];
 const files = order.filter(f => fs.existsSync(path.join(dir, f)))
   .concat(fs.readdirSync(dir).filter(f => f.endsWith('.js') && !order.includes(f)));
 

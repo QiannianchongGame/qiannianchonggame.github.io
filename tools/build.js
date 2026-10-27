@@ -5,7 +5,7 @@ const path = require('path');
 const root = path.join(__dirname, '..');
 const read = (p) => fs.readFileSync(path.isAbsolute(p) ? p : path.join(root, p), 'utf8').replace(/\r\n?/g, '\n');
 
-const order = ['base.js', 'ch0.js', 'ch1.js', 'ch2.js', 'ch3.js', 'ch4.js', 'ch5.js', 'ch6.js'];
+const order = ['base.js', 'ch0.js', 'ch1.js', 'ch2.js', 'ch3.js', 'ch4.js', 'ch5.js', 'ch6.js', 'story.js'];
 const dir = path.join(root, 'src', 'content');
 const args = process.argv.slice(2);
 const debugBuild = args.includes('--debug');

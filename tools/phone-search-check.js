@@ -18,6 +18,7 @@ async function check(browser, name, mobile) {
   await page.getByRole('button', { name: '开始', exact: true }).click(); await page.locator('.card').click();
   await page.evaluate(() => {
     const d = Y2K.debug; d.flush();
+    d.state.chapter = 'ch0'; d.state.flags.ch0 = true;
     d.state.notes = ['c0_n_tag', 'c0_n_login', 'c2_n_photo'];
     d.state.noteCh = { c0_n_tag: 'ch0', c0_n_login: 'ch0', c2_n_photo: 'ch2' };
     d.state.collected = ['poem1'];
@@ -34,6 +35,8 @@ async function check(browser, name, mobile) {
   assert.equal(await questions.getAttribute('aria-pressed'), 'true');
   assert.equal(await page.getByRole('searchbox').count(), 0);
   await clues.click(); assert.equal(await clues.getAttribute('aria-pressed'), 'true');
+  assert.equal(await page.locator('.ph-search-results .ph-card').count(), 2, '默认只显示本章线索');
+  await page.getByRole('combobox', { name: '线索范围' }).selectOption('all');
   assert.equal(await page.locator('.ph-search-results .ph-card').count(), 3);
   const search = page.getByRole('searchbox', { name: '搜索 线索' });
   await search.fill('ssjq'); assert.equal(await page.locator('.ph-search-results .ph-card').count(), 1);
