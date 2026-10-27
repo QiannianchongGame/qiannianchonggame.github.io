@@ -354,6 +354,21 @@ table.det td.nm svg { width: 16px; height: 16px; }
 .ph-btn.pri { background: var(--ph-accent); border-color: var(--ph-accent); color: #061223; font-weight: 600; text-align: center; }
 .ph-btn.sm { padding: 6px 10px; font-size: 13px; }
 .ph-sec { margin: 12px 2px 6px; font-size: 12px; color: var(--ph-sub); letter-spacing: .08em; display: flex; justify-content: space-between; }
+.ph-note-controls, .ph-search-bar { position: sticky; top: -10px; z-index: 2; background: var(--ph-bg); padding: 0 0 10px; }
+.ph-note-tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; padding: 4px; background: var(--ph-card); border: 1px solid var(--ph-line); border-radius: 12px; }
+.ph-note-tabs button { min-width: 0; border: 0; border-radius: 9px; padding: 7px 3px; background: transparent; color: var(--ph-sub); font: inherit; font-size: 12px; cursor: pointer; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 2px; }
+.ph-note-tabs button.on { background: #303846; color: var(--ph-fg); }
+.ph-note-tabs button:focus-visible, .ph-search-clear:focus-visible { outline: 2px solid var(--ph-accent); outline-offset: -2px; }
+.ph-note-tabs small { font-size: 11px; opacity: .8; }
+.ph-search { display: flex; align-items: center; gap: 7px; min-height: 40px; padding: 0 10px; background: var(--ph-card); border: 1px solid var(--ph-line); border-radius: 12px; }
+.ph-note-controls .ph-search { margin-top: 8px; }
+.ph-search:focus-within { border-color: var(--ph-accent); }
+.ph-search-icon { color: var(--ph-sub); font-size: 21px; line-height: 1; }
+.ph-search-input { flex: 1; min-width: 0; padding: 8px 0; border: 0; outline: 0; background: transparent; color: var(--ph-fg); font: inherit; font-size: 16px; }
+.ph-search-input::placeholder { color: var(--ph-sub); }
+.ph-search-input::-webkit-search-cancel-button { display: none; }
+.ph-search-clear { border: 0; background: transparent; color: var(--ph-sub); font-size: 22px; line-height: 1; padding: 4px; cursor: pointer; }
+.ph-search-clear[hidden] { display: none; }
 .ph-card { background: var(--ph-card); border-radius: 14px; padding: 12px 14px; margin-bottom: 8px; font-size: 14px; line-height: 1.6; }
 .ph-card.q { border-left: 3px solid var(--ph-warn); cursor: pointer; }
 .ph-card.q:hover { background: #1f232b; }
@@ -857,6 +872,7 @@ const Y2K = (() => {
     lastTick = Date.now();
     ui.tab = 'msg'; ui.chat = null; ui.mail = null; ui.item = null;
     ui._viewKey = null; ui.scroll = {}; ui.menuView = null;
+    ui.noteTab = 'questions'; ui.noteQuery = ''; ui.itemQuery = '';
     hideTitle();
     renderScreen(); renderAll(); dirty();
   }
@@ -1295,7 +1311,7 @@ const Y2K = (() => {
   // ============================================================
   // 2026 手机
   // ============================================================
-  const ui = { tab: 'msg', chat: null, mail: null, item: null, phoneOpen: false, menuView: null, scroll: {} };
+  const ui = { tab: 'msg', chat: null, mail: null, item: null, phoneOpen: false, menuView: null, scroll: {}, noteTab: 'questions', noteQuery: '', itemQuery: '' };
   let running = {}, typing = {}, FAST = false;
   function pushChat(c, m) {
     const t = phoneNow();
@@ -1374,6 +1390,15 @@ const Y2K = (() => {
   }
   function contactVisible(id) { const c = D.contacts2026[id]; return c && test(c.requires) && ((S.chat[id] && S.chat[id].length) || S.dlgQ[id]); }
 
+  function phoneSearch(label, key, onSearch) {
+    const input = h('input', { class: 'ph-search-input', type: 'search', 'aria-label': label, placeholder: label, autocomplete: 'off', value: ui[key] });
+    const clear = h('button', { class: 'ph-search-clear', type: 'button', 'aria-label': _t('清空'), text: '×', onclick: () => { input.value = ''; ui[key] = ''; clear.hidden = true; onSearch(''); input.focus(); } });
+    clear.hidden = !ui[key];
+    input.addEventListener('input', () => { ui[key] = input.value; clear.hidden = !input.value; onSearch(input.value); });
+    return h('div', { class: 'ph-search' }, h('span', { class: 'ph-search-icon', 'aria-hidden': 'true', text: '⌕' }), input, clear);
+  }
+  function searchText(value) { return strip(fmt(value)).normalize('NFKC').toLocaleLowerCase(); }
+
   function renderPhone() {
     const ph = $('#phone'); if (!ph || !S) return;
     const t = phoneNow();
@@ -1392,7 +1417,7 @@ const Y2K = (() => {
     });
     const fab = $('#phoneFab'); if (fab) { fab.innerHTML = phIcon('phone'); const n = unreadMsg + unreadMail + (waiting ? 1 : 0); if (n) fab.append(h('span', { class: 'badge', text: String(n) })); }
     const head = $('#phHead'), body = $('#phBody'), foot = $('#phFoot');
-    const viewKey = ui.tab + ':' + (ui.chat || ui.mail || ui.item || ui.menuView || '');
+    const viewKey = ui.tab + ':' + (ui.chat || ui.mail || ui.item || ui.menuView || (ui.tab === 'notes' ? ui.noteTab : ''));
     const sameView = ui._viewKey === viewKey;
     const keepBottom = body.scrollHeight - body.scrollTop - body.clientHeight < 40;
     const prevScroll = body.scrollTop;
@@ -1483,23 +1508,40 @@ const Y2K = (() => {
         body.append(v);
       } else {
         title(_t('物品'), _t('手边的实物和照片'));
-        const g = h('div', { class: 'ph-grid' });
-        S.items.forEach(id => { const it = ITEM[id]; if (!it) return; g.append(h('button', { class: 'ph-tile' + (S.itemSeen[id] ? '' : ' new'), onclick: () => { ui.item = id; renderPhone(); } }, h('span', { html: fmt(it.name) }), h('small', { text: S.itemSeen[id] ? _t('已查看') : _t('未查看') }))); });
-        if (!g.children.length) body.append(h('div', { class: 'ph-empty', text: _t('还没有东西') })); else body.append(g);
+        const results = h('div', { class: 'ph-search-results' });
+        const showItems = query => {
+          results.innerHTML = ''; const g = h('div', { class: 'ph-grid' }), q = searchText(query).trim();
+          S.items.forEach(id => { const it = ITEM[id]; if (!it || (q && !searchText(it.name + ' ' + it.html).includes(q))) return; g.append(h('button', { class: 'ph-tile' + (S.itemSeen[id] ? '' : ' new'), onclick: () => { ui.item = id; renderPhone(); } }, h('span', { html: fmt(it.name) }), h('small', { text: S.itemSeen[id] ? _t('已查看') : _t('未查看') }))); });
+          results.append(g.children.length ? g : h('div', { class: 'ph-empty', text: S.items.length ? _t('没有找到。') : _t('还没有东西') }));
+        };
+        body.append(h('div', { class: 'ph-search-bar' }, phoneSearch(_t('搜索') + ' ' + _t('物品'), 'itemQuery', showItems)), results);
+        showItems(ui.itemQuery);
       }
     } else if (ui.tab === 'notes') {
       title(_t('笔记'), currentChapterLabel());
       const asks = Object.entries(D.puzzles).filter(([id, p]) => p.ask && test(p.requires) && !solved(id));
-      body.append(h('div', { class: 'ph-sec', html: `<span>${_t('待解决的问题')}</span><span>${asks.length}</span>` }));
-      if (!asks.length) body.append(h('div', { class: 'ph-card done', text: _t('暂时没有。去 3 号机里找找线索，或者看看推理板。') }));
-      asks.forEach(([id, p]) => body.append(h('div', { class: 'ph-card q', role: 'button', tabindex: 0, onclick: () => askPuzzle(id, null, true), onkeydown: (e) => { if (e.key === 'Enter') askPuzzle(id, null, true); } }, h('div', { class: 'k', text: _t('点击作答') }), h('div', { html: fmt(p.title) }))));
-      body.append(h('div', { class: 'ph-sec', html: `<span>${_t('线索')}</span><span>${S.notes.length}</span>` }));
-      if (!S.notes.length) body.append(h('div', { class: 'ph-card done', text: _t('发现重要线索时，会自动记在这里。') }));
-      S.notes.slice().reverse().forEach(n => { const c = D.chapters.find(x => x.id === S.noteCh[n]); body.append(h('div', { class: 'ph-card' }, h('div', { class: 'k', text: c ? c.num : '' }), h('div', { html: fmt(D.notes[n].text) }))); });
       const total = Object.keys(D.collectibles).length;
-      body.append(h('div', { class: 'ph-sec', html: `<span>${_t('林晚的诗稿')}</span><span>${S.collected.length} / ${total}</span>` }));
-      S.collected.forEach(cid => { const c = D.collectibles[cid]; body.append(h('div', { class: 'ph-card' }, h('div', { class: 'k', text: c.where || '' }), h('div', { style: { fontWeight: 600 }, html: fmt(c.title) }), h('div', { style: { whiteSpace: 'pre-wrap', fontFamily: 'var(--font-hand)', fontSize: '15px', marginTop: '4px' }, html: fmt(c.text || '') }))); });
-      if (!S.collected.length) body.append(h('div', { class: 'ph-card done', text: _t('林晚的诗散落在 3 号机的各个角落。有的藏得很深。') }));
+      const controls = h('div', { class: 'ph-note-controls' });
+      const pages = h('div', { class: 'ph-note-tabs', 'aria-label': _t('笔记') });
+      [['questions', _t('待解决的问题'), asks.length], ['clues', _t('线索'), S.notes.length], ['poems', _t('林晚的诗稿'), S.collected.length + ' / ' + total]].forEach(([key, label, count]) => {
+        pages.append(h('button', { type: 'button', class: key === ui.noteTab ? 'on' : '', 'aria-pressed': key === ui.noteTab ? 'true' : 'false', onclick: () => { ui.noteTab = key; renderPhone(); } }, h('span', { text: label }), h('small', { text: count })));
+      });
+      controls.append(pages); body.append(controls);
+      if (ui.noteTab === 'questions') {
+        if (!asks.length) body.append(h('div', { class: 'ph-card done', text: _t('暂时没有。去 3 号机里找找线索，或者看看推理板。') }));
+        asks.forEach(([id, p]) => body.append(h('div', { class: 'ph-card q', role: 'button', tabindex: 0, onclick: () => askPuzzle(id, null, true), onkeydown: (e) => { if (e.key === 'Enter') askPuzzle(id, null, true); } }, h('div', { class: 'k', text: _t('点击作答') }), h('div', { html: fmt(p.title) }))));
+      } else if (ui.noteTab === 'clues') {
+        const results = h('div', { class: 'ph-search-results' });
+        const showClues = query => {
+          results.innerHTML = ''; const q = searchText(query).trim();
+          S.notes.slice().reverse().forEach(n => { const note = D.notes[n]; if (!note) return; const c = D.chapters.find(x => x.id === S.noteCh[n]); const chapter = c ? c.num : ''; if (q && !searchText(chapter + ' ' + note.text).includes(q)) return; results.append(h('div', { class: 'ph-card' }, h('div', { class: 'k', text: chapter }), h('div', { html: fmt(note.text) }))); });
+          if (!results.children.length) results.append(h('div', { class: 'ph-card done', text: S.notes.length ? _t('没有找到。') : _t('发现重要线索时，会自动记在这里。') }));
+        };
+        controls.append(phoneSearch(_t('搜索') + ' ' + _t('线索'), 'noteQuery', showClues)); body.append(results); showClues(ui.noteQuery);
+      } else {
+        S.collected.forEach(cid => { const c = D.collectibles[cid]; if (!c) return; body.append(h('div', { class: 'ph-card' }, h('div', { class: 'k', text: c.where || '' }), h('div', { style: { fontWeight: 600 }, html: fmt(c.title) }), h('div', { style: { whiteSpace: 'pre-wrap', fontFamily: 'var(--font-hand)', fontSize: '15px', marginTop: '4px' }, html: fmt(c.text || '') }))); });
+        if (!S.collected.length) body.append(h('div', { class: 'ph-card done', text: _t('林晚的诗散落在 3 号机的各个角落。有的藏得很深。') }));
+      }
     } else if (ui.tab === 'boards') {
       title(_t('推理'), _t('把线索拼成结论'));
       const list = Object.entries(D.boards).filter(([id, b]) => test(b.requires));
