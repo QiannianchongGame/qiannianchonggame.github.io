@@ -218,7 +218,7 @@ table.det td.nm svg { width: 16px; height: 16px; }
 /* IE + BBS */
 .ie-body { background: #fff; color: #000; }
 .bbs { font: 12px/1.6 SimSun, "宋体", serif; color: #000; padding: 0 0 20px; min-width: 0; }
-.bbs a { color: #0645ad; text-decoration: none; cursor: pointer; }
+.bbs a { color: #0645ad; text-decoration: none; cursor: pointer; touch-action: manipulation; }
 .bbs a:hover { text-decoration: underline; color: #c00; }
 .bbs .top { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 10px 12px 6px; border-bottom: 3px solid var(--bbs-leaf); background: linear-gradient(#f4f9ef, #fff); }
 .bbs .logo { font: bold 28px/1 var(--font-hand); color: var(--bbs-leaf); letter-spacing: .08em; }
@@ -753,30 +753,35 @@ const Y2K = (() => {
   // 在触屏松手时直接执行操作；兼容没有补发 click 的浏览器，并去掉同次触摸的重复点击。
   function controlButton(attrs, action, ...children) {
     const button = h('button', Object.assign({ type: 'button' }, attrs), ...children);
+    return bindControl(button, action);
+  }
+  function bindControl(button, action, targetOf = () => button) {
     let press = null, suppressClickUntil = 0;
     const reset = () => { press = null; button.classList.remove('pressed-control'); };
-    const start = (kind, id, x, y) => { reset(); press = { kind, id, x, y, moved: false }; button.classList.add('pressed-control'); };
+    const start = (kind, id, x, y, target) => { reset(); press = { kind, id, x, y, moved: false, target }; if (target === button) button.classList.add('pressed-control'); };
     const move = (x, y) => { if (press && Math.hypot(x - press.x, y - press.y) > 12) { press.moved = true; button.classList.remove('pressed-control'); } };
     const cancel = () => { if (press) suppressClickUntil = Date.now() + 800; reset(); };
     const finish = (event, x, y) => {
       if (!press) return;
-      const current = press, r = button.getBoundingClientRect(); move(x, y); reset();
+      const current = press, r = current.target.getBoundingClientRect(); move(x, y); reset();
       suppressClickUntil = Date.now() + 800;
       if (event.cancelable) event.preventDefault(); event.stopPropagation();
-      if (!button.disabled && !current.moved && x >= r.left - 6 && x <= r.right + 6 && y >= r.top - 6 && y <= r.bottom + 6) action(event);
+      if (!current.target.disabled && !current.moved && x >= r.left - 6 && x <= r.right + 6 && y >= r.top - 6 && y <= r.bottom + 6) action(event, current.target);
     };
     button.addEventListener('pointerdown', e => {
+      const target = targetOf(e); if (!target) return;
       if (e.pointerType === 'mouse') { suppressClickUntil = 0; return; }
       if (!['touch', 'pen'].includes(e.pointerType)) return;
       if (!e.isPrimary) return cancel();
-      start('pointer', e.pointerId, e.clientX, e.clientY);
+      start('pointer', e.pointerId, e.clientX, e.clientY, target);
     });
     button.addEventListener('pointermove', e => { if (press && press.kind === 'pointer' && press.id === e.pointerId) move(e.clientX, e.clientY); });
     button.addEventListener('pointerup', e => { if (press && press.kind === 'pointer' && press.id === e.pointerId) finish(e, e.clientX, e.clientY); });
     button.addEventListener('pointercancel', cancel);
     button.addEventListener('touchstart', e => {
+      const target = targetOf(e); if (!target) return;
       if (e.touches.length !== 1) return cancel();
-      if (!press) { const t = e.touches[0]; start('touch', t.identifier, t.clientX, t.clientY); }
+      if (!press) { const t = e.touches[0]; start('touch', t.identifier, t.clientX, t.clientY, target); }
     }, { passive: true });
     button.addEventListener('touchmove', e => { if (press && press.kind === 'touch') { const t = [...e.touches].find(t => t.identifier === press.id); if (t) move(t.clientX, t.clientY); } }, { passive: true });
     button.addEventListener('touchend', e => {
@@ -787,9 +792,10 @@ const Y2K = (() => {
     button.addEventListener('touchcancel', cancel, { passive: true });
     button.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') suppressClickUntil = 0; });
     button.addEventListener('click', e => {
+      const target = targetOf(e); if (!target) return;
       e.stopPropagation();
-      if (button.disabled || Date.now() < suppressClickUntil) { e.preventDefault(); return; }
-      action(e);
+      if (target.disabled || Date.now() < suppressClickUntil) { e.preventDefault(); return; }
+      action(e, target);
     });
     return button;
   }
@@ -1250,11 +1256,11 @@ const Y2K = (() => {
     const hintBox = h('div', { class: 'hints' });
     const used = () => S.hints[id] || 0;
     function drawHints() { hintBox.innerHTML = ''; (p.hints || []).slice(0, used()).forEach((t, i) => hintBox.append(h('div', { html: `<b>${_t('提示')} ${i + 1}：</b>` + fmt(t) }))); hintBtn.textContent = used() >= 3 ? _t('提示已用完') : used() === 2 ? _t('看答案') : `${_t('提示（')}${used()}/3）`; hintBtn.disabled = used() >= 3; }
-    const hintBtn = h('button', { class: opts.style === 'bios' ? '' : 'b98', type: 'button', onclick: () => { if (used() < 3) { S.hints[id] = used() + 1; drawHints(); dirty(); } } });
+    const hintBtn = controlButton({ class: opts.style === 'bios' ? '' : 'b98' }, () => { if (used() < 3) { S.hints[id] = used() + 1; drawHints(); dirty(); } });
     // 锁的谜题属于还没开始的章节：拒绝任何答案，也不给提示（避免提示提前泄露答案）
     const early = !!(p.requires && (p.requires.match(/\bch\d\b/g) || []).some(c => !S.flags[c]));
     if (early) hintBtn.hidden = true;
-    const okBtn = h('button', { class: opts.style === 'bios' ? '' : 'b98', type: 'button', text: opts.submitLabel || _t('确定'), onclick: () => submit() });
+    const okBtn = controlButton({ class: opts.style === 'bios' ? '' : 'b98', text: opts.submitLabel || _t('确定') }, submit);
     let submitted = false;
     function submit() {
       if (submitted) return;
@@ -2015,6 +2021,43 @@ const Y2K = (() => {
     wins.forEach(w => w.el.classList.toggle('active', w === top));
     wins.forEach(w => box.append(h('button', { class: 'b98 task' + (w === top ? ' on down' : ''), html: icon(w.o.icon || 'exe') + `<span>${esc(w.title)}</span>`, onclick: () => { if (w === top && !w.min) { w.min = true; w.el.hidden = true; renderTasks(); } else focusWin(w); } })));
   }
+  // 后台状态更新不得替换手指或鼠标正在操作的内容；松手后留出兼容 click 的时间。
+  function guardWinInteraction(win) {
+    const el = win.el, pointers = new Set();
+    let touches = 0, settling = false, timer = null;
+    const active = () => pointers.size > 0 || touches > 0;
+    win.isInteracting = () => active() || settling;
+    const begin = () => { clearTimeout(timer); settling = false; };
+    const release = () => {
+      if (active()) return;
+      clearTimeout(timer); settling = true;
+      timer = setTimeout(() => {
+        settling = false;
+        if (el.isConnected && !active() && win.refreshPending) win.refresh();
+      }, 400);
+    };
+    const pointerDown = e => { if (e.button === 0) { begin(); pointers.add(e.pointerId); } };
+    const pointerEnd = e => { if (pointers.delete(e.pointerId)) release(); };
+    const touchStart = e => { begin(); touches = e.touches.length; };
+    const touchEnd = e => { if (touches) { touches = e.touches ? e.touches.length : 0; release(); } };
+    // 主动翻页会移除原触摸目标，浏览器可能不再把 touchend 派发到 document。
+    win.resetInteraction = () => { clearTimeout(timer); pointers.clear(); touches = 0; settling = false; };
+    el.addEventListener('pointerdown', pointerDown, true);
+    el.addEventListener('touchstart', touchStart, { capture: true, passive: true });
+    document.addEventListener('pointerup', pointerEnd, true);
+    document.addEventListener('pointercancel', pointerEnd, true);
+    document.addEventListener('touchend', touchEnd, { capture: true, passive: true });
+    document.addEventListener('touchcancel', touchEnd, { capture: true, passive: true });
+    win.interactionCleanup = () => {
+      win.resetInteraction();
+      el.removeEventListener('pointerdown', pointerDown, true);
+      el.removeEventListener('touchstart', touchStart, true);
+      document.removeEventListener('pointerup', pointerEnd, true);
+      document.removeEventListener('pointercancel', pointerEnd, true);
+      document.removeEventListener('touchend', touchEnd, true);
+      document.removeEventListener('touchcancel', touchEnd, true);
+    };
+  }
   function openWin(o) {
     if (o.key) { const ex = wins.find(w => w.key === o.key); if (ex) { if (o.state) Object.assign(ex.state, o.state); focusWin(ex); ex.refresh(true); return ex; } }
     const dk = desktop(); if (!dk) return null;
@@ -2044,9 +2087,13 @@ const Y2K = (() => {
     const status = h('div', { class: 'status98' });
     el.append(bar, menu, top, body, status, h('div', { class: 'grip' }));
     win.el = el; win.body = body; win.menu = menu; win.top = top; win.status = status; win.tt = tt;
+    guardWinInteraction(win);
     win.setTitle = (t) => { win.title = t; tt.textContent = t; renderTasks(); };
     win.refresh = (force) => {
+      if (!force && win.isInteracting()) { win.refreshPending = true; return; }
       if (!force && el.contains(document.activeElement) && /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) return;
+      if (force) win.resetInteraction();
+      win.refreshPending = false;
       const st = body.scrollTop;
       const sl = body.scrollLeft;
       menu.innerHTML = ''; top.innerHTML = ''; status.innerHTML = ''; body.innerHTML = '';
@@ -2069,8 +2116,8 @@ const Y2K = (() => {
     wins.forEach(x => x.el.classList.toggle('active', x === w));
     renderTasks(); closeStart();
   }
-  function closeWin(w) { w.el.remove(); wins = wins.filter(x => x !== w); w.o.onClose && w.o.onClose(w); renderTasks(); }
-  function closeAllWins() { wins.forEach(w => { w.el.remove(); w.o.onClose && w.o.onClose(w); }); wins = []; }
+  function closeWin(w) { w.interactionCleanup(); w.el.remove(); wins = wins.filter(x => x !== w); w.o.onClose && w.o.onClose(w); renderTasks(); }
+  function closeAllWins() { wins.forEach(w => { w.interactionCleanup(); w.el.remove(); w.o.onClose && w.o.onClose(w); }); wins = []; }
   function dragify(el, handle, win) {
     handle.addEventListener('pointerdown', (e) => {
       if (e.target.closest('button') || el.classList.contains('max') || (e.pointerType === 'mouse' && e.button !== 0)) return;
@@ -2619,12 +2666,12 @@ const Y2K = (() => {
     addr.onkeydown = (e) => { if (e.key === 'Enter') { markInteraction(); ieGo(win, addr.value); } };
     addr.onfocus = () => addr.select();
     win.top.append(h('div', { class: 'toolbar98' },
-      h('button', { class: 'b98', text: _t('← 后退'), disabled: st.hi === 0, onclick: () => { st.hi--; win.resetScroll = true; win.refresh(true); } }),
-      h('button', { class: 'b98', text: _t('前进 →'), disabled: st.hi >= st.hist.length - 1, onclick: () => { st.hi++; win.resetScroll = true; win.refresh(true); } }),
-      h('button', { class: 'b98', text: _t('刷新'), onclick: () => win.refresh(true) }),
-      h('button', { class: 'b98', text: _t('主页'), onclick: () => ieGo(win, 'http://' + (D.bbsMeta.host || '192.168.1.103') + '/') }),
-      h('button', { class: 'b98', text: _t('源文件'), onclick: () => viewSource(win) })),
-      h('div', { class: 'addr' }, h('span', { text: _t('地址(D)') }), addr, h('button', { class: 'b98', style: { minWidth: 0 }, text: _t('转到'), onclick: () => { markInteraction(); ieGo(win, addr.value); } })));
+      controlButton({ class: 'b98', text: _t('← 后退'), disabled: st.hi === 0 }, () => { st.hi--; win.resetScroll = true; win.refresh(true); }),
+      controlButton({ class: 'b98', text: _t('前进 →'), disabled: st.hi >= st.hist.length - 1 }, () => { st.hi++; win.resetScroll = true; win.refresh(true); }),
+      controlButton({ class: 'b98', text: _t('刷新') }, () => win.refresh(true)),
+      controlButton({ class: 'b98', text: _t('主页') }, () => ieGo(win, 'http://' + (D.bbsMeta.host || '192.168.1.103') + '/')),
+      controlButton({ class: 'b98', text: _t('源文件') }, () => viewSource(win))),
+      h('div', { class: 'addr' }, h('span', { text: _t('地址(D)') }), addr, controlButton({ class: 'b98', style: { minWidth: 0 }, text: _t('转到') }, () => { markInteraction(); ieGo(win, addr.value); })));
     let page;
     if (url.startsWith('file:///')) {
       const f = st.local && ('file:///' + st.local.path) === url ? st.local : D.files.find(x => 'file:///' + x.path === url);
@@ -2634,13 +2681,12 @@ const Y2K = (() => {
     win.setTitle((page.title ? strip(page.title) + ' - ' : '') + 'Microsoft Internet Explorer');
     const body = h('div', { class: 'bbs' });
     if (page.node) body.append(page.node); else body.innerHTML = page.html;
-    body.addEventListener('click', (e) => {
-      const a = e.target.closest('a[href]'); if (!a) return;
+    bindControl(body, (e, a) => {
       e.preventDefault(); markInteraction();
       const href = a.getAttribute('href');
       if (/^(https?:)?\/\//i.test(href) && !href.includes(D.bbsMeta.host || '192.168.1.103')) return msgBox('Internet Explorer', _t('无法显示网页。<br>本机没有连接外网（拨号连接已断开）。'));
       ieGo(win, href.startsWith('http') ? href : 'http://' + (D.bbsMeta.host || '192.168.1.103') + (href.startsWith('/') ? href : '/' + href));
-    });
+    }, e => e.target.closest && e.target.closest('a[href]'));
     win.body.append(body);
     win.status.append(h('div', { text: _t('完成') }), h('div', { style: { flex: 'none', width: '100px' }, text: _t('本地 Intranet') }));
     if (page.after) page.after(body);
@@ -2708,7 +2754,7 @@ const Y2K = (() => {
       const extras = D.userExtras.filter(x => x.user === us.id && test(x.requires));
       if (extras.length) {
         const ux = h('div', { class: 'ux' }); const out = h('div');
-        extras.forEach(x => ux.append(h('button', { class: 'b98', text: x.label, onclick: () => markInteraction() || withLock(x.lock, () => { opened(x.id, x.onOpen); out.innerHTML = ''; out.append(h('div', { class: 'uxbox', html: fmt(x.html) })); }) })));
+        extras.forEach(x => ux.append(controlButton({ class: 'b98', text: x.label }, () => markInteraction() || withLock(x.lock, () => { opened(x.id, x.onOpen); out.innerHTML = ''; out.append(h('div', { class: 'uxbox', html: fmt(x.html) })); }))));
         node.querySelector('.wrap').append(ux, out);
       }
       return { title: _t('用户资料 - ') + us.nick, node };
@@ -2724,7 +2770,7 @@ const Y2K = (() => {
       const inp = h('input', { id: 'bbsq', value: q, style: { font: 'inherit', padding: '2px 4px', width: '220px' } });
       const go = () => ieGo(win, 'http://' + (D.bbsMeta.host || '192.168.1.103') + '/search.asp?q=' + encodeURIComponent(inp.value.trim()));
       inp.onkeydown = (e) => { if (e.key === 'Enter') go(); };
-      wrap.append(h('div', { style: { margin: '6px 0 10px' } }, _t('搜索帖子标题和内容：'), inp, ' ', h('button', { class: 'b98', text: _t('搜索'), onclick: go })));
+      wrap.append(h('div', { style: { margin: '6px 0 10px' } }, _t('搜索帖子标题和内容：'), inp, ' ', controlButton({ class: 'b98', text: _t('搜索') }, go)));
       if (q) {
         const res = [];
         visibleThreads().forEach(t => {
