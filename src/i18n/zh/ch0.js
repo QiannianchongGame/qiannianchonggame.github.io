@@ -10,7 +10,7 @@ Y2K.lang('zh', {
   "dlg.c0_d_hello.steps.3.npc": "学校还在清点旧设备，想登记它原来的网络地址。",
   "dlg.c0_d_hello.steps.4.npc": "机箱侧面应该有资产标签。麻烦您先看看，字还能不能认。",
   "dlg.c0_d_hello.steps.6.npc": "谢谢，我把这串数字抄下来。",
-  "dlg.c0_d_hello.steps.7.choice.0.text": "开机要密码，你知道吗？",
+  "dlg.c0_d_hello.steps.7.choice.0.text": "开机会要密码吗？",
   "dlg.c0_d_hello.steps.7.choice.0.reply.0": "不知道。",
   "dlg.c0_d_hello.steps.7.choice.0.reply.1": "我那时候电脑一窍不通。许嘉设过什么，没人问得出来。",
   "dlg.c0_d_hello.steps.7.choice.1.text": "我先试着开机看看。",

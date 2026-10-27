@@ -7,7 +7,9 @@ const Y2K = (() => {
   const LANGS = { zh: '中文', en: 'English', ja: '日本語' };
   let LANG = 'zh';
   try { LANG = JSON.parse(localStorage.getItem('y2k_meta') || '{}').lang || 'zh'; } catch (e) { }
-  if (!LANGS[LANG]) LANG = 'zh';
+  // 只有打包进来、译完的语言才可选（tools/build.js 写入 Y2K_LANGS）
+  const READY = (typeof window !== 'undefined' && Array.isArray(window.Y2K_LANGS) && window.Y2K_LANGS.length) ? window.Y2K_LANGS : ['zh'];
+  if (!LANGS[LANG] || !READY.includes(LANG)) LANG = 'zh';
   const UI = (typeof window !== 'undefined' && window.Y2K_UI) || {};
   function _t(s) { const d = UI[LANG]; return d && d[s] != null ? d[s] : s; }
   const LANGMAP = {};
@@ -186,6 +188,49 @@ const Y2K = (() => {
   function norm(s) {
     return String(s == null ? '' : s).normalize('NFKC').toLowerCase()
       .replace(/[\s，。、！？,.!?;:：；'"“”‘’()（）\[\]【】\-—_·\/\\《》<>~～…「」『』|]/g, '');
+  }
+  // 在触屏松手时直接执行操作；兼容没有补发 click 的浏览器，并去掉同次触摸的重复点击。
+  function controlButton(attrs, action, ...children) {
+    const button = h('button', Object.assign({ type: 'button' }, attrs), ...children);
+    let press = null, suppressClickUntil = 0;
+    const reset = () => { press = null; button.classList.remove('pressed-control'); };
+    const start = (kind, id, x, y) => { reset(); press = { kind, id, x, y, moved: false }; button.classList.add('pressed-control'); };
+    const move = (x, y) => { if (press && Math.hypot(x - press.x, y - press.y) > 12) { press.moved = true; button.classList.remove('pressed-control'); } };
+    const cancel = () => { if (press) suppressClickUntil = Date.now() + 800; reset(); };
+    const finish = (event, x, y) => {
+      if (!press) return;
+      const current = press, r = button.getBoundingClientRect(); move(x, y); reset();
+      suppressClickUntil = Date.now() + 800;
+      if (event.cancelable) event.preventDefault(); event.stopPropagation();
+      if (!button.disabled && !current.moved && x >= r.left - 6 && x <= r.right + 6 && y >= r.top - 6 && y <= r.bottom + 6) action(event);
+    };
+    button.addEventListener('pointerdown', e => {
+      if (e.pointerType === 'mouse') { suppressClickUntil = 0; return; }
+      if (!['touch', 'pen'].includes(e.pointerType)) return;
+      if (!e.isPrimary) return cancel();
+      start('pointer', e.pointerId, e.clientX, e.clientY);
+    });
+    button.addEventListener('pointermove', e => { if (press && press.kind === 'pointer' && press.id === e.pointerId) move(e.clientX, e.clientY); });
+    button.addEventListener('pointerup', e => { if (press && press.kind === 'pointer' && press.id === e.pointerId) finish(e, e.clientX, e.clientY); });
+    button.addEventListener('pointercancel', cancel);
+    button.addEventListener('touchstart', e => {
+      if (e.touches.length !== 1) return cancel();
+      if (!press) { const t = e.touches[0]; start('touch', t.identifier, t.clientX, t.clientY); }
+    }, { passive: true });
+    button.addEventListener('touchmove', e => { if (press && press.kind === 'touch') { const t = [...e.touches].find(t => t.identifier === press.id); if (t) move(t.clientX, t.clientY); } }, { passive: true });
+    button.addEventListener('touchend', e => {
+      const t = press && [...e.changedTouches].find(t => press.kind === 'pointer' || t.identifier === press.id);
+      if (t) finish(e, t.clientX, t.clientY);
+      else if (Date.now() < suppressClickUntil) { if (e.cancelable) e.preventDefault(); e.stopPropagation(); }
+    }, { passive: false });
+    button.addEventListener('touchcancel', cancel, { passive: true });
+    button.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') suppressClickUntil = 0; });
+    button.addEventListener('click', e => {
+      e.stopPropagation();
+      if (button.disabled || Date.now() < suppressClickUntil) { e.preventDefault(); return; }
+      action(e);
+    });
+    return button;
   }
   const pad = (n) => String(n).padStart(2, '0');
   const timers = new Set();
@@ -493,9 +538,13 @@ const Y2K = (() => {
       h('div', { class: 'date', text: c.date.replace(/-/g, ' . ') }),
       c.intro ? h('div', { class: 'intro', html: fmt(c.intro) }) : null,
       h('div', { class: 'go', text: _t('点击继续') }));
-    const go = () => { cardOn = false; closeOverlay(); showCards(); renderAll(); };
+    const go = () => { cardOn = false; closeOverlay(); showCards(); renderAll(); if (!cardOn) nudgeReplies(); };
     el.onclick = go; el.onkeydown = (e) => { if (e.key === 'Enter' || e.key === ' ') go(); };
     openOverlay(el); el.focus();
+  }
+  function nudgeReplies() {
+    const who = Object.keys(S.wait || {}).filter(c => S.wait[c] && S.wait[c].type !== 'wait' && D.contacts2026[c]).map(c => D.contacts2026[c].name);
+    if (who.length) toast(who.join('、') + _t(' 在等你回复。打开手机「消息」，点底部的回复发送。'));
   }
   function showEnding(id) {
     const e = D.endings[id]; if (!e) return;
@@ -557,14 +606,14 @@ const Y2K = (() => {
     };
     const fit = () => { fitMode = true; resize(Math.min(1, Math.max(1, area.clientWidth - 32) / size.w, Math.max(1, area.clientHeight - 32) / size.h), false); };
     const zoom = factor => { fitMode = false; resize(scale * factor); };
-    const minus = h('button', { class: 'ph-btn', text: _t('缩小 −'), onclick: () => zoom(1 / 1.25) });
-    const plus = h('button', { class: 'ph-btn', text: _t('放大 +'), onclick: () => zoom(1.25) });
+    const minus = controlButton({ class: 'ph-btn', text: _t('缩小 −') }, () => zoom(1 / 1.25));
+    const plus = controlButton({ class: 'ph-btn', text: _t('放大 +') }, () => zoom(1.25));
     const close = () => { closeOverlay(); showCards(); };
-    const closeBtn = h('button', { class: 'ph-btn viewer-close', text: _t('关闭'), title: 'Esc', onclick: close });
+    const closeBtn = controlButton({ class: 'ph-btn viewer-close', text: _t('关闭'), title: 'Esc' }, close);
     const toolbar = h('div', { class: 'viewer-toolbar' }, minus, plus, value,
-      h('button', { class: 'ph-btn', text: _t('适应窗口'), onclick: fit }),
-      h('button', { class: 'ph-btn', text: _t('原始大小'), onclick: () => { fitMode = false; resize(1); } }),
-      file ? h('button', { class: 'ph-btn', text: _t('属性'), onclick: () => showProps(file, true) }) : null, closeBtn);
+      controlButton({ class: 'ph-btn', text: _t('适应窗口') }, fit),
+      controlButton({ class: 'ph-btn', text: _t('原始大小') }, () => { fitMode = false; resize(1); }),
+      file ? controlButton({ class: 'ph-btn', text: _t('属性') }, () => showProps(file, true)) : null, closeBtn);
     const panel = h('div', { class: 'viewer-panel', role: 'dialog', 'aria-modal': 'true', 'aria-label': _t('图像查看器') }, toolbar, area);
     const el = h('div', { class: 'viewer', onclick: e => { if (e.target === el) close(); } }, panel);
     if (file) bindCtx(area, () => [[_t('属性'), () => showProps(file, true)]], null, overlay());
@@ -623,7 +672,7 @@ const Y2K = (() => {
     let getVal, focusEl;
     const inputs = h('div');
     if (kind === 'text') {
-      const inp = h('input', { class: opts.style === 'bios' ? '' : 'f98', type: 'text', id: 'pz_' + id, placeholder: p.placeholder || '', autocomplete: 'off', spellcheck: 'false', style: { width: '100%' } });
+      const inp = h('input', { class: opts.style === 'bios' ? '' : 'f98', type: 'text', id: 'pz_' + id, placeholder: opts.placeholder || p.placeholder || '', autocomplete: 'off', spellcheck: 'false', style: { width: '100%' } });
       inp.onkeydown = (e) => { if (e.key === 'Enter') submit(); };
       inputs.append(inp); getVal = () => inp.value; focusEl = inp;
     } else if (kind === 'choice' || kind === 'pick') {
@@ -666,7 +715,8 @@ const Y2K = (() => {
       }
     }
     drawHints();
-    box.append(prompt, inputs, msg, hintBox, h('div', { class: 'row' }, hintBtn, opts.extraBtn || null, okBtn));
+    if (!opts.hidePrompt) box.append(prompt);
+    box.append(inputs, msg, hintBox, h('div', { class: 'row' }, hintBtn, opts.extraBtn || null, okBtn));
     box.focusFirst = () => focusEl && setTimeout(() => focusEl.focus(), 30);
     return box;
   }
@@ -685,7 +735,7 @@ const Y2K = (() => {
       const text = p.kind === 'choice' ? p.options[value] : p.kind === 'pick' ? value.map(i => p.options[i]).join('、') : Array.isArray(value) ? value.join('，') : String(value).trim();
       pushChat(contact, { from: 'me', text });
     }, onWrong: () => { dlg.classList.remove('shake'); void dlg.offsetWidth; dlg.classList.add('shake'); }, extraBtn: h('button', { class: 'b98', type: 'button', text: _t('取消'), onclick: () => closeModal() }) });
-    dlg.append(h('div', { class: 'titlebar' }, h('span', { html: icon('lock') }), h('span', { class: 't', text: p.title || _t('需要密码') }), h('button', { class: 'b98 tbb', 'aria-label': _t('关闭'), title: _t('关闭'), text: '×', onclick: () => closeModal() })), h('div', { class: 'wbody' }, form));
+    dlg.append(h('div', { class: 'titlebar' }, h('span', { html: icon('lock') }), h('span', { class: 't', text: p.title || _t('需要密码') }), controlButton({ class: 'b98 tbb', 'aria-label': _t('关闭'), title: _t('关闭'), text: '×' }, closeModal)), h('div', { class: 'wbody' }, form));
     m.append(shade, dlg);
     form.focusFirst();
   }
@@ -694,7 +744,7 @@ const Y2K = (() => {
     const dlg = h('div', { class: 'dlg98 out' + (aboveOverlay ? ' raised' : ''), role: 'dialog' });
     const row = h('div', { class: 'row' });
     (buttons || [{ text: _t('确定') }]).forEach(b => row.append(h('button', { class: 'b98', text: b.text, onclick: () => { closeModal(); b.fn && b.fn(); } })));
-    dlg.append(h('div', { class: 'titlebar' }, h('span', { class: 't', text: title }), h('button', { class: 'b98 tbb', 'aria-label': _t('关闭'), title: _t('关闭'), text: '×', onclick: () => closeModal() })), h('div', { class: 'wbody' }, h('div', { class: 'prompt', html }), row));
+    dlg.append(h('div', { class: 'titlebar' }, h('span', { class: 't', text: title }), controlButton({ class: 'b98 tbb', 'aria-label': _t('关闭'), title: _t('关闭'), text: '×' }, closeModal)), h('div', { class: 'wbody' }, h('div', { class: 'prompt', html }), row));
     m.append(h('div', { class: 'shade' + (aboveOverlay ? ' raised' : ''), onclick: () => closeModal() }), dlg);
   }
   // 带锁的东西：先解谜再执行
@@ -813,13 +863,22 @@ const Y2K = (() => {
     return null;
   }
   function typeDelay(text) { return Math.min(2600, 650 + String(text || '').length * 40); }
+  // 过期对话：属于更早章节、玩家一直没回复的对话。调查已经推进到后面的章节时，
+  // 这些对话快速补播完（回复自动发出、旧选择取不触发结局的选项、旧的等待和问答跳过），
+  // 不再挡住本章的消息。本章的对话仍然需要玩家自己发送和选择。
+  function isStale(d) {
+    const m = /^c(\d)_/.exec(d.id), cur = S.chapter ? +String(S.chapter).replace('ch', '') : 0;
+    return !!m && +m[1] < cur;
+  }
   function stepDlg(c) {
     if (running[c] || titleOn) return;
     const cur = curDlg(c);
     if (!cur) { delete S.wait[c]; return; }
     const [d, st] = cur;
+    const stale = isStale(d);
     const next = () => { st.i++; stepDlg(c); };
     const timed = (ms, fn, showTyping) => {
+      if (stale) { ms = 60; showTyping = false; }
       if (FAST) ms = 15;
       running[c] = true; if (showTyping) { typing[c] = true; renderPhone(); }
       later(() => { running[c] = false; typing[c] = false; fn(); save('auto'); }, ms);
@@ -833,13 +892,25 @@ const Y2K = (() => {
     const s = d.steps[st.i];
     if (!s) { st.done = 1; setFlag('dlg_' + d.id); S.dlgQ[c].shift(); delete S.wait[c]; dirty(); return stepDlg(c); }
     if (s.npc !== undefined || (s.html && s.me === undefined)) return timed(typeDelay(s.npc), () => { pushChat(c, { from: 'npc', text: s.npc || '', html: s.html, ref: { d: d.id, i: st.i } }); next(); }, true);
-    if (s.me !== undefined) { S.wait[c] = { type: 'reply' }; renderPhone(); return; }
+    if (s.me !== undefined) {
+      if (stale) { delete S.wait[c]; const ref = { d: d.id, i: st.i }; return timed(60, () => { pushChat(c, { from: 'me', text: s.me, html: s.html, ref }); next(); }); }
+      S.wait[c] = { type: 'reply' }; renderPhone(); return;
+    }
     if (s.sys !== undefined) return timed(400, () => { pushChat(c, { from: 'sys', text: s.sys, ref: { d: d.id, i: st.i } }); next(); });
     if (s.action) { act(s.action); return next(); }
     if (s.delay) return timed(s.delay, next);
-    if (s.wait) { if (test(s.wait)) { delete S.wait[c]; return next(); } S.wait[c] = { type: 'wait' }; return; }
-    if (s.puzzle) { if (solved(s.puzzle)) { delete S.wait[c]; return next(); } S.wait[c] = { type: 'puzzle', id: s.puzzle }; renderPhone(); return; }
-    if (s.choice) { S.wait[c] = { type: 'choice' }; renderPhone(); return; }
+    if (s.wait) { if (stale || test(s.wait)) { delete S.wait[c]; return next(); } S.wait[c] = { type: 'wait' }; return; }
+    if (s.puzzle) { if (stale || solved(s.puzzle)) { delete S.wait[c]; return next(); } S.wait[c] = { type: 'puzzle', id: s.puzzle }; renderPhone(); return; }
+    if (s.choice) {
+      if (stale) {
+        let k = s.choice.findIndex(o => !(o.action && o.action.ending)); if (k < 0) k = 0;
+        const opt = s.choice[k]; delete S.wait[c];
+        pushChat(c, { from: 'me', text: opt.text, ref: { d: d.id, i: st.i, o: k } });
+        st.rep = (opt.reply || []).length ? { i: st.i, o: k, r: 0 } : null; st.i++;
+        act(opt.action); dirty(); return stepDlg(c);
+      }
+      S.wait[c] = { type: 'choice' }; renderPhone(); return;
+    }
     next();
   }
   function sendReply(c, dialogue, step) {
@@ -1219,7 +1290,8 @@ const Y2K = (() => {
       h('button', { class: 'tbtn', text: _t('结局收集'), onclick: () => { panel.innerHTML = ''; panel.append(h('div', { class: 'panel' }, h('h3', { text: _t('结局收集') }), endingList())); } }));
     // 语言切换：存进 meta，然后重新载入（译文在启动时写回数据）
     const langs = h('div', { class: 'langs', role: 'group', 'aria-label': 'Language' });
-    Object.entries(LANGS).forEach(([code, label]) => langs.append(h('button', { class: 'lbtn' + (code === LANG ? ' on' : ''), lang: code, 'aria-pressed': code === LANG ? 'true' : 'false', text: label, onclick: () => { if (code === LANG) return; const m = meta(); m.lang = code; setMeta(m); location.reload(); } })));
+    langs.hidden = READY.length < 2;
+    Object.entries(LANGS).filter(([code]) => READY.includes(code)).forEach(([code, label]) => langs.append(h('button', { class: 'lbtn' + (code === LANG ? ' on' : ''), lang: code, 'aria-pressed': code === LANG ? 'true' : 'false', text: label, onclick: () => { if (code === LANG) return; const m = meta(); m.lang = code; setMeta(m); location.reload(); } })));
     tl.append(langs, clk, h('h1', { html: _t('千年<span>虫</span>') }), h('div', { class: 'sub', text: _t('梧城七中 · 1999—2000') }), menu, panel,
       h('div', { class: 'foot', text: _t('本作纯属虚构 · 建议用电脑上的 Chrome / Edge 打开 · 进度自动保存在本浏览器') }));
   }
@@ -1290,7 +1362,7 @@ const Y2K = (() => {
   function showBiosPass(bios) {
     const id = D.boot.biosLock;
     const box = h('div', { class: 'bios-pass' });
-    const form = puzzleForm(id, { style: 'bios', submitLabel: 'Enter', wrongText: _t('Password incorrect. 密码错误。'), onSolved: () => { box.remove(); afterBios(bios); } });
+    const form = puzzleForm(id, { style: 'bios', hidePrompt: true, submitLabel: 'Enter', wrongText: _t('Password incorrect. 密码错误。'), onSolved: () => { box.remove(); afterBios(bios); } });
     box.append(h('div', { text: _t('══ Enter Password 开机密码 ══') }), form);
     screen().append(box); form.focusFirst();
   }
@@ -1308,7 +1380,7 @@ const Y2K = (() => {
     const sc = screen(); sc.innerHTML = '';
     const lg = h('div', { class: 'login98' });
     const dlg = h('div', { class: 'dlg98 out', style: { position: 'relative', left: 'auto', top: 'auto', transform: 'none', width: 'min(440px, 94%)' } });
-    const form = puzzleForm(id, { submitLabel: _t('确定'), wrongText: _t('密码不正确。'), onSolved: enterDesktop, onWrong: () => sfx('err') });
+    const form = puzzleForm(id, { hidePrompt: true, placeholder: _t('密码'), submitLabel: _t('确定'), wrongText: _t('密码不正确。'), onSolved: enterDesktop, onWrong: () => sfx('err') });
     dlg.append(h('div', { class: 'titlebar' }, h('span', { class: 't', text: _t('欢迎使用 Windows') })),
       h('div', { class: 'wbody' },
         h('div', { style: { display: 'flex', gap: '10px', alignItems: 'center' } }, h('span', { html: icon('computer'), style: { width: '32px' } }), h('div', { text: _t('键入用户名和密码以登录到 Windows。') })),
@@ -1353,15 +1425,16 @@ const Y2K = (() => {
   function selectIcon(el) { document.querySelectorAll('#icons .icon.sel').forEach(x => x.classList.remove('sel')); selIcon = el; if (el) el.classList.add('sel'); }
   function desktopEntries() {
     const out = [];
-    for (const [id, a] of Object.entries(D.apps)) if (test(a.requires)) out.push({ key: 'app_' + id, name: a.name, icon: id === 'recycle' ? (recycleItems().length ? 'recyclefull' : 'recycle') : a.icon, open: () => openApp(id), file: a.path ? D.files.find(f => f.path === a.path && f.type === 'folder') : null });
-    D.files.filter(f => f.desktop && fileVisible(f)).forEach(f => out.push({ key: 'f_' + f.id, name: nameOf(f.path), icon: TYPEICON[f.type], locked: f.lock && !solved(f.lock), open: () => openFile(f), file: f }));
+    const appNew = (id, a) => id === 'mycomputer' ? newUnder('C:') || newUnder('A:') : id === 'recycle' ? recycleHasNew() : a.path ? newUnder(a.path) : false;
+    for (const [id, a] of Object.entries(D.apps)) if (test(a.requires)) out.push({ fresh: appNew(id, a), key: 'app_' + id, name: a.name, icon: id === 'recycle' ? (recycleItems().length ? 'recyclefull' : 'recycle') : a.icon, open: () => openApp(id), file: a.path ? D.files.find(f => f.path === a.path && f.type === 'folder') : null });
+    D.files.filter(f => f.desktop && fileVisible(f)).forEach(f => out.push({ fresh: isNewFile(f), key: 'f_' + f.id, name: nameOf(f.path), icon: TYPEICON[f.type], locked: f.lock && !solved(f.lock), open: () => openFile(f), file: f }));
     return out;
   }
   function renderIcons() {
     const box = $('#icons'); if (!box) return;
     box.innerHTML = '';
     desktopEntries().forEach(en => {
-      const el = h('div', { class: 'icon', tabindex: 0, html: icon(en.icon, en.locked) + `<span>${esc(en.name)}</span>` });
+      const el = h('div', { class: 'icon', tabindex: 0, html: icon(en.icon, en.locked) + (en.fresh ? NEWDOT : '') + `<span>${esc(en.name)}</span>` });
       el.onclick = (e) => { selectIcon(el); if (coarse()) en.open(); };
       el.ondblclick = () => en.open();
       el.onkeydown = (e) => { if (e.key === 'Enter') en.open(); };
@@ -1393,16 +1466,16 @@ const Y2K = (() => {
     const tt = h('span', { class: 't', text: o.title });
     const symbol = kind => h('span', { class: 'window-symbol ' + kind, 'aria-hidden': 'true' });
     const maxSymbol = symbol('max');
-    const maxBtn = h('button', { class: 'b98 tbb', 'aria-label': _t('最大化'), title: _t('最大化'), onclick: e => { e.stopPropagation(); win.toggleMax(); } }, maxSymbol);
+    const maxBtn = controlButton({ class: 'b98 tbb', 'aria-label': _t('最大化'), title: _t('最大化') }, () => { focusWin(win); win.toggleMax(); }, maxSymbol);
     win.toggleMax = force => {
       const max = typeof force === 'boolean' ? force : !el.classList.contains('max');
       el.classList.toggle('max', max); maxSymbol.className = 'window-symbol ' + (max ? 'restore' : 'max');
       maxBtn.setAttribute('aria-label', _t(max ? '还原' : '最大化')); maxBtn.title = _t(max ? '还原' : '最大化');
     };
     const bar = h('div', { class: 'titlebar' }, h('span', { html: icon(o.icon || 'exe') }), tt,
-      h('button', { class: 'b98 tbb', 'aria-label': _t('最小化'), title: _t('最小化'), onclick: (e) => { e.stopPropagation(); win.min = true; el.hidden = true; renderTasks(); } }, symbol('min')),
+      controlButton({ class: 'b98 tbb', 'aria-label': _t('最小化'), title: _t('最小化') }, () => { win.min = true; el.hidden = true; renderTasks(); }, symbol('min')),
       maxBtn,
-      h('button', { class: 'b98 tbb', 'aria-label': _t('关闭'), title: _t('关闭'), onclick: (e) => { e.stopPropagation(); closeWin(win); } }, symbol('close')));
+      controlButton({ class: 'b98 tbb', 'aria-label': _t('关闭'), title: _t('关闭') }, () => closeWin(win), symbol('close')));
     const menu = h('div', { class: 'menubar' });
     const top = h('div');
     const body = h('div', { class: 'wbody ' + (o.bodyClass || 'in') });
@@ -1420,7 +1493,7 @@ const Y2K = (() => {
       menu.hidden = !menu.children.length; top.hidden = !top.children.length; status.hidden = !status.children.length;
       if (!win.resetScroll) { body.scrollTop = st; body.scrollLeft = sl; } else { body.scrollTop = 0; body.scrollLeft = 0; win.resetScroll = false; }
     };
-    el.addEventListener('pointerdown', () => focusWin(win), true);
+    el.addEventListener('pointerdown', e => { if (!e.target.closest('.tbb')) focusWin(win); }, true);
     dragify(el, bar, win);
     resizify(el, el.querySelector('.grip'));
     dk.append(el);
@@ -1591,6 +1664,15 @@ const Y2K = (() => {
     out.sort((a, b) => (b.folder ? 1 : 0) - (a.folder ? 1 : 0) || nameOf(a.path).localeCompare(nameOf(b.path), 'zh'));
     return out;
   }
+  // 新恢复、还没打开过的文件：图标上加小圆点，所在的文件夹、盘符和桌面图标也跟着标出
+  function isNewFile(f) { return !!(f && f.id && f.requires && f.type !== 'folder' && !S.opened[f.id] && fileVisible(f)); }
+  function reachablePath(path) {
+    for (let q = parentOf(path); q && q !== 'A:' && q !== 'C:'; q = parentOf(q)) if (!folderVisible(q)) return false;
+    return true;
+  }
+  function newUnder(prefix) { return D.files.some(f => (f.path === prefix || f.path.startsWith(prefix + '/')) && isNewFile(f) && reachablePath(f.path)); }
+  function recycleHasNew() { return recycleItems().some(f => !S.opened[f.id]); }
+  const NEWDOT = '<i class="newdot" aria-label="新"></i>';
   function recycleItems() { return D.files.filter(f => f.deleted && !S.flags['restored_' + f.id] && test(f.requires)); }
   function sizeOf(f) {
     if (f.size) return f.size;
@@ -1690,7 +1772,7 @@ const Y2K = (() => {
         const f = it.file; const locked = (f && f.lock && !solved(f.lock)) || (it.entry && it.entry.lock && !solved(it.entry.lock));
         const ic = it.drive || (it.folder ? 'folder' : TYPEICON[f.type]);
         const hid = (f && f.hidden) || (it.entry && it.entry.hidden);
-        const el = h('div', { class: 'icon' + (st.sel === it.path ? ' sel' : '') + (hid ? ' hid' : ''), tabindex: 0, html: icon(ic, locked) + `<span>${esc(it.label || nameOf(it.path))}</span>` });
+        const el = h('div', { class: 'icon' + (st.sel === it.path ? ' sel' : '') + (hid ? ' hid' : ''), tabindex: 0, html: icon(ic, locked) + ((it.folder ? it.path !== '#display' && newUnder(it.path) : isNewFile(f)) ? NEWDOT : '') + `<span>${esc(it.label || nameOf(it.path))}</span>` });
         const select = () => { st.sel = it.path; fl.querySelectorAll('.sel').forEach(x => x.classList.remove('sel')); el.classList.add('sel'); win.status.firstChild && (win.status.firstChild.textContent = statusText(it)); };
         el.onclick = () => { select(); if (coarse()) openEntry(it); };
         el.ondblclick = () => openEntry(it);
@@ -1705,7 +1787,7 @@ const Y2K = (() => {
       items.forEach(it => {
         const f = it.file; const locked = f && f.lock && !solved(f.lock);
         const tr = h('tr', { class: st.sel === it.path ? 'sel' : '' },
-          h('td', { class: 'nm', html: icon(it.folder ? 'folder' : TYPEICON[f.type], locked) + esc(nameOf(it.path)) }),
+          h('td', { class: 'nm', html: icon(it.folder ? 'folder' : TYPEICON[f.type], locked) + esc(nameOf(it.path)) + ((it.folder ? newUnder(it.path) : isNewFile(f)) ? `<span class="newtag">${_t('新')}</span>` : '') }),
           h('td', { text: it.folder ? '' : sizeOf(f) }), h('td', { text: it.folder ? _t('文件夹') : TYPENAME[f.type] || '' }), h('td', { text: (f || it.entry || {}).date || '' }));
         const select = () => { st.sel = it.path; tb.querySelectorAll('.sel').forEach(x => x.classList.remove('sel')); tr.classList.add('sel'); win.status.firstChild && (win.status.firstChild.textContent = statusText(it)); };
         tr.onclick = () => { select(); if (coarse()) openEntry(it); };
@@ -1731,7 +1813,7 @@ const Y2K = (() => {
     const tb = h('table', { class: 'det' });
     tb.append(h('tr', {}, ...[_t('名称'), _t('原位置'), _t('删除日期'), _t('大小'), ''].map(t => h('th', { class: 'out', text: t }))));
     items.forEach(f => {
-      tb.append(h('tr', {}, h('td', { class: 'nm', html: icon(TYPEICON[f.type] || 'txt') + esc(nameOf(f.path)) }), h('td', { text: dispPath(parentOf(f.path)) }), h('td', { text: f.deletedAt || f.date || '' }), h('td', { text: sizeOf(f) }),
+      tb.append(h('tr', {}, h('td', { class: 'nm', html: icon(TYPEICON[f.type] || 'txt') + esc(nameOf(f.path)) + (S.opened[f.id] ? '' : `<span class="newtag">${_t('新')}</span>`) }), h('td', { text: dispPath(parentOf(f.path)) }), h('td', { text: f.deletedAt || f.date || '' }), h('td', { text: sizeOf(f) }),
         h('td', {}, h('button', { class: 'b98', style: { minWidth: 0 }, text: _t('还原'), onclick: () => { markInteraction(); setFlag('restored_' + f.id); toast(_t('已还原到 ') + dispPath(parentOf(f.path))); dirty(); } }))));
     });
     win.body.append(tb);
@@ -1740,13 +1822,13 @@ const Y2K = (() => {
 
   // ---- 记事本 / 写字板 / 看图 ----
   function openNotepad(f) {
-    openWin({ key: 'np_' + (f.id || Math.random()), title: nameOf(f.path) + _t(' - 记事本'), icon: 'notepad', file: f, w: 560, h: 420, render: (win) => {
+    openWin({ key: 'np_' + (f.id || Math.random()), title: nameOf(f.path) + _t(' - 记事本'), icon: 'notepad', file: f, w: 640, h: 520, render: (win) => {
       menus(win, [[_t('文件(F)'), [[_t('属性'), () => f.id && showProps(f)], [_t('关闭'), () => closeWin(win)]]], [_t('编辑(E)'), [[_t('全选'), () => { const r = document.createRange(); r.selectNodeContents(win.body.firstChild); const s = getSelection(); s.removeAllRanges(); s.addRange(r); }]]]]);
       win.body.append(h('pre', { class: 'note', text: fmt(f.text || '').replace(/&amp;/g, '&') }));
     } });
   }
   function openWordpad(f) {
-    openWin({ key: 'wp_' + f.id, title: nameOf(f.path) + _t(' - 写字板'), icon: 'doc', file: f, w: 640, h: 480, bodyClass: '', render: (win) => {
+    openWin({ key: 'wp_' + f.id, title: nameOf(f.path) + _t(' - 写字板'), icon: 'doc', file: f, w: 720, h: 620, bodyClass: '', render: (win) => {
       menus(win, [[_t('文件(F)'), [[_t('属性'), () => showProps(f)], [_t('关闭'), () => closeWin(win)]]]]);
       win.body.append(h('div', { class: 'wordpad' }, h('div', { class: 'page', html: fmt(f.html || '') })));
     } });
@@ -1760,12 +1842,12 @@ const Y2K = (() => {
       let scale = 1;
       const zoom = delta => { win.state.z = Math.max(.25, Math.min(4, scale + delta)); win.updateImageSize(); };
       win.top.append(h('div', { class: 'toolbar98' },
-        h('button', { class: 'b98', text: _t('放大 +'), onclick: () => zoom(.25) }),
-        h('button', { class: 'b98', text: _t('缩小 −'), onclick: () => zoom(-.25) }),
-        h('button', { class: 'b98', text: _t('适应窗口'), onclick: () => { win.state.z = null; win.updateImageSize(); win.body.scrollLeft = 0; win.body.scrollTop = 0; } }),
-        h('button', { class: 'b98', text: _t('原始大小'), onclick: () => { win.state.z = 1; win.updateImageSize(); } }),
-        h('button', { class: 'b98', text: _t('全屏查看'), onclick: () => viewImage(fmt(f.html), f) }),
-        h('button', { class: 'b98', text: _t('属性'), onclick: () => showProps(f) }),
+        controlButton({ class: 'b98', text: _t('放大 +') }, () => zoom(.25)),
+        controlButton({ class: 'b98', text: _t('缩小 −') }, () => zoom(-.25)),
+        controlButton({ class: 'b98', text: _t('适应窗口') }, () => { win.state.z = null; win.updateImageSize(); win.body.scrollLeft = 0; win.body.scrollTop = 0; }),
+        controlButton({ class: 'b98', text: _t('原始大小') }, () => { win.state.z = 1; win.updateImageSize(); }),
+        controlButton({ class: 'b98', text: _t('全屏查看') }, () => viewImage(fmt(f.html), f)),
+        controlButton({ class: 'b98', text: _t('属性') }, () => showProps(f)),
         value));
       const caption = f.caption ? h('div', { class: 'cap', html: fmt(f.caption) }) : null;
       win.body.append(h('div', { class: 'imgview' }, canvas, caption));
@@ -1949,7 +2031,7 @@ const Y2K = (() => {
     const start = localFile ? 'file:///' + localFile.path : 'http://' + host + (url || '/');
     const ex = wins.find(w => w.key === 'ie');
     if (ex) { ieGo(ex, start); focusWin(ex); return; }
-    const win = openWin({ key: 'ie', title: 'Microsoft Internet Explorer', icon: 'ie', w: 760, h: 520, bodyClass: 'in ie-body', live: true, state: { hist: [start], hi: 0, local: localFile || null }, render: renderIE });
+    const win = openWin({ key: 'ie', title: 'Microsoft Internet Explorer', icon: 'ie', w: 960, h: 680, bodyClass: 'in ie-body', live: true, state: { hist: [start], hi: 0, local: localFile || null }, render: renderIE });
     return win;
   }
   function ieGo(win, url) { const st = win.state; st.hist = st.hist.slice(0, st.hi + 1); st.hist.push(url); st.hi = st.hist.length - 1; win.resetScroll = true; win.refresh(true); }
@@ -2109,7 +2191,7 @@ const Y2K = (() => {
     const host = D.bbsMeta.host || '192.168.1.103';
     if (!D.puzzles[id] || !solved(id)) {
       const node = h('div', { html: topBar(`<a href="/">${_t('首页')}</a> ${_t('» 站务管理')}`) });
-      node.append(h('div', { class: 'form' }, h('b', { text: _t('站务管理登录') }), h('div', { text: _t('用户名：sysop') }), D.puzzles[id] ? puzzleForm(id, { submitLabel: _t('登录'), wrongText: _t('密码错误。'), onSolved: () => win.refresh(true) }) : h('div', { text: _t('（暂不可用）') })));
+      node.append(h('div', { class: 'form' }, D.puzzles[id] ? puzzleForm(id, { submitLabel: _t('登录'), wrongText: _t('密码错误。'), onSolved: () => win.refresh(true) }) : h('div', { text: _t('（暂不可用）') })));
       return { title: _t('站务管理登录'), node };
     }
     const sec = D.adminSections;

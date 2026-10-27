@@ -24,8 +24,25 @@ const contents = files.map(wrap).join('\n');
 // 译文：界面词表放在引擎前面（引擎初始化时就要用），内容译文放在内容后面
 const uiFile = 'src/i18n/ui.js';
 const ui = fs.existsSync(path.join(root, uiFile)) ? wrap(uiFile) : '';
-const langFiles = [];
-for (const l of ['en', 'ja']) for (const f of order) { const p = `src/i18n/${l}/${f}`; if (fs.existsSync(path.join(root, p))) langFiles.push(p); }
+// 只打包译完的语言：每个内容文件都有译文，且覆盖了原文对照表里的全部键，界面词表也有这门语言。
+// 译到一半的语言不出现在标题画面上，避免玩家玩到中英混杂的版本。
+const vm = require('vm');
+const loadMap = (p) => { let m = null; try { vm.runInNewContext(read(p), { Y2K: { lang: (l, o) => { m = o; } } }); } catch (e) { m = null; } return m; };
+const uiLangs = (() => { if (!ui) return []; const box = {}; try { vm.runInNewContext(read(uiFile), { window: box }); } catch (e) { return []; } return Object.keys(box.Y2K_UI || {}); })();
+const readyLangs = ['zh'], langFiles = [], skipped = [];
+for (const l of ['en', 'ja']) {
+  const files = [], missing = [];
+  for (const f of order) {
+    const zhPath = `src/i18n/zh/${f}`, trPath = `src/i18n/${l}/${f}`;
+    if (!fs.existsSync(path.join(root, zhPath))) continue;
+    const zh = loadMap(zhPath), tr = fs.existsSync(path.join(root, trPath)) ? loadMap(trPath) : null;
+    const lack = zh ? Object.keys(zh).filter(k => !tr || !(k in tr)).length : 0;
+    if (!tr || lack) missing.push(`${f}${tr ? `（缺 ${lack} 条）` : '（无译文）'}`); else files.push(trPath);
+  }
+  if (!uiLangs.includes(l)) missing.push('界面词表');
+  if (missing.length) skipped.push(`${l}：${missing.join('、')}`); else { readyLangs.push(l); langFiles.push(...files); }
+}
+const langScript = `<script>window.Y2K_LANGS=${JSON.stringify(readyLangs)};</script>`;
 const translations = langFiles.map(wrap).join('\n');
 // 图片嵌入 HTML，使双击打开的离线版与网页使用完全相同的资源。
 const photoManifest = JSON.parse(read('src/photo-manifest.json'));
@@ -50,6 +67,7 @@ ${css}
 <body>
 <noscript>这个游戏需要启用 JavaScript。This game needs JavaScript. このゲームには JavaScript が必要です。</noscript>
 ${photos}
+${langScript}
 ${ui}
 <script>
 ${safe(engine)}
@@ -64,4 +82,4 @@ const out = path.join(root, '千年虫.html');
 fs.writeFileSync(out, html);
 // 网页版与单文件离线版始终由同一份源码生成。
 fs.writeFileSync(path.join(root, 'index.html'), html);
-console.log(`已生成${debugBuild ? '（调试版）' : ''} ${out}（${(Buffer.byteLength(html) / 1024).toFixed(0)} KB，内容文件 ${files.length} 个，译文文件 ${langFiles.length} 个${ui ? '，含界面词表' : ''}）`);
+console.log(`已生成${debugBuild ? '（调试版）' : ''} ${out}（${(Buffer.byteLength(html) / 1024).toFixed(0)} KB，内容文件 ${files.length} 个，译文文件 ${langFiles.length} 个${ui ? '，含界面词表' : ''}，可选语言 ${readyLangs.join('/')}）${skipped.length ? '\n未完成、未打包的译文：' + skipped.join('；') : ''}`);
