@@ -6,6 +6,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
+const vm = require('node:vm');
 const { pathToFileURL } = require('node:url');
 const pw = require('playwright');
 const root = path.join(__dirname, '..');
@@ -218,6 +219,53 @@ async function run(browser, name) {
   assert.equal(await q.evaluate(() => JSON.stringify(Y2K.debug.state)), saved, '标题画面不应继续播放对话');
   assert.deepEqual(errors, []);
   console.log(`${name}: 手机未读状态及返回标题后暂停通过；无页面错误`);
+
+  // 正式版切换语言并重新加载；保留因上次切换而已写入的语言偏好和存档。
+  const languagePage = await context.newPage();
+  await languagePage.goto(pathToFileURL(file).href);
+  const originalSave = await languagePage.evaluate(() => localStorage.getItem('y2k_auto'));
+  for (const code of ['en', 'ja', 'zh']) {
+    await Promise.all([languagePage.waitForEvent('load'), languagePage.locator(`.lbtn[lang="${code}"]`).click()]);
+    await languagePage.locator('#title:not([hidden]) .menu button').first().waitFor({ state: 'visible' });
+    assert.equal(await languagePage.locator('html').getAttribute('lang'), code === 'zh' ? 'zh-CN' : code);
+    assert.equal(await languagePage.locator(`.lbtn[lang="${code}"]`).getAttribute('aria-pressed'), 'true');
+    assert.equal(await languagePage.evaluate(() => localStorage.getItem('y2k_auto')), originalSave, '切换语言不能改变已有进度');
+    await languagePage.reload();
+    await languagePage.locator('#title:not([hidden]) .menu button').first().waitFor({ state: 'visible' });
+  }
+
+  // 检查加载后的实际录音字典，防止只消除异常却遗漏带小数点的速度译文。
+  await q.setViewportSize({ width: 1440, height: 950 });
+  for (const code of ['en', 'ja']) {
+    const map = {};
+    for (const f of fs.readdirSync(path.join(root, 'src/i18n', code)).filter(f => f.endsWith('.js'))) {
+      vm.runInNewContext(fs.readFileSync(path.join(root, 'src/i18n', code, f), 'utf8'), { Y2K: { lang: (_, entries) => Object.assign(map, entries) } });
+    }
+    const speeds = Object.entries(map).flatMap(([key, text]) => {
+      const m = key.match(/^file\.([^.]+)\.tape\.speeds\.(.+)$/); return m ? [{ id: m[1], speed: m[2], text }] : [];
+    });
+    await Promise.all([q.waitForEvent('load'), q.locator(`.lbtn[lang="${code}"]`).click()]);
+    await q.locator('#title:not([hidden]) .menu button').first().waitFor({ state: 'visible' });
+    const incorrect = await q.evaluate(entries => entries.filter(entry => Y2K.debug.D.files.find(f => f.id === entry.id)?.tape?.speeds[entry.speed] !== entry.text), speeds);
+    assert.deepEqual(incorrect, []);
+    const missingAnswers = await q.evaluate(entries => entries.filter(([key, values]) => {
+      const m = key.match(/^puzzle\.([^.]+)\.(?:fields\.(\d+)\.)?answers\+$/);
+      if (!m) return false;
+      const p = Y2K.debug.D.puzzles[m[1]], field = m[2] == null ? p : p?.fields[m[2]];
+      return values.some(value => !field?.answers?.includes(value));
+    }), Object.entries(map));
+    assert.deepEqual(missingAnswers, []);
+    const stored = await q.evaluate(() => localStorage.getItem('y2k_auto'));
+    await q.getByRole('button', { name: '继续调查', exact: true }).click();
+    assert.equal(await q.locator('#title').isVisible(), false);
+    assert.equal(await q.evaluate(() => Y2K.debug.state.player), JSON.parse(stored).player);
+    // 检查译文数组和追加答案仍然保留，选择题仍按原选项位置判定。
+    assert(await q.evaluate(() => Object.values(Y2K.debug.D.puzzles).filter(p => p.kind === 'choice').every(p => Y2K.debug.checkPuzzle(p, p._ai))));
+    await q.locator('#phTabs button').nth(5).click();
+    await q.getByRole('button', { name: '返回标题画面', exact: true }).click();
+  }
+  console.log(`${name}: 中英日切换、记住语言后刷新、已有存档继续及录音速度译文通过`);
+  assert.deepEqual(errors, []);
   await context.close();
 }
 

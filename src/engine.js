@@ -48,6 +48,19 @@ const Y2K = (() => {
   }
   // 把译文按键写回数据。键的规则和 tools/i18n-extract.js 一一对应：
   //   <类别>.<id>.<路径…>；路径末尾带 + 表示追加（answers+、near+）；seg|<名字> 是路径段显示名；bbs.<字段> 是 BBS 站点信息
+  function translationTarget(obj, parts, append) {
+    if (!obj || typeof obj !== 'object') return null;
+    // 字典键本身可能含小数点（如 speeds['1.5']），优先匹配完整的现有键。
+    for (let n = parts.length; n > 0; n--) {
+      const key = parts.slice(0, n).join('.');
+      if (!Object.prototype.hasOwnProperty.call(obj, key)) continue;
+      if (n === parts.length) return { obj, key };
+      const target = translationTarget(obj[key], parts.slice(n), append);
+      if (target) return target;
+    }
+    // answers+ / near+ 可以在已存在的父对象中新增末级字段。
+    return append && parts.length === 1 ? { obj, key: parts[0] } : null;
+  }
   function applyLang(map) {
     if (!map) return;
     const byId = (arr) => { const o = {}; arr.forEach(x => { o[x.id] = x; }); return o; };
@@ -60,17 +73,15 @@ const Y2K = (() => {
     for (const [key, val] of Object.entries(map)) {
       if (key.startsWith('seg|')) { SEG[key.slice(4)] = val; continue; }
       if (key.startsWith('bbs.')) { D.bbsMeta[key.slice(4)] = val; continue; }
-      const parts = key.split('.');
+      const append = key.endsWith('+');
+      const parts = (append ? key.slice(0, -1) : key).split('.');
       const root = roots[parts[0]];
-      let obj = root && root[parts[1]];
-      if (!obj) continue;
-      const rest = parts.slice(2), last = rest.pop();
-      for (const p of rest) { if (obj == null) break; obj = obj[p]; }
-      if (obj == null || last == null) continue;
-      if (last.endsWith('+')) {
-        const k = last.slice(0, -1);
-        if (Array.isArray(val)) obj[k] = (obj[k] || []).concat(val);
-        else if (val && typeof val === 'object') obj[k] = Object.assign({}, obj[k] || {}, val);
+      const target = translationTarget(root && root[parts[1]], parts.slice(2), append);
+      if (!target) continue;
+      const { obj, key: last } = target;
+      if (append) {
+        if (Array.isArray(val)) obj[last] = (obj[last] || []).concat(val);
+        else if (val && typeof val === 'object') obj[last] = Object.assign({}, obj[last] || {}, val);
       } else obj[last] = val;
     }
   }
