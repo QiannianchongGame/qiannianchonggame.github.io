@@ -532,7 +532,7 @@ const Y2K = (() => {
       img.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } };
     });
   }
-  function viewImage(html) {
+  function viewImage(html, file) {
     const previousFocus = document.activeElement;
     const canvas = h('div', { class: 'viewer-canvas', html });
     canvas.querySelectorAll('[tabindex]').forEach(el => { el.removeAttribute('tabindex'); el.removeAttribute('role'); el.removeAttribute('aria-label'); el.style.cursor = ''; });
@@ -559,9 +559,11 @@ const Y2K = (() => {
     const closeBtn = h('button', { class: 'ph-btn viewer-close', text: _t('关闭'), title: 'Esc', onclick: close });
     const toolbar = h('div', { class: 'viewer-toolbar' }, minus, plus, value,
       h('button', { class: 'ph-btn', text: _t('适应窗口'), onclick: fit }),
-      h('button', { class: 'ph-btn', text: _t('原始大小'), onclick: () => { fitMode = false; resize(1); } }), closeBtn);
+      h('button', { class: 'ph-btn', text: _t('原始大小'), onclick: () => { fitMode = false; resize(1); } }),
+      file ? h('button', { class: 'ph-btn', text: _t('属性'), onclick: () => showProps(file, true) }) : null, closeBtn);
     const panel = h('div', { class: 'viewer-panel', role: 'dialog', 'aria-modal': 'true', 'aria-label': _t('图像查看器') }, toolbar, area);
     const el = h('div', { class: 'viewer', onclick: e => { if (e.target === el) close(); } }, panel);
+    if (file) bindCtx(area, () => [[_t('属性'), () => showProps(file, true)]], null, overlay());
     panel.onkeydown = e => {
       if (e.key === '+' || e.key === '=') { e.preventDefault(); zoom(1.25); }
       if (e.key === '-') { e.preventDefault(); zoom(1 / 1.25); }
@@ -683,13 +685,13 @@ const Y2K = (() => {
     m.append(shade, dlg);
     form.focusFirst();
   }
-  function msgBox(title, html, buttons) {
+  function msgBox(title, html, buttons, aboveOverlay) {
     const m = modalRoot(); m.innerHTML = '';
-    const dlg = h('div', { class: 'dlg98 out', role: 'dialog' });
+    const dlg = h('div', { class: 'dlg98 out' + (aboveOverlay ? ' raised' : ''), role: 'dialog' });
     const row = h('div', { class: 'row' });
     (buttons || [{ text: _t('确定') }]).forEach(b => row.append(h('button', { class: 'b98', text: b.text, onclick: () => { closeModal(); b.fn && b.fn(); } })));
     dlg.append(h('div', { class: 'titlebar' }, h('span', { class: 't', text: title }), h('button', { class: 'b98 tbb', 'aria-label': _t('关闭'), title: _t('关闭'), text: '×', onclick: () => closeModal() })), h('div', { class: 'wbody' }, h('div', { class: 'prompt', html }), row));
-    m.append(h('div', { class: 'shade', onclick: () => closeModal() }), dlg);
+    m.append(h('div', { class: 'shade' + (aboveOverlay ? ' raised' : ''), onclick: () => closeModal() }), dlg);
   }
   // 带锁的东西：先解谜再执行
   function withLock(lock, fn) { if (!lock || solved(lock)) return fn(); askPuzzle(lock, fn); }
@@ -1191,6 +1193,7 @@ const Y2K = (() => {
   let wins = [], zTop = 100, renderedFlagVer = -1;
   function desktop() { return $('#desktop'); }
   function buildDesktop() {
+    closeCtx();
     const sc = screen(); sc.innerHTML = '';
     const dk = h('div', { id: 'desktop' }, h('div', { id: 'icons' }));
     const tb = h('div', { id: 'taskbar', class: 'out' },
@@ -1198,6 +1201,14 @@ const Y2K = (() => {
       h('div', { id: 'tasks' }), h('div', { id: 'tray', class: 'in', style: { background: 'transparent' } }));
     sc.append(dk, tb);
     dk.addEventListener('pointerdown', (e) => { if (e.target === dk || e.target.id === 'icons') { selectIcon(null); closeStart(); closeCtx(); } });
+    // 游戏桌面使用自己的菜单；输入框保留浏览器的复制、粘贴菜单。
+    dk.addEventListener('contextmenu', e => {
+      if (e.defaultPrevented || e.target.closest('input, textarea, select, [contenteditable="true"]')) return;
+      e.preventDefault();
+      const win = wins.find(w => w.el.contains(e.target));
+      const items = win ? [[_t('刷新'), () => win.refresh(true)]] : [[_t('刷新'), () => { renderIcons(); refreshWins(true); }], [_t('显示 属性'), openDisplay]];
+      showCtx(items, e.clientX, e.clientY);
+    });
     wins = [];
     renderIcons(); renderTray(); renderTasks();
   }
@@ -1205,7 +1216,7 @@ const Y2K = (() => {
   function selectIcon(el) { document.querySelectorAll('#icons .icon.sel').forEach(x => x.classList.remove('sel')); selIcon = el; if (el) el.classList.add('sel'); }
   function desktopEntries() {
     const out = [];
-    for (const [id, a] of Object.entries(D.apps)) if (test(a.requires)) out.push({ key: 'app_' + id, name: a.name, icon: id === 'recycle' ? (recycleItems().length ? 'recyclefull' : 'recycle') : a.icon, open: () => openApp(id) });
+    for (const [id, a] of Object.entries(D.apps)) if (test(a.requires)) out.push({ key: 'app_' + id, name: a.name, icon: id === 'recycle' ? (recycleItems().length ? 'recyclefull' : 'recycle') : a.icon, open: () => openApp(id), file: a.path ? D.files.find(f => f.path === a.path && f.type === 'folder') : null });
     D.files.filter(f => f.desktop && fileVisible(f)).forEach(f => out.push({ key: 'f_' + f.id, name: nameOf(f.path), icon: TYPEICON[f.type], locked: f.lock && !solved(f.lock), open: () => openFile(f), file: f }));
     return out;
   }
@@ -1217,7 +1228,7 @@ const Y2K = (() => {
       el.onclick = (e) => { selectIcon(el); if (coarse()) en.open(); };
       el.ondblclick = () => en.open();
       el.onkeydown = (e) => { if (e.key === 'Enter') en.open(); };
-      if (en.file) bindCtx(el, () => [[_t('打开'), en.open], [_t('属性'), () => showProps(en.file)]]);
+      bindCtx(el, () => [[_t('打开'), en.open], ...(en.file ? [[_t('属性'), () => showProps(en.file)]] : [])], () => selectIcon(el));
       box.append(el);
     });
   }
@@ -1258,6 +1269,7 @@ const Y2K = (() => {
     const menu = h('div', { class: 'menubar' });
     const top = h('div');
     const body = h('div', { class: 'wbody ' + (o.bodyClass || 'in') });
+    if (o.file) bindCtx(body, () => [[_t('属性'), () => showProps(o.file)]]);
     const status = h('div', { class: 'status98' });
     el.append(bar, menu, top, body, status, h('div', { class: 'grip' }));
     win.el = el; win.body = body; win.menu = menu; win.top = top; win.status = status; win.tt = tt;
@@ -1330,20 +1342,52 @@ const Y2K = (() => {
     });
   }
   // 右键菜单（触屏长按）
-  let ctxEl = null;
-  function closeCtx() { if (ctxEl) { ctxEl.remove(); ctxEl = null; } }
-  function bindCtx(el, items) {
-    const show = (x, y) => {
-      closeCtx(); const dk = desktop(); if (!dk) return; const dr = dk.getBoundingClientRect();
-      ctxEl = h('div', { class: 'ctx out', style: { left: Math.min(x - dr.left, dr.width - 130) + 'px', top: Math.min(y - dr.top, dr.height - 60) + 'px' } });
-      items().forEach(([t, fn]) => ctxEl.append(h('div', { text: t, onclick: () => { closeCtx(); fn(); } })));
-      dk.append(ctxEl);
-      setTimeout(() => document.addEventListener('pointerdown', function off(ev) { if (ctxEl && !ctxEl.contains(ev.target)) { closeCtx(); } document.removeEventListener('pointerdown', off, true); }, true), 0);
+  let ctxEl = null, ctxOutside = null;
+  function closeCtx() {
+    if (ctxOutside) { document.removeEventListener('pointerdown', ctxOutside, true); ctxOutside = null; }
+    if (ctxEl) { ctxEl.remove(); ctxEl = null; }
+  }
+  function showCtx(items, x, y, keyboard, host) {
+    closeCtx(); const dk = host || desktop(); if (!dk || !items.length) return;
+    const dr = dk.getBoundingClientRect();
+    ctxEl = h('div', { class: 'ctx out', role: 'menu', style: { zIndex: Math.max(7100, zTop + 1) } });
+    items.forEach(([t, fn]) => ctxEl.append(h('button', { class: 'ctx-item', type: 'button', role: 'menuitem', text: t, onclick: () => { closeCtx(); fn(); } })));
+    ctxEl.onkeydown = e => {
+      if (!['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(e.key)) return;
+      e.preventDefault(); const buttons = [...ctxEl.querySelectorAll('button')], i = buttons.indexOf(document.activeElement);
+      const n = e.key === 'Home' ? 0 : e.key === 'End' ? buttons.length - 1 : (i + (e.key === 'ArrowDown' ? 1 : -1) + buttons.length) % buttons.length;
+      buttons[n].focus();
     };
-    el.addEventListener('contextmenu', (e) => { e.preventDefault(); show(e.clientX, e.clientY); });
-    let lp = 0;
-    el.addEventListener('touchstart', (e) => { const t = e.touches[0]; lp = setTimeout(() => show(t.clientX, t.clientY), 550); }, { passive: true });
-    el.addEventListener('touchend', () => clearTimeout(lp)); el.addEventListener('touchmove', () => clearTimeout(lp), { passive: true });
+    dk.append(ctxEl);
+    ctxEl.style.left = Math.max(0, Math.min(x - dr.left, dr.width - ctxEl.offsetWidth)) + 'px';
+    ctxEl.style.top = Math.max(0, Math.min(y - dr.top, dr.height - ctxEl.offsetHeight)) + 'px';
+    ctxOutside = e => { if (ctxEl && !ctxEl.contains(e.target)) closeCtx(); };
+    document.addEventListener('pointerdown', ctxOutside, true);
+    if (keyboard) ctxEl.querySelector('button')?.focus();
+  }
+  function bindCtx(el, items, select, host) {
+    const show = (x, y, keyboard) => { if (select) select(); showCtx(items(), x, y, keyboard, host); };
+    el.addEventListener('contextmenu', e => {
+      if (e.target.closest('input, textarea, select, [contenteditable="true"]')) return;
+      e.preventDefault(); e.stopPropagation();
+      if (!touching && Date.now() < suppressContextUntil) return;
+      if (touching) { cancel(); touchOpened = true; suppressContextUntil = Date.now() + 1000; }
+      if (!ctxEl || !touchOpened) show(e.clientX, e.clientY);
+    });
+    el.addEventListener('keydown', e => {
+      if (e.key !== 'ContextMenu' && !(e.shiftKey && e.key === 'F10')) return;
+      e.preventDefault(); e.stopPropagation(); const r = el.getBoundingClientRect(); show(r.left + r.width / 2, r.top + r.height / 2, true);
+    });
+    let lp = 0, touchOpened = false, touching = false, suppressContextUntil = 0;
+    const cancel = () => { clearTimeout(lp); lp = 0; };
+    el.addEventListener('touchstart', e => {
+      cancel(); touchOpened = false; touching = e.touches.length === 1; suppressContextUntil = 0; if (!touching) return;
+      const { clientX, clientY } = e.touches[0];
+      lp = setTimeout(() => { if (el.isConnected) { touchOpened = true; suppressContextUntil = Date.now() + 1000; show(clientX, clientY); } }, 550);
+    }, { passive: true });
+    el.addEventListener('touchend', e => { cancel(); touching = false; if (touchOpened) { e.preventDefault(); touchOpened = false; } }, { passive: false });
+    el.addEventListener('touchmove', cancel, { passive: true });
+    el.addEventListener('touchcancel', () => { cancel(); touching = false; touchOpened = false; }, { passive: true });
   }
   // 开始菜单
   function toggleStart() { if ($('#startmenu')) return closeStart(); openStart(); }
@@ -1437,7 +1481,7 @@ const Y2K = (() => {
     if (f.type === 'zip') return go();
     withLock(f.lock, go);
   }
-  function showProps(f) {
+  function showProps(f, aboveOverlay) {
     if (f.id) { setFlag('props_' + f.id); if (!S.opened['props_' + f.id]) { S.opened['props_' + f.id] = 1; act(f.onProps); } dirty(); }
     const rows = [[_t('类型'), TYPENAME[f.type] || _t('文件')], [_t('位置'), dispPath(parentOf(f.path)) || f.path], [_t('大小'), f.type === 'folder' ? '-' : sizeOf(f)], [_t('修改时间'), f.date || '-']];
     if (f.created) rows.push([_t('创建时间'), f.created]);
@@ -1447,7 +1491,7 @@ const Y2K = (() => {
     html += `<tr><td style="padding:2px 12px 2px 0;color:#333">${_t('属性：')}</td><td>${attr}</td></tr>`;
     if (f.props) { html += '</table><div class="sep98"></div><table style="border-collapse:collapse">'; Object.entries(f.props).forEach(([k, v]) => html += `<tr><td style="padding:2px 12px 2px 0;color:#333;white-space:nowrap;vertical-align:top">${esc(k)}：</td><td style="padding:2px 0;white-space:pre-wrap">${fmt(esc(v))}</td></tr>`); }
     html += '</table>';
-    msgBox(nameOf(f.path) + _t(' 属性'), html);
+    msgBox(nameOf(f.path) + _t(' 属性'), html, null, aboveOverlay);
   }
 
   // ============================================================
@@ -1510,10 +1554,11 @@ const Y2K = (() => {
         const ic = it.drive || (it.folder ? 'folder' : TYPEICON[f.type]);
         const hid = (f && f.hidden) || (it.entry && it.entry.hidden);
         const el = h('div', { class: 'icon' + (st.sel === it.path ? ' sel' : '') + (hid ? ' hid' : ''), tabindex: 0, html: icon(ic, locked) + `<span>${esc(it.label || nameOf(it.path))}</span>` });
-        el.onclick = () => { st.sel = it.path; fl.querySelectorAll('.sel').forEach(x => x.classList.remove('sel')); el.classList.add('sel'); win.status.firstChild && (win.status.firstChild.textContent = statusText(it)); if (coarse()) openEntry(it); };
+        const select = () => { st.sel = it.path; fl.querySelectorAll('.sel').forEach(x => x.classList.remove('sel')); el.classList.add('sel'); win.status.firstChild && (win.status.firstChild.textContent = statusText(it)); };
+        el.onclick = () => { select(); if (coarse()) openEntry(it); };
         el.ondblclick = () => openEntry(it);
         el.onkeydown = (e) => { if (e.key === 'Enter') openEntry(it); };
-        if (p !== '') bindCtx(el, () => [[_t('打开'), () => openEntry(it)], [_t('属性'), () => showProps(f || it.entry || { path: it.path, type: 'folder' })]]);
+        bindCtx(el, () => [[_t('打开'), () => openEntry(it)], [_t('属性'), () => showProps(f || it.entry || { path: it.path, type: 'folder' })]], select);
         fl.append(el);
       });
       body.append(fl);
@@ -1525,9 +1570,12 @@ const Y2K = (() => {
         const tr = h('tr', { class: st.sel === it.path ? 'sel' : '' },
           h('td', { class: 'nm', html: icon(it.folder ? 'folder' : TYPEICON[f.type], locked) + esc(nameOf(it.path)) }),
           h('td', { text: it.folder ? '' : sizeOf(f) }), h('td', { text: it.folder ? _t('文件夹') : TYPENAME[f.type] || '' }), h('td', { text: (f || it.entry || {}).date || '' }));
-        tr.onclick = () => { st.sel = it.path; tb.querySelectorAll('.sel').forEach(x => x.classList.remove('sel')); tr.classList.add('sel'); if (coarse()) openEntry(it); };
+        const select = () => { st.sel = it.path; tb.querySelectorAll('.sel').forEach(x => x.classList.remove('sel')); tr.classList.add('sel'); win.status.firstChild && (win.status.firstChild.textContent = statusText(it)); };
+        tr.onclick = () => { select(); if (coarse()) openEntry(it); };
         tr.ondblclick = () => openEntry(it);
-        bindCtx(tr, () => [[_t('打开'), () => openEntry(it)], [_t('属性'), () => showProps(f || it.entry || { path: it.path, type: 'folder' })]]);
+        tr.tabIndex = 0;
+        tr.onkeydown = e => { if (e.key === 'Enter') openEntry(it); };
+        bindCtx(tr, () => [[_t('打开'), () => openEntry(it)], [_t('属性'), () => showProps(f || it.entry || { path: it.path, type: 'folder' })]], select);
         tb.append(tr);
       });
       body.append(tb);
@@ -1555,21 +1603,21 @@ const Y2K = (() => {
 
   // ---- 记事本 / 写字板 / 看图 ----
   function openNotepad(f) {
-    openWin({ key: 'np_' + (f.id || Math.random()), title: nameOf(f.path) + _t(' - 记事本'), icon: 'notepad', w: 560, h: 420, render: (win) => {
+    openWin({ key: 'np_' + (f.id || Math.random()), title: nameOf(f.path) + _t(' - 记事本'), icon: 'notepad', file: f, w: 560, h: 420, render: (win) => {
       menus(win, [[_t('文件(F)'), [[_t('属性'), () => f.id && showProps(f)], [_t('关闭'), () => closeWin(win)]]], [_t('编辑(E)'), [[_t('全选'), () => { const r = document.createRange(); r.selectNodeContents(win.body.firstChild); const s = getSelection(); s.removeAllRanges(); s.addRange(r); }]]]]);
       win.body.append(h('pre', { class: 'note', text: fmt(f.text || '').replace(/&amp;/g, '&') }));
     } });
   }
   function openWordpad(f) {
-    openWin({ key: 'wp_' + f.id, title: nameOf(f.path) + _t(' - 写字板'), icon: 'doc', w: 640, h: 480, bodyClass: '', render: (win) => {
+    openWin({ key: 'wp_' + f.id, title: nameOf(f.path) + _t(' - 写字板'), icon: 'doc', file: f, w: 640, h: 480, bodyClass: '', render: (win) => {
       menus(win, [[_t('文件(F)'), [[_t('属性'), () => showProps(f)], [_t('关闭'), () => closeWin(win)]]]]);
       win.body.append(h('div', { class: 'wordpad' }, h('div', { class: 'page', html: fmt(f.html || '') })));
     } });
   }
   function openImage(f) {
-    openWin({ key: 'img_' + f.id, title: nameOf(f.path) + _t(' - 图像查看器'), icon: 'img', w: 640, h: 500, bodyClass: '', state: { z: null }, onClose: win => win.imageResize && win.imageResize.disconnect(), render: (win) => {
+    openWin({ key: 'img_' + f.id, title: nameOf(f.path) + _t(' - 图像查看器'), icon: 'img', file: f, w: 640, h: 500, bodyClass: '', state: { z: null }, onClose: win => win.imageResize && win.imageResize.disconnect(), render: (win) => {
       menus(win, [[_t('文件(F)'), [[_t('属性'), () => showProps(f)], [_t('关闭'), () => closeWin(win)]]]]);
-      const canvas = h('div', { class: 'canvas', html: fmt(f.html || ''), tabindex: 0, role: 'button', 'aria-label': _t('全屏查看'), ondblclick: () => viewImage(fmt(f.html)), onkeydown: e => { if (e.key === 'Enter') viewImage(fmt(f.html)); } });
+      const canvas = h('div', { class: 'canvas', html: fmt(f.html || ''), tabindex: 0, role: 'button', 'aria-label': _t('全屏查看'), ondblclick: () => viewImage(fmt(f.html), f), onkeydown: e => { if (e.key === 'Enter') viewImage(fmt(f.html), f); } });
       const size = imageSize(canvas);
       const value = h('span');
       let scale = 1;
@@ -1579,7 +1627,8 @@ const Y2K = (() => {
         h('button', { class: 'b98', text: _t('缩小 −'), onclick: () => zoom(-.25) }),
         h('button', { class: 'b98', text: _t('适应窗口'), onclick: () => { win.state.z = null; win.updateImageSize(); win.body.scrollLeft = 0; win.body.scrollTop = 0; } }),
         h('button', { class: 'b98', text: _t('原始大小'), onclick: () => { win.state.z = 1; win.updateImageSize(); } }),
-        h('button', { class: 'b98', text: _t('全屏查看'), onclick: () => viewImage(fmt(f.html)) }),
+        h('button', { class: 'b98', text: _t('全屏查看'), onclick: () => viewImage(fmt(f.html), f) }),
+        h('button', { class: 'b98', text: _t('属性'), onclick: () => showProps(f) }),
         value));
       const caption = f.caption ? h('div', { class: 'cap', html: fmt(f.caption) }) : null;
       win.body.append(h('div', { class: 'imgview' }, canvas, caption));
@@ -1605,7 +1654,7 @@ const Y2K = (() => {
   // ---- 磁带播放器 ----
   const SPEEDS = ['0.5', '0.75', '1', '1.25', '1.5', '2'];
   function openMedia(f) {
-    openWin({ key: 'md_' + f.id, title: nameOf(f.path) + _t(' - 媒体播放器'), icon: 'audio', w: 520, h: 470, bodyClass: 'out', state: { si: 2, playing: false, shown: '' }, render: (win) => {
+    openWin({ key: 'md_' + f.id, title: nameOf(f.path) + _t(' - 媒体播放器'), icon: 'audio', file: f, w: 520, h: 470, bodyClass: 'out', state: { si: 2, playing: false, shown: '' }, render: (win) => {
       const tape = f.tape || {}; const st = win.state;
       menus(win, [[_t('文件(F)'), [[_t('属性'), () => showProps(f)], [_t('关闭'), () => closeWin(win)]]]]);
       const spd = SPEEDS[st.si];
@@ -1647,7 +1696,7 @@ const Y2K = (() => {
 
   // ---- 压缩包 ----
   function openZip(f) {
-    openWin({ key: 'zip_' + f.id, title: nameOf(f.path) + _t(' - 解压缩'), icon: 'zip', w: 480, h: 380, bodyClass: 'out', live: true, render: (win) => {
+    openWin({ key: 'zip_' + f.id, title: nameOf(f.path) + _t(' - 解压缩'), icon: 'zip', file: f, w: 480, h: 380, bodyClass: 'out', live: true, render: (win) => {
       const z = f.zip || {}; const unlocked = !f.lock || solved(f.lock);
       const tb = h('table', { class: 'det in' });
       tb.append(h('tr', {}, h('th', { class: 'out', text: _t('名称') }), h('th', { class: 'out', text: _t('状态') })));
@@ -1695,7 +1744,7 @@ const Y2K = (() => {
     const sc = screen(); if (!sc || $('#saver')) return;
     saverOn = true;
     const el = h('div', { id: 'saver' }, h('div', { class: 'mq', text: strip(fmt(e.text)), style: { top: (20 + Math.random() * 60) + '%' } }));
-    setTimeout(() => sc.append(el), 50);
+    sc.append(el);
     if (e.onShow) { const k = 'saver_' + D.screensaver.indexOf(e); if (!S.opened[k]) { S.opened[k] = 1; later(() => act(e.onShow), 3000); } }
   }
   function hideSaver() { saverOn = false; const s = $('#saver'); if (s) s.remove(); }
@@ -2005,7 +2054,7 @@ const Y2K = (() => {
       h('div', { id: 'modal' }), h('div', { id: 'overlay' }), h('div', { id: 'title', class: 'title', hidden: true }), h('div', { id: 'toast' }));
     ['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach(ev => document.addEventListener(ev, resetIdle, { passive: true }));
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') { if ($('#modal').children.length) closeModal(); else if (overlay().classList.contains('on') && overlay().querySelector('.board, .viewer')) { closeOverlay(); showCards(); renderAll(); } }
+      if (e.key === 'Escape') { if (ctxEl) closeCtx(); else if ($('#modal').children.length) closeModal(); else if (overlay().classList.contains('on') && overlay().querySelector('.board, .viewer')) { closeOverlay(); showCards(); renderAll(); } }
     });
     setInterval(() => { if (!S) return; renderTray(); const st = $('#phStatus'); if (st) { const t = phoneNow(); st.querySelector('b') && (st.querySelector('b').textContent = t.hm); } }, 15000);
     setInterval(() => { if (S && !titleOn) { tickPlay(); writeSave('auto'); } }, 30000);

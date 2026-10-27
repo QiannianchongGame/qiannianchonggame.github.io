@@ -286,16 +286,18 @@ table.det td.nm svg { width: 16px; height: 16px; }
 .dlgph .opts label { padding: 4px 0; }
 .dlgph .fields label { color: #aab; }
 .shade { position: fixed; inset: 0; z-index: 9400; background: rgba(0,0,0,.25); }
+.shade.raised { z-index: 9550; }
+.dlg98.raised { z-index: 9560; }
 .shake { animation: shake .35s; }
 @keyframes shake { 20%, 60% { transform: translate(calc(-50% - 6px), -50%); } 40%, 80% { transform: translate(calc(-50% + 6px), -50%); } }
 .ctx { position: absolute; z-index: 7100; padding: 2px; min-width: 120px; }
-.ctx div { padding: 3px 18px; }
-.ctx div:hover { background: var(--w-title); color: #fff; }
+.ctx-item { display: block; width: 100%; border: 0; padding: 4px 18px; background: transparent; color: #000; text-align: left; white-space: nowrap; cursor: pointer; }
+.ctx-item:hover, .ctx-item:focus-visible { background: var(--w-title); color: #fff; outline: none; }
 
 /* 屏保 */
 #saver { position: absolute; inset: 0; background: #000; z-index: 8000; overflow: hidden; cursor: none; }
-#saver .mq { position: absolute; white-space: nowrap; font: 34px/1 var(--font-hand); color: #ffd84a; animation: mq 22s linear infinite; }
-@keyframes mq { from { transform: translateX(100vw); } to { transform: translateX(-100%); } }
+#saver .mq { position: absolute; white-space: nowrap; font: 34px/1 var(--font-hand); color: #ffd84a; animation: mq 22s linear infinite alternate; }
+@keyframes mq { from { left: 12px; transform: translateX(0); } to { left: calc(100% - 12px); transform: translateX(-100%); } }
 
 /* ---------- 手机 ---------- */
 #phone { width: 370px; flex: none; display: flex; flex-direction: column; background: var(--ph-bg); border-radius: 28px; border: 8px solid #23262c; box-shadow: 0 20px 60px rgba(0,0,0,.6); overflow: hidden; position: relative; }
