@@ -21,7 +21,7 @@
     "file": "assets/photos/millennium-group.webp",
     "overlay": "group",
     "targets": [{ "collection": "files", "id": "c2_photo" }],
-    "prompt": "Edit the established 1999 school group photograph using a natural, understated school snapshot as a style reference. Preserve all fourteen individual identities, sexes, clothing and positions: six girls in front, seven boys behind and a male teacher at right. Keep Zhou Ting and He Man linked at the arms. Use varied neutral expressions and modest closed-mouth smiles. Redraw Wang Lei's arm from his shoulder through an outward bent elbow to a coherent wrist and V-sign hand that partly covers Ma Jun's face. Preserve the water tower, empty countdown sign and clock, with muted film-flash lighting. Leave room for accurate numbers, countdown and date.",
+    "prompt": "Edit the established 1999 school group photograph using a natural, understated school snapshot as a style reference. Preserve all fourteen individual identities, sexes, clothing and positions: six girls in front, seven boys behind and a male teacher at right. Keep Zhou Ting and He Man linked at the arms. Use varied neutral expressions and modest closed-mouth smiles. Redraw Wang Lei's arm from his shoulder through an outward bent elbow to a coherent wrist and V-sign hand that partly covers Ma Jun's face. Preserve the water tower, empty countdown sign and clock, with muted film-flash lighting. Make the distant clock softly out of focus and low contrast, with its hands roughly showing just before midnight. Leave room for accurate numbers, countdown and date.",
     "character_reference": "assets/photos/characters-reference.webp"
   },
   "photo_back": {

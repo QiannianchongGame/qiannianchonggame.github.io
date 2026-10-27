@@ -103,7 +103,7 @@ const Y2K = (() => {
     const photos = window.Y2K_PHOTOS || {};
     const svgNS = 'http://www.w3.org/2000/svg';
     const overlayHTML = {
-      group: '<rect x="260" y="25" width="140" height="55" rx="2" fill="#101010" stroke="#555" stroke-width="2"/><circle cx="462" cy="50" r="18" fill="#ebe5d2" stroke="#555" stroke-width="3"/><path d="M462 34v3 M462 63v3 M446 50h3 M475 50h3 M450.7 38.7l2 2 M471.3 59.3l2 2 M450.7 61.3l2 -2 M471.3 40.7l2 -2" stroke="#333" stroke-width="1.3"/><line x1="462" y1="50" x2="461.7" y2="40" stroke="#111" stroke-width="2.5"/><line x1="462" y1="50" x2="458.7" y2="34.4" stroke="#111" stroke-width="1.5"/><circle cx="462" cy="50" r="1.5" fill="#111"/>',
+      group: '<rect x="260" y="25" width="140" height="55" rx="2" fill="#101010" stroke="#555" stroke-width="2"/>',
       ice: '<rect x="499" y="82" width="60" height="27" rx="1" fill="#6b4d30" stroke="#49351f" stroke-width="1"/><rect x="597" y="96" width="24" height="12" rx="1" fill="#a21c1c"/>',
     };
     for (const [name, photo] of Object.entries(photos)) {

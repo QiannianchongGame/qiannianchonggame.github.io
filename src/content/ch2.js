@@ -546,7 +546,7 @@ Y2K 的注册 IP：192.168.1.200。校内。不是拔号。
       { id: "c2_photo", path: "C:/我的文档/照片/千禧夜合影.jpg", type: "img", date: "2000-01-03 17:40", size: "212 KB", requires: "ch2",
         html: photoSVG(), caption: "千禧夜合影（扫描件）。人头上的号码是孙倩用黄色水笔标的。",
         props: { "扫描": "2000-01-03 许嘉", "备注": "校报一月号封面用。原片在苏芮那里。" },
-        onOpen: { toast: "照片后面的倒计时牌和操场大钟都拍得很清楚。" } },
+        onOpen: { toast: "照片后面的倒计时牌拍得很清楚，远处的操场大钟有些模糊。" } },
       { id: "c2_photoback", path: "C:/我的文档/照片/千禧夜合影_背面.jpg", type: "img", date: "2000-01-03 17:44", size: "96 KB", requires: "ch2",
         html: photoBackSVG(), caption: "合影背面（孙倩的字）。4 号和 9 号的名字被水洇了。" },
       { id: "c2_tower", path: "C:/我的文档/照片/水塔.jpg", type: "img", date: "1999-12-20 23:05", size: "148 KB", requires: "ch2",
