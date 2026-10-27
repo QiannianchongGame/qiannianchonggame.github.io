@@ -79,6 +79,8 @@ const Y2K = (() => {
       const target = translationTarget(root && root[parts[1]], parts.slice(2), append);
       if (!target) continue;
       const { obj, key: last } = target;
+      // 未完成译文中的占位符不应覆盖原照片，保留可读的中文原件。
+      if (typeof val === 'string' && /^__SVG_[A-Z0-9_]+__$/.test(val) && typeof obj[last] === 'string' && obj[last].includes('<svg')) continue;
       if (append) {
         if (Array.isArray(val)) obj[last] = (obj[last] || []).concat(val);
         else if (val && typeof val === 'object') obj[last] = Object.assign({}, obj[last] || {}, val);
@@ -93,6 +95,70 @@ const Y2K = (() => {
     MAIL26 = {}; D.mails2026.forEach(m => MAIL26[m.id] = m);
     ITEM = {}; D.items2026.forEach(m => ITEM[m.id] = m);
     D.threads.sort((a, b) => a.id - b.id);
+  }
+
+  // 将原图替换为写实照片。原 SVG 的证据文字作为独立图层保留，
+  // 防止生成图中的日期、编号或笔迹失真，影响玩家推理。
+  function applyPhotos() {
+    const photos = window.Y2K_PHOTOS || {};
+    const svgNS = 'http://www.w3.org/2000/svg';
+    const overlayHTML = {
+      group: '<rect x="260" y="25" width="140" height="55" rx="2" fill="#101010" stroke="#555" stroke-width="2"/><circle cx="462" cy="50" r="18" fill="#ebe5d2" stroke="#555" stroke-width="3"/><path d="M462 34v3 M462 63v3 M446 50h3 M475 50h3 M450.7 38.7l2 2 M471.3 59.3l2 2 M450.7 61.3l2 -2 M471.3 40.7l2 -2" stroke="#333" stroke-width="1.3"/><line x1="462" y1="50" x2="461.7" y2="40" stroke="#111" stroke-width="2.5"/><line x1="462" y1="50" x2="458.7" y2="34.4" stroke="#111" stroke-width="1.5"/><circle cx="462" cy="50" r="1.5" fill="#111"/>',
+      ice: '<rect x="499" y="82" width="60" height="27" rx="1" fill="#6b4d30" stroke="#49351f" stroke-width="1"/><rect x="597" y="96" width="24" height="12" rx="1" fill="#a21c1c"/>',
+    };
+    for (const [name, photo] of Object.entries(photos)) {
+      for (const target of photo.targets) {
+        const entity = (D[target.collection] || []).find(x => x.id === target.id);
+        if (!entity || !entity.html) continue;
+        const box = document.createElement('div'); box.innerHTML = entity.html;
+        const svg = box.querySelector('svg'); if (!svg) continue;
+        const vb = svg.viewBox.baseVal;
+        const width = vb.width || 640, height = vb.height || 420;
+        const texts = [...svg.querySelectorAll('text')];
+        if (photo.overlay === 'portrait') {
+          texts.filter(node => /[（(]照片[）)]|[（(]photo[）)]|[（(]写真[）)]/i.test(node.textContent)).forEach(node => node.remove());
+          const portrait = document.createElementNS(svgNS, 'image');
+          portrait.setAttribute('x', '470'); portrait.setAttribute('y', '120'); portrait.setAttribute('width', '110'); portrait.setAttribute('height', '140');
+          portrait.setAttribute('preserveAspectRatio', 'xMidYMid slice'); portrait.setAttribute('href', photo.data);
+          svg.append(portrait); svg.setAttribute('data-photo', name); entity.html = box.innerHTML; continue;
+        }
+        if (photo.overlay === 'group') {
+          // 与真实合影中的站位一一对应：前排六人，后排七人，右侧主持老师。
+          const positions = { 1:[64,78], 2:[153,169], 3:[248,169], 4:[339,165], 5:[405,176], 6:[495,185], 7:[159,78], 8:[298,90], 9:[228,94], 10:[66,177], 11:[383,84], 12:[455,95], 13:[526,78], 14:[582,110] };
+          texts.forEach(node => {
+            const value = node.textContent.trim();
+            if (positions[value]) { node.setAttribute('x', positions[value][0]); node.setAttribute('y', positions[value][1]); }
+            else if (value === '距 2000 年') { node.setAttribute('x', '330'); node.setAttribute('y', '44'); node.setAttribute('font-size', '11'); }
+            else if (value === '00:01:47') { node.setAttribute('x', '330'); node.setAttribute('y', '69'); node.setAttribute('font-size', '23'); }
+          });
+        }
+        if (photo.overlay === 'ice' && texts.length >= 4) {
+          [[529,94,9], [529,105,9], [609,105,8]].forEach(([x, y, size], i) => { texts[i].setAttribute('x', x); texts[i].setAttribute('y', y); texts[i].setAttribute('font-size', size); });
+        }
+        if (name === 'key_half' && texts.length) {
+          texts[0].setAttribute('fill', '#46566c'); texts[texts.length - 1].setAttribute('fill', '#46566c');
+        }
+        if (photo.overlay === 'date') texts.slice(0, -1).forEach(node => node.remove());
+        if (name === 'photo_back') texts.filter(node => node.textContent.includes('梧城彩扩')).forEach(node => node.remove());
+        svg.querySelectorAll('defs, rect, path, circle, ellipse, line, polygon, polyline, image').forEach(node => node.remove());
+        const raster = document.createElementNS(svgNS, 'image');
+        raster.setAttribute('x', '0'); raster.setAttribute('y', '0');
+        raster.setAttribute('width', width); raster.setAttribute('height', height);
+        raster.setAttribute('preserveAspectRatio', 'xMidYMid slice'); raster.setAttribute('href', photo.data);
+        svg.insertBefore(raster, svg.firstChild);
+        if (overlayHTML[photo.overlay]) {
+          const layer = document.createElementNS(svgNS, 'g'); layer.innerHTML = overlayHTML[photo.overlay];
+          raster.after(layer);
+        }
+        if (name === 'photo_back') {
+          const stains = document.createElementNS(svgNS, 'g');
+          stains.innerHTML = '<ellipse cx="112" cy="180" rx="48" ry="16" fill="#bfa877" opacity=".3"/><path d="M76 182 q10 -8 20 0 t20 0 t20 0" stroke="#6c7bb0" stroke-width="4" fill="none" opacity=".35"/><ellipse cx="325" cy="288" rx="34" ry="14" fill="#bfa877" opacity=".3"/><path d="M303 290 q9 -7 18 0 t18 0" stroke="#6c7bb0" stroke-width="4" fill="none" opacity=".35"/>';
+          svg.append(stains);
+        }
+        svg.setAttribute('data-photo', name);
+        entity.html = box.innerHTML;
+      }
+    }
   }
 
   // ============================================================
@@ -1926,6 +1992,7 @@ const Y2K = (() => {
   function boot() {
     prepAnswers();
     if (LANG !== 'zh') applyLang(LANGMAP[LANG]);
+    applyPhotos();
     document.documentElement.lang = { zh: 'zh-CN', en: 'en', ja: 'ja' }[LANG];
     document.title = _t('千年虫');
     index(); buildFS();

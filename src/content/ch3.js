@@ -369,8 +369,8 @@ wanfeng。林晚的账号。
 <div style="font-size:12px;color:#7a6a48;">（照片背面）</div>
 <div class="hand" style="font-size:16px;line-height:1.9;">
 1999.1.17　东湖　高二(2)班<br>
-后排左起：王磊　赵鹏　苏芮　周婷　宋知远　刘洋　马俊　孙倩<br>
-前排左起：陈小雨　李静　何蔓　林晚　（还有一个看不清）<br>
+后排左起：赵鹏　刘洋　周婷　宋知远　王磊　马俊　苏芮　孙倩<br>
+前排左起：何蔓　陈小雨　李静　（还有一个看不清）　林晚<br>
 大鹏说：以后溜冰都在这儿集合，就叫“老地方”！</div>
 <div class="hand" style="font-size:13px;color:#555;text-align:right;">——许嘉 拍</div></div>` },
 

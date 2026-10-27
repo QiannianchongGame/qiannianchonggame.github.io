@@ -27,7 +27,7 @@ node tools/simulate.js
 node tools/build.js
 ```
 
-构建同时生成内容一致的 `index.html`（网页入口）和 `千年虫.html`（离线版）。正式版不开放调试接口。
+构建同时生成内容一致的 `index.html`（网页入口）和 `千年虫.html`（离线版）。写实照片会嵌入 HTML，离线版无需额外下载图片。素材和生成说明位于 `assets/photos/`。正式版不开放调试接口。
 
 浏览器交互检查需要 Node.js 和 Playwright，以及相应浏览器；Playwright 应位于 Node.js 的模块查找路径中。Chromium 可通过 `UI_CHECK_BROWSER` 指定可执行文件。
 

@@ -43,7 +43,7 @@ async function run(browser, name) {
   await p.locator('#phTabs button').nth(2).click();
   await p.locator('.ph-tile').filter({ hasText: '信封里的旧照片' }).click();
   const photo = p.locator('.ph-view svg');
-  assert((await rect(photo)).width > 200 && (await rect(photo)).height > 100);
+  await p.waitForFunction(() => { const r = document.querySelector('.ph-view svg')?.getBoundingClientRect(); return r && r.width > 200 && r.height > 100; });
   await p.screenshot({ path: path.join(output, `${name}-photo.png`) });
   await photo.click();
   const canvas = p.locator('.viewer-canvas');
@@ -87,6 +87,44 @@ async function run(browser, name) {
   await context.route('http://wyjm.test/game', route => route.fulfill({ contentType: 'text/html', body: debugHTML }));
   const q = await context.newPage();
   await q.goto('http://wyjm.test/game'); await start(q, true);
+  const photoAudit = await q.evaluate(async () => {
+    const bad = [], data = Y2K.debug.D;
+    for (const [name, asset] of Object.entries(window.Y2K_PHOTOS || {})) {
+      const img = new Image(); img.src = asset.data;
+      try { await img.decode(); if (img.naturalWidth < 500) bad.push(name + ': image too small'); }
+      catch (e) { bad.push(name + ': image cannot be decoded'); }
+      for (const target of asset.targets) {
+        const item = data[target.collection].find(x => x.id === target.id);
+        const container = document.createElement('div'); container.innerHTML = item?.html || '';
+        if (!container.querySelector(`svg[data-photo="${name}"] image[href^="data:image/webp;base64,"]`)) bad.push(target.id + ': missing photo');
+      }
+    }
+    const text = (collection, id) => {
+      const box = document.createElement('div'); box.innerHTML = data[collection].find(x => x.id === id).html;
+      return box.querySelector('svg').textContent;
+    };
+    const required = [
+      ['items2026', 'c0_it_photo', ["'98 12 3"]],
+      ['files', 'c1_ticket', ['99-0417', '19:00—22:00']],
+      ['files', 'c1_photo_open', ["'98 10 8"]],
+      ['files', 'c2_photo', ['00:01:47', "'99 12 31"]],
+      ['files', 'c2_photoback', ['周婷', '4', '9']],
+      ['files', 'c3_photo_ice', ['东湖公园', '北 岸', '99 1 17']],
+      ['items2026', 'c4_it_dutylog', ['1999.12.31', '韩立']],
+      ['files', 'c5_f_diary', ['我最好的朋友的生日']],
+      ['items2026', 'c5_it_keyhalf', ['何蔓', '计算机课代表']],
+      ['items2026', 'c6_it_notebook', ['3132636459']],
+      ['items2026', 'c6_it_box', ['2026 10 31 23:46']],
+    ];
+    for (const [collection, id, clues] of required) for (const clue of clues) if (!text(collection, id).includes(clue)) bad.push(id + ': missing ' + clue);
+    const groupBox = document.createElement('div'); groupBox.innerHTML = data.files.find(x => x.id === 'c2_photo').html;
+    const numbers = [...groupBox.querySelectorAll('svg text')].map(x => x.textContent.trim());
+    for (let i = 1; i <= 14; i++) if (!numbers.includes(String(i))) bad.push('c2_photo: missing person ' + i);
+    return { count: Object.keys(window.Y2K_PHOTOS || {}).length, bad };
+  });
+  assert.equal(photoAudit.count, 11);
+  assert.deepEqual(photoAudit.bad, []);
+  console.log(`${name}: 写实照片资源、离线解码和关键证据文字通过`);
   await q.evaluate(() => {
     const d = Y2K.debug; d.setFlag('ui_test'); d.ui.chat = 'tester'; d.renderPhone();
   });
@@ -248,6 +286,8 @@ async function run(browser, name) {
     await q.locator('#title:not([hidden]) .menu button').first().waitFor({ state: 'visible' });
     const incorrect = await q.evaluate(entries => entries.filter(entry => Y2K.debug.D.files.find(f => f.id === entry.id)?.tape?.speeds[entry.speed] !== entry.text), speeds);
     assert.deepEqual(incorrect, []);
+    const missingPhotos = await q.evaluate(() => Object.entries(window.Y2K_PHOTOS).flatMap(([name, asset]) => asset.targets.filter(target => !Y2K.debug.D[target.collection].find(x => x.id === target.id)?.html.includes(`data-photo="${name}"`)).map(target => target.id)));
+    assert.deepEqual(missingPhotos, []);
     const missingAnswers = await q.evaluate(entries => entries.filter(([key, values]) => {
       const m = key.match(/^puzzle\.([^.]+)\.(?:fields\.(\d+)\.)?answers\+$/);
       if (!m) return false;

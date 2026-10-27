@@ -27,6 +27,14 @@ const ui = fs.existsSync(path.join(root, uiFile)) ? wrap(uiFile) : '';
 const langFiles = [];
 for (const l of ['en', 'ja']) for (const f of order) { const p = `src/i18n/${l}/${f}`; if (fs.existsSync(path.join(root, p))) langFiles.push(p); }
 const translations = langFiles.map(wrap).join('\n');
+// 图片嵌入 HTML，使双击打开的离线版与网页使用完全相同的资源。
+const photoManifest = JSON.parse(read('src/photo-manifest.json'));
+const photoAssets = {};
+for (const [id, photo] of Object.entries(photoManifest)) {
+  const binary = fs.readFileSync(path.join(root, photo.file));
+  photoAssets[id] = { data: 'data:image/webp;base64,' + binary.toString('base64'), overlay: photo.overlay, targets: photo.targets };
+}
+const photos = `<script>window.Y2K_PHOTOS=${safe(JSON.stringify(photoAssets))};</script>`;
 
 const html = `<!doctype html>
 <html lang="zh-CN">
@@ -41,6 +49,7 @@ ${css}
 </head>
 <body>
 <noscript>这个游戏需要启用 JavaScript。This game needs JavaScript. このゲームには JavaScript が必要です。</noscript>
+${photos}
 ${ui}
 <script>
 ${safe(engine)}
