@@ -1,0 +1,47 @@
+# 千年虫
+
+在旧电脑、校园 BBS 和手机消息之间寻找线索的悬疑解谜游戏。无需安装，也无需注册。
+
+[在线游玩](https://qiannianchonggame.github.io/)
+
+## 游玩
+
+- 点击电源启动旧电脑，从手机的消息、邮件和物品中寻找开机线索。
+- 聊天底部会显示可发送的回复，即使只有一句，也需要自己点击发送。
+- 手机里的照片可以点击放大；电脑中的照片可用查看器按钮缩放，也可以双击进入大图。
+- 大图支持放大、缩小、原始大小、适应窗口和拖动查看，按 Esc 关闭。
+- 手机收起后，点击右下角手机按钮可以重新打开。表格支持横向滚动。
+- 进度保存在当前浏览器。可以在手机“菜单”中导出、导入存档。
+
+本地文件版和网页版使用各自的浏览器存储。要转移进度，请先在原版本导出存档，再到另一版本导入。
+
+也可以下载 `千年虫.html`，直接双击离线游玩。推荐使用较新的 Chrome、Edge 或 Safari。
+
+## 构建与检查
+
+修改 `src/` 中的源码，然后运行：
+
+```sh
+node tools/validate.js
+node tools/simulate.js
+node tools/build.js
+```
+
+构建同时生成内容一致的 `index.html`（网页入口）和 `千年虫.html`（离线版）。正式版不开放调试接口。
+
+浏览器交互检查需要 Node.js 和 Playwright，以及相应浏览器；Playwright 应位于 Node.js 的模块查找路径中。Chromium 可通过 `UI_CHECK_BROWSER` 指定可执行文件。
+
+```sh
+node tools/ui-check.js
+node tools/ui-check.js --webkit
+```
+
+检查覆盖图片显示和缩放、手机横竖屏、手动回复、连续点击、存档恢复、作答、阅读位置、未读状态和窗口操作。测试使用独立浏览器环境，不会读取或修改玩家存档。
+
+## 发布
+
+组织主页仓库为 `QiannianchongGame/qiannianchonggame.github.io`，GitHub Pages 从 `main` 分支根目录发布。
+
+更新源码并完成检查后，运行构建，提交生成的两个 HTML 文件和相关源码，再推送到 `main`。GitHub Pages 会自动发布。`.nojekyll` 用于直接发布静态文件。
+
+`docs/` 与源码包含完整剧情及解谜信息，请在通关后阅读。
