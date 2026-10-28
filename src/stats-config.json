@@ -1,0 +1,4 @@
+{
+  "endpoint": "https://qiannianchong-stats.chenhao2003.chatgpt.site/api/stats",
+  "allowedOrigins": ["https://qiannianchonggame.github.io"]
+}

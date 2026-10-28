@@ -20,6 +20,10 @@
 
 本地文件版和网页版使用各自的浏览器存储。要转移进度，请先在原版本导出存档，再到另一版本导入。
 
+主页的累计访问和在线游玩人数来自独立统计服务。每次打开正式网页计一次访问，请求重试不重复累计；同一浏览器的多个游玩标签页合并为一人。只有前台游玩计为在线，约每 30 秒更新，意外断线最多 90 秒后移除。统计从服务启用时开始，不补算历史访问。
+
+离线版和本地预览不参与统计。统计失败时显示“暂时不可用”，不影响游玩或存档。服务只接收随机标识和游玩状态，不上传昵称、聊天内容或存档。
+
 也可以下载 `千年虫.html`，直接双击离线游玩。推荐使用较新的 Chrome、Edge 或 Safari。
 
 ## 构建与检查
@@ -33,6 +37,8 @@ node tools/build.js
 ```
 
 构建同时生成内容一致的 `index.html`（网页入口）和 `千年虫.html`（离线版）。写实照片会嵌入 HTML，离线版无需额外下载图片。素材和生成说明位于 `assets/photos/`。正式版不开放调试接口。
+
+统计界面和连接配置分别位于 `src/stats.js`、`src/stats-config.json`。[独立统计服务](https://qiannianchong-stats.chenhao2003.chatgpt.site)的源码在 `services/qiannianchong-stats/`，由 Sites 的单独仓库管理；主仓库忽略这个目录，避免误提交嵌套仓库。服务使用持久化数据库保存累计数，并对临时心跳记录自动清理。服务检验运行 `node scripts/stats-test.mjs`；在本机已有服务源码时，可从游戏目录运行 `node tools/stats-ui-check.js --webkit` 进行浏览器集成检查。
 
 浏览器交互检查需要 Node.js 和 Playwright，以及相应浏览器；Playwright 应位于 Node.js 的模块查找路径中。Chromium 可通过 `UI_CHECK_BROWSER` 指定可执行文件。
 

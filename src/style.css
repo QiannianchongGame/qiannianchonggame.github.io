@@ -458,6 +458,11 @@ table.det td.nm svg { width: 16px; height: 16px; }
 @keyframes glitch { 0%, 92%, 100% { transform: none; opacity: 1; } 93% { transform: translateX(3px); opacity: .6; } 95% { transform: translateX(-2px) skewX(8deg); } 97% { opacity: .85; } }
 .title .sub { font: 14px/1.8 SimSun, serif; color: #8d8d8d; letter-spacing: .3em; }
 .title .menu { display: flex; flex-direction: column; gap: 8px; margin-top: 22px; width: min(280px, 100%); }
+.site-stats { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px 26px; width: min(440px, 100%); margin-top: 10px; color: #92959d; font: 12px/1.7 var(--font-ph); }
+.site-stats .stat-item { display: inline-flex; gap: 9px; align-items: baseline; }
+.site-stats strong { color: #d8c6a6; font: 15px/1.4 var(--font-mono); font-variant-numeric: tabular-nums; }
+.site-stats .stats-state { flex-basis: 100%; color: #727680; font-size: 11px; }
+.site-stats .stats-state:empty { display: none; }
 .tbtn { border: 1px solid #3a3d44; background: rgba(255,255,255,.03); color: #ddd; padding: 11px 16px; border-radius: 4px; cursor: pointer; font: 15px var(--font-ph); letter-spacing: .15em; }
 .tbtn:hover { border-color: var(--amber); color: #fff; }
 .tbtn:disabled { opacity: .35; cursor: default; }

@@ -1281,6 +1281,7 @@ const Y2K = (() => {
   // ============================================================
   let titleOn = false;
   function showTitle() {
+    window.Y2KStats?.setPlaying(false);
     titleOn = true; closeOverlay(); closeModal();
     clearTimers(); running = {}; typing = {};
     clearTimeout(dirtyT); dirtyT = 0;
@@ -1300,10 +1301,10 @@ const Y2K = (() => {
     const langs = h('div', { class: 'langs', role: 'group', 'aria-label': 'Language' });
     langs.hidden = READY.length < 2;
     Object.entries(LANGS).filter(([code]) => READY.includes(code)).forEach(([code, label]) => langs.append(h('button', { class: 'lbtn' + (code === LANG ? ' on' : ''), lang: code, 'aria-pressed': code === LANG ? 'true' : 'false', text: label, onclick: () => { if (code === LANG) return; const m = meta(); m.lang = code; setMeta(m); location.reload(); } })));
-    tl.append(langs, clk, h('h1', { html: _t('千年<span>虫</span>') }), h('div', { class: 'sub', text: _t('梧城七中 · 1999—2000') }), menu, panel,
+    tl.append(langs, clk, h('h1', { html: _t('千年<span>虫</span>') }), h('div', { class: 'sub', text: _t('梧城七中 · 1999—2000') }), menu, panel, window.Y2KStats?.mount(LANG),
       h('div', { class: 'foot', text: _t('本作纯属虚构 · 建议用电脑上的 Chrome / Edge 打开 · 进度自动保存在本浏览器') }));
   }
-  function hideTitle() { titleOn = false; const tl = $('#title'); tl.hidden = true; tl.innerHTML = ''; showCards(); }
+  function hideTitle() { titleOn = false; const tl = $('#title'); tl.hidden = true; tl.innerHTML = ''; window.Y2KStats?.setPlaying(true); showCards(); }
   function newGamePanel(panel, hasSave) {
     panel.innerHTML = '';
     const inp = h('input', { type: 'text', id: 'nick', maxlength: 12, placeholder: _t('老K'), value: '' });
@@ -2349,6 +2350,7 @@ const Y2K = (() => {
     });
     S = fresh(_t('老K'));
     showTitle();
+    window.Y2KStats?.start();
   }
 
   // 测试与调试用（浏览器控制台）

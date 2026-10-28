@@ -52,6 +52,7 @@ for (const l of ['en', 'ja']) {
 }
 const langScript = `<script>window.Y2K_LANGS=${JSON.stringify(readyLangs)};</script>`;
 const translations = langFiles.map(wrap).join('\n');
+const stats = `<script>window.Y2K_STATS_CONFIG=${safe(read('src/stats-config.json'))};</script>\n${wrap('src/stats.js')}`;
 // 图片嵌入 HTML，使双击打开的离线版与网页使用完全相同的资源。
 const photoManifest = JSON.parse(read('src/photo-manifest.json'));
 const photoAssets = {};
@@ -77,6 +78,7 @@ ${css}
 ${photos}
 ${langScript}
 ${ui}
+${stats}
 <script>
 ${safe(engine)}
 </script>

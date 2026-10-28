@@ -5,3 +5,5 @@ playwright-report/
 *.log
 .DS_Store
 Thumbs.db
+# 独立统计服务由 Sites 自己的源码仓库管理，避免把嵌套仓库误提交成 gitlink。
+/services/qiannianchong-stats/
