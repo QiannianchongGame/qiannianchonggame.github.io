@@ -34,7 +34,7 @@ window.Y2KStats = (() => {
   }
   function mount(lang) {
     const w = words[lang] || words.zh, el = document.createElement('div');
-    el.className = 'site-stats'; el.setAttribute('role', 'group'); el.title = w[2];
+    el.className = 'site-stats'; el.setAttribute('role', 'group');
     for (const [label, key] of [[w[0], 'visits'], [w[1], 'online']]) {
       const item = document.createElement('span'), text = document.createElement('span'), value = document.createElement('strong');
       item.className = 'stat-item'; text.textContent = label; value.dataset.stat = key; value.textContent = '—';
