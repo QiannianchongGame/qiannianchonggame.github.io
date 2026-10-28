@@ -1426,15 +1426,24 @@ try {
 // 只传递随机标识与游玩状态；与剧情、昵称和存档无关。
 window.Y2KStats = (() => {
   const words = {
-    zh: ['累计访问', '在线游玩', '统计从启用时开始；在线人数按正在前台游玩的浏览器计算，约每 30 秒更新。', '正在读取统计', '统计暂时不可用', '离线模式', '本地预览不计入统计'],
-    en: ['Total visits', 'Playing now', 'Counted since tracking began. Active browsers playing in the foreground are updated about every 30 seconds.', 'Loading statistics', 'Statistics temporarily unavailable', 'Offline mode', 'Local previews are not counted'],
-    ja: ['累計アクセス', 'プレイ中', '集計開始以降のアクセス数です。前面でプレイ中のブラウザー数を約30秒ごとに更新します。', '統計を読み込み中', '統計を取得できません', 'オフラインモード', 'ローカルプレビューは集計対象外です'],
+    zh: ['累计访问', '在线游玩', '同一访客刷新、多标签页不重复计数；全部退出后再次进入才新增一次。在线人数约每 30 秒更新。', '正在读取统计', '统计暂时不可用', '离线模式', '本地预览不计入统计'],
+    en: ['Total visits', 'Playing now', 'Refreshes and multiple tabs count as one visit. A new visit starts after all game pages are closed. Online counts update about every 30 seconds.', 'Loading statistics', 'Statistics temporarily unavailable', 'Offline mode', 'Local previews are not counted'],
+    ja: ['累計アクセス', 'プレイ中', '再読み込みや複数タブは1回の訪問として集計します。すべてのゲームページを閉じてから再訪すると加算されます。オンライン人数は約30秒ごとに更新します。', '統計を読み込み中', '統計を取得できません', 'オフラインモード', 'ローカルプレビューは集計対象外です'],
   };
   let started = false, playing = false, pageId, sessionId, visitorId, registered = false;
   let flight = false, queued = false, seq = 0, lastApplied = 0, values = null, mode = 'loading';
-  let endpoint = '', enabled = false;
+  let endpoint = '', enabled = false, departed = false;
   const panels = new Map();
   const uuid = () => crypto.randomUUID();
+  const validId = value => /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value || '');
+  function beginPage(reload) {
+    pageId = uuid(); sessionId = uuid(); seq = 0; lastApplied = 0; registered = false;
+    try {
+      const previous = sessionStorage.getItem('y2k_stats_visit');
+      if (reload && validId(previous)) pageId = previous;
+      sessionStorage.setItem('y2k_stats_visit', pageId);
+    } catch (_) {}
+  }
   function paint() {
     for (const [el, lang] of panels) {
       if (!el.isConnected) { panels.delete(el); continue; }
@@ -1469,7 +1478,7 @@ window.Y2KStats = (() => {
     });
   }
   async function send() {
-    if (!enabled || document.visibilityState !== 'visible') return;
+    if (!enabled || departed) return;
     if (flight) { queued = true; return; }
     flight = true;
     const message = payload(registered ? 'heartbeat' : 'visit'), controller = new AbortController();
@@ -1479,6 +1488,7 @@ window.Y2KStats = (() => {
       if (!response.ok) throw new Error('stats unavailable');
       const result = await response.json();
       if (![result.visits, result.online].every(n => Number.isSafeInteger(n) && n >= 0)) throw new Error('invalid statistics');
+      if (message.sessionId !== sessionId) return;
       if (message.event === 'visit') registered = true;
       if (message.seq >= lastApplied && document.visibilityState === 'visible') { lastApplied = message.seq; values = result; mode = 'ready'; paint(); }
     } catch (_) { mode = 'error'; paint(); }
@@ -1492,16 +1502,17 @@ window.Y2KStats = (() => {
     if (!(config.allowedOrigins || []).includes(location.origin)) { mode = 'preview'; paint(); return; }
     try {
       const url = new URL(config.endpoint); if (url.protocol !== 'https:') throw new Error('HTTPS required');
-      endpoint = url.href; pageId = uuid(); sessionId = uuid();
+      endpoint = url.href; beginPage(performance.getEntriesByType('navigation')[0]?.type === 'reload');
       try {
         visitorId = localStorage.getItem('y2k_stats_visitor');
-        if (!/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(visitorId || '')) { visitorId = uuid(); localStorage.setItem('y2k_stats_visitor', visitorId); }
+        if (!validId(visitorId)) { visitorId = uuid(); localStorage.setItem('y2k_stats_visitor', visitorId); }
       } catch (_) { visitorId = uuid(); }
       enabled = true;
     } catch (_) { mode = 'error'; paint(); return; }
-    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') void send(); else leave(); });
-    window.addEventListener('pagehide', leave);
-    window.addEventListener('pageshow', e => { if (e.persisted) void send(); });
+    // 后台仍属于同一次访问；只有离开页面才结束这个标签页。
+    document.addEventListener('visibilitychange', () => void send());
+    window.addEventListener('pagehide', () => { departed = true; leave(); });
+    window.addEventListener('pageshow', e => { if (e.persisted) { departed = false; beginPage(false); void send(); } });
     window.addEventListener('online', () => void send());
     setInterval(() => void send(), 30000); void send();
   }
