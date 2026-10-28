@@ -586,6 +586,25 @@ table.det td.nm svg { width: 16px; height: 16px; }
 .newtag { display: inline-block; margin-left: 6px; padding: 0 4px; font-size: 10px; line-height: 14px; color: #5a4300; background: #ffd84a; border: 1px solid #b38f00; vertical-align: 1px; }
 table.det tr.sel .newtag { color: #5a4300; }
 
+.panel.title-panel.leaderboard-panel { width: 1120px; max-width: 100%; }
+.leaderboard-rule { margin: 0 0 8px; color: #e5e7eb; }
+.leaderboard-note { margin: 4px 0; color: #a6acb8; font-size: 13px; line-height: 1.6; }
+.leaderboard-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 14px 0; }
+.leaderboard-status { margin: 0; color: #b8bfce; font-size: 13px; }
+.leaderboard-toolbar .tbtn { flex: none; padding: 8px 14px; font-size: 14px; min-height: 44px; }
+.leaderboard-scroll { overflow-x: auto; overscroll-behavior-x: contain; }
+.leaderboard-grid { display: grid; grid-template-columns: repeat(4, minmax(230px, 1fr)); gap: 12px; min-width: 956px; }
+.leaderboard-column { background: #1d2026; border: 1px solid #343944; border-radius: 10px; overflow: hidden; }
+.leaderboard-column h4 { margin: 0; padding: 14px 12px; font-size: 16px; color: #e3e7ef; border-bottom: 1px solid #343944; }
+.leaderboard-column table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: 12px; }
+.leaderboard-column th, .leaderboard-column td { padding: 10px 6px; text-align: center; white-space: nowrap; border-bottom: 1px solid #2b3039; }
+.leaderboard-column th { color: #aeb7c6; font-weight: 400; font-size: 12px; }
+.leaderboard-column td { color: #e3e7ef; }
+.leaderboard-column tbody tr:nth-child(-n+3) td:first-child { color: #ebcc89; }
+.leaderboard-empty { padding: 20px 8px; text-align: center; color: #a6acb8; font-size: 13px; }
+.leaderboard-swipe { display: none; color: #a6acb8; font-size: 12px; }
+@media (max-width: 1050px) { .leaderboard-swipe { display: block; } }
+
 </style>
 </head>
 <body>
@@ -598,6 +617,7 @@ try {
 window.Y2K_UI_REVIEWED = ["en", "ja"];
 window.Y2K_UI = {
   "en": {
+    "排行榜": "Leaderboard",
     "文件夹": "Folder",
     "文本文档": "Text Document",
     "日志文件": "Log File",
@@ -1012,6 +1032,7 @@ window.Y2K_UI = {
     "手机": "Phone"
   },
   "ja": {
+    "排行榜": "ランキング",
     "放大 +": "拡大 +",
     "关闭": "閉じる",
     "适应窗口": "ウィンドウに合わせる",
@@ -1431,7 +1452,11 @@ window.Y2K_UI = {
 </script>
 <script>window.Y2K_STATS_CONFIG={
   "endpoint": "https://qiannianchong-stats.chenhao2003.chatgpt.site/api/stats",
-  "allowedOrigins": ["https://qiannianchonggame.github.io"]
+  "allowedOrigins": [
+    "https://qiannianchonggame.github.io"
+  ],
+  "game": "1",
+  "leaderboardEndpoint": "https://qiannianchong-stats.chenhao2003.chatgpt.site/api/leaderboard?game=1"
 }
 ;</script>
 <script>/* src/stats.js */
@@ -1534,6 +1559,117 @@ window.Y2KStats = (() => {
 })();
 
 } catch (e) { console.error('加载失败：src/stats.js', e); }
+</script>
+<script>/* src/leaderboard.js */
+try {
+// Anonymous results are separate from story saves; only completed runs are submitted.
+(() => {
+  'use strict';
+  const config = window.Y2K_STATS_CONFIG || {}, game = config.game;
+  const endpoint = config.leaderboardEndpoint;
+  const enabled = !!endpoint && location.protocol === 'https:' && (config.allowedOrigins || []).includes(location.origin);
+  const prefix = `y2k${game}_leaderboard_`, endings = ['A', 'B', 'C', 'H'];
+  const words = {
+    zh: { rule: '每个结局前 20 名 · 用时优先，用时相同则提示少者优先', privacy: '匿名记录，同一浏览器每个结局保留最好成绩。', clock: '用时按存档累计；首页、后台及结局阅读不计时。', swipe: '左右滑动查看四个结局', ending: '结局 ', hidden: '隐藏结局', rank: '名次', time: '通关用时', hints: '提示', empty: '暂无通关记录', loading: '正在读取排行榜…', error: '暂时无法读取排行榜，请稍后重试。', offline: '排行榜仅在在线版开放。', retry: '刷新榜单' },
+    en: { rule: 'Top 20 per ending · Fastest time first; fewer hints break ties', privacy: 'Anonymous results. Each browser keeps its best result per ending.', clock: 'Time follows the save. Home, background tabs and ending screens are paused.', swipe: 'Swipe to see all four endings', ending: 'Ending ', hidden: 'Hidden ending', rank: 'Rank', time: 'Clear time', hints: 'Hints', empty: 'No completed runs yet', loading: 'Loading leaderboard…', error: 'Unable to load the leaderboard. Please try again.', offline: 'Leaderboards are available in the online edition.', retry: 'Refresh' },
+    ja: { rule: '各結末の上位20件 · クリア時間順、同タイムならヒント回数順', privacy: '匿名で記録。同じブラウザでは各結末の最高記録を残します。', clock: '時間はセーブごとに累計。タイトル・バックグラウンド・結末閲覧中は停止。', swipe: '横にスワイプして4つの結末を表示', ending: '結末 ', hidden: '隠しエンド', rank: '順位', time: 'クリア時間', hints: 'ヒント', empty: 'まだ記録がありません', loading: 'ランキングを読込中…', error: 'ランキングを読み込めません。時間をおいて再試行してください。', offline: 'ランキングはオンライン版で利用できます。', retry: '更新' }
+  };
+  function get(key, fallback) { try { return JSON.parse(localStorage.getItem(prefix + key)) ?? fallback; } catch { return fallback; } }
+  function put(key, value) { try { localStorage.setItem(prefix + key, JSON.stringify(value)); } catch {} }
+  function newRun() {
+    if (crypto.randomUUID) return crypto.randomUUID();
+    return '10000000-1000-4000-8000-100000000000'.replace(/[018]/g, c => (Number(c) ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> Number(c) / 4).toString(16));
+  }
+  let playerId = get('player', null);
+  if (typeof playerId !== 'string' || !/^[0-9a-f-]{36}$/i.test(playerId)) { playerId = newRun(); put('player', playerId); }
+  const savedQueue = get('pending', {});
+  const pending = savedQueue && typeof savedQueue === 'object' && !Array.isArray(savedQueue) ? savedQueue : {};
+  let sending = false;
+  async function flush() {
+    if (!enabled || sending) return;
+    sending = true;
+    try {
+      while (Object.keys(pending).length) {
+        const [key, score] = Object.entries(pending)[0];
+        let response;
+        try { response = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(score), signal: AbortSignal.timeout(10000) }); } catch { break; }
+        if (response.ok || response.status === 400) { if (pending[key] === score) delete pending[key]; put('pending', pending); }
+        else break;
+      }
+    } finally { sending = false; }
+  }
+  function capture(state, ending) {
+    if (!endings.includes(ending)) return;
+    state.finishRecords ||= {};
+    // Legacy saves do not know when an already-unlocked ending was first reached.
+    if (!state.finishRecords[ending] && !(state.ends || []).includes(ending)) {
+      const durationMs = Math.round(state.playMs || 0);
+      const hints = Object.values(state.hints || {}).reduce((n, x) => n + (Number.isSafeInteger(x) && x > 0 ? x : 0), 0);
+      if (durationMs < 1000 || durationMs > 31536000000 || hints > 10000) return;
+      state.runId ||= newRun();
+      state.finishRecords[ending] = { durationMs, hints };
+    }
+    const result = state.finishRecords[ending];
+    if (!enabled || !result || !state.runId) return;
+    pending[`${state.runId}:${ending}`] = { game, ending, playerId, runId: state.runId, durationMs: result.durationMs, hints: result.hints };
+    put('pending', pending); void flush();
+  }
+  function resume(state) {
+    for (const ending of endings) if (state.finishRecords?.[ending]) capture(state, ending);
+  }
+  function time(ms) {
+    const seconds = Math.floor(ms / 1000), pad = n => String(n).padStart(2, '0');
+    return `${pad(Math.floor(seconds / 3600))}:${pad(Math.floor(seconds / 60) % 60)}:${pad(seconds % 60)}.${String(ms % 1000).padStart(3, '0')}`;
+  }
+  function el(tag, className, text) { const node = document.createElement(tag); if (className) node.className = className; if (text !== undefined) node.textContent = text; return node; }
+  function mount(body, language) {
+    const t = words[language] || words.zh;
+    body.closest('.title-panel').classList.add('leaderboard-panel');
+    const status = el('p', 'leaderboard-status'); status.setAttribute('role', 'status');
+    const refresh = el('button', 'tbtn', t.retry); refresh.type = 'button';
+    const toolbar = el('div', 'leaderboard-toolbar'); toolbar.append(status, refresh);
+    const scroll = el('div', 'leaderboard-scroll'); scroll.tabIndex = 0; scroll.setAttribute('aria-label', t.swipe);
+    const grid = el('div', 'leaderboard-grid'); scroll.append(grid);
+    body.append(el('p', 'leaderboard-rule', t.rule), el('p', 'leaderboard-note', t.privacy), el('p', 'leaderboard-note', t.clock), toolbar, el('p', 'leaderboard-swipe', t.swipe), scroll);
+    function render(data) {
+      grid.replaceChildren();
+      for (const ending of endings) {
+        const column = el('section', 'leaderboard-column'); column.dataset.ending = ending;
+        column.append(el('h4', '', ending === 'H' ? t.hidden : t.ending + ending));
+        const table = el('table'); const head = el('thead'), tr = el('tr');
+        [t.rank, t.time, t.hints].forEach(label => { const th = el('th', '', label); th.scope = 'col'; tr.append(th); });
+        head.append(tr); const rows = el('tbody');
+        (data?.[ending] || []).slice(0, 20).forEach((score, i) => { const row = el('tr'); [i + 1, time(score.durationMs), score.hints].forEach(value => row.append(el('td', '', value))); rows.append(row); });
+        table.append(head, rows); column.append(table);
+        if (!rows.children.length) column.append(el('p', 'leaderboard-empty', t.empty));
+        grid.append(column);
+      }
+    }
+    async function refreshBoard() {
+      if (!enabled) { status.textContent = t.offline; refresh.hidden = true; render(); return; }
+      refresh.disabled = true; status.textContent = t.loading;
+      try {
+        await flush();
+        const response = await fetch(endpoint, { cache: 'no-store', signal: AbortSignal.timeout(10000) });
+        if (!response.ok) throw new Error('unavailable');
+        const data = await response.json();
+        if (data.game !== game || !endings.every(id => Array.isArray(data.endings?.[id]) && data.endings[id].every(s => Number.isSafeInteger(s.durationMs) && s.durationMs >= 1000 && Number.isSafeInteger(s.hints) && s.hints >= 0))) throw new Error('invalid response');
+        if (!body.isConnected) return;
+        render(data.endings); status.textContent = '';
+      } catch { if (body.isConnected) status.textContent = t.error; }
+      finally { refresh.disabled = false; }
+    }
+    render();
+    refresh.onclick = () => refreshBoard().finally(() => { if (body.isConnected) refresh.focus(); });
+    void refreshBoard();
+  }
+  window.Y2KLeaderboard = { newRun, capture, resume, mount };
+  window.addEventListener('online', flush);
+  setInterval(flush, 60000);
+  void flush();
+})();
+
+} catch (e) { console.error('加载失败：src/leaderboard.js', e); }
 </script>
 <script>
 'use strict';
@@ -1796,7 +1932,7 @@ const Y2K = (() => {
       v: VER, player: player || _t('老K'), flags: { start: true }, opened: {}, hints: {}, notes: [], noteCh: {}, collected: [],
       dlg: {}, dlgQ: {}, chat: {}, unread: {}, wait: {}, mails: [], mailRead: {}, items: [], itemSeen: {}, boardFill: {},
       seenBoards: {}, seenAsk: {}, chapter: null, chTime: null, stage: 'off', clock: '1900-01-01 00:00', clockAt: Date.now(),
-      showHidden: false, playMs: 0, created: Date.now(), newNotes: 0, newBoards: 0, sound: true, readingSeen: {},
+      showHidden: false, playMs: 0, runId: window.Y2KLeaderboard?.newRun(), finishRecords: {}, created: Date.now(), newNotes: 0, newBoards: 0, sound: true, readingSeen: {},
     };
   }
   const compiled = {};
@@ -1914,8 +2050,16 @@ const Y2K = (() => {
     if (slot === 'auto') { if (saveT) return; saveT = setTimeout(() => { saveT = 0; writeSave('auto'); }, 400); return; }
     return writeSave(slot);
   }
-  function tickPlay() { if (S && lastTick) { S.playMs += Math.min(60000, Date.now() - lastTick); } lastTick = Date.now(); }
-  let lastTick = 0;
+  function tickPlay() {
+    const now = Date.now();
+    if (S && playClockRunning && lastTick) S.playMs = Math.max(0, Number(S.playMs) || 0) + Math.max(0, now - lastTick);
+    lastTick = now;
+  }
+  let lastTick = 0, playClockRunning = false;
+  function syncPlayClock() {
+    tickPlay();
+    playClockRunning = !titleOn && document.visibilityState === 'visible' && !document.querySelector('.ending');
+  }
   function writeSave(slot) {
     tickPlay();
     S.saved = Date.now();
@@ -1939,7 +2083,8 @@ const Y2K = (() => {
     closeAllWins(); closeOverlay(); closeModal();
     S = Object.assign(fresh(o.player), o);
     flagVer++; cardQ.length = 0; cardOn = false; pendingEnding = null;
-    lastTick = Date.now();
+    lastTick = Date.now(); playClockRunning = false;
+    window.Y2KLeaderboard?.resume(S);
     ui.tab = 'msg'; ui.chat = null; ui.mail = null; ui.item = null;
     ui._viewKey = null; ui.scroll = {}; ui.menuView = null;
     ui.noteTab = 'questions'; ui.noteQuery = ''; ui.itemQuery = '';
@@ -2098,6 +2243,8 @@ const Y2K = (() => {
   }
   function showEnding(id) {
     const e = D.endings[id]; if (!e) return;
+    tickPlay(); playClockRunning = false;
+    window.Y2KLeaderboard?.capture(S, id);
     if (preEndSnap) LS.set(KEY.pre, preEndSnap);
     setFlag('ending_' + id);
     if (!S.ends) S.ends = [];
@@ -2110,7 +2257,7 @@ const Y2K = (() => {
       h('h1', { text: e.title }),
       h('div', { class: 'body', html: fmt(e.html) }),
       h('div', { class: 'acts' },
-        ['C', 'H'].includes(id) ? h('button', { class: 'tbtn', text: _t('回到 3 号机'), onclick: () => { closeOverlay(); renderAll(); showCards(); } }) : null,
+        ['C', 'H'].includes(id) ? h('button', { class: 'tbtn', text: _t('回到 3 号机'), onclick: () => { closeOverlay(); syncPlayClock(); renderAll(); showCards(); } }) : null,
         LS.get(KEY.pre) ? h('button', { class: 'tbtn', text: _t('回到结局前继续'), onclick: () => { const o = readSave('pre'); if (o) loadState(o); } }) : null,
         h('button', { class: 'tbtn', text: _t('返回标题画面'), onclick: () => { closeOverlay(); showTitle(); } }))));
     sfx('boot');
@@ -2829,6 +2976,8 @@ const Y2K = (() => {
   // ============================================================
   let titleOn = false;
   function showTitle() {
+    if (S && !titleOn && lastTick) writeSave('auto');
+    tickPlay(); playClockRunning = false;
     window.Y2KStats?.setPlaying(false);
     titleOn = true; closeOverlay(); closeModal();
     clearTimers(); running = {}; typing = {};
@@ -2844,7 +2993,8 @@ const Y2K = (() => {
       h('button', { class: 'tbtn', text: _t('继续调查'), disabled: !auto, onclick: () => { const o = readSave('auto'); if (o) loadState(o); } }),
       h('button', { class: 'tbtn', text: _t('新的调查'), onclick: e => newGamePanel(panel, !!auto, e.currentTarget) }),
       h('button', { class: 'tbtn', text: _t('读取存档'), onclick: e => loadPanel(panel, e.currentTarget) }),
-      h('button', { class: 'tbtn', text: _t('结局收集'), onclick: e => titlePanel(panel, _t('结局收集'), e.currentTarget).append(endingList()) }));
+      h('button', { class: 'tbtn', text: _t('结局收集'), onclick: e => titlePanel(panel, _t('结局收集'), e.currentTarget).append(endingList()) }),
+      h('button', { class: 'tbtn', text: _t('排行榜'), onclick: e => window.Y2KLeaderboard?.mount(titlePanel(panel, _t('排行榜'), e.currentTarget), LANG) }));
     // 语言切换：存进 meta，然后重新载入（译文在启动时写回数据）
     const langs = h('div', { class: 'langs', role: 'group', 'aria-label': 'Language' });
     langs.hidden = READY.length < 2;
@@ -2854,7 +3004,7 @@ const Y2K = (() => {
         h('div', { class: 'community', text: _t('QQ群') + '：1130040971' }),
         h('div', { text: _t('本作纯属虚构 · 建议用电脑上的 Chrome / Edge 打开 · 进度自动保存在本浏览器') })));
   }
-  function hideTitle() { titleOn = false; const tl = $('#title'); tl.hidden = true; tl.innerHTML = ''; tl.classList.remove('panel-open'); window.Y2KStats?.setPlaying(true); showCards(); }
+  function hideTitle() { titleOn = false; syncPlayClock(); const tl = $('#title'); tl.hidden = true; tl.innerHTML = ''; tl.classList.remove('panel-open'); window.Y2KStats?.setPlaying(true); showCards(); }
   function titlePanel(host, title, opener) {
     host.innerHTML = '';
     const tl = $('#title'); tl.classList.add('panel-open');
@@ -2867,7 +3017,7 @@ const Y2K = (() => {
     layer.addEventListener('keydown', e => {
       if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); close(); }
       if (e.key === 'Tab') {
-        const stops = [...dlg.querySelectorAll('button:not(:disabled), input:not(:disabled), textarea:not(:disabled), select:not(:disabled), a[href]')];
+        const stops = [...dlg.querySelectorAll('button:not(:disabled), input:not(:disabled), textarea:not(:disabled), select:not(:disabled), a[href], [tabindex="0"]')];
         const first = stops[0], last = stops[stops.length - 1];
         if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
         else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
@@ -3905,6 +4055,9 @@ const Y2K = (() => {
     });
     setInterval(() => { if (!S) return; renderTray(); const st = $('#phStatus'); if (st) { const t = phoneNow(); st.querySelector('b') && (st.querySelector('b').textContent = t.hm); } }, 15000);
     setInterval(() => { if (S && !titleOn) { tickPlay(); writeSave('auto'); } }, 30000);
+    document.addEventListener('visibilitychange', () => { syncPlayClock(); if (S && !titleOn) writeSave('auto'); });
+    window.addEventListener('pagehide', () => { if (S && !titleOn) writeSave('auto'); playClockRunning = false; });
+    window.addEventListener('pageshow', syncPlayClock);
     window.addEventListener('beforeunload', () => { if (S && !titleOn) writeSave('auto'); });
     window.addEventListener('resize', () => {
       if (!narrow() && ui.phoneOpen) togglePhone(false);

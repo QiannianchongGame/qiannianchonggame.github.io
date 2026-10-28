@@ -1,0 +1,18 @@
+.panel.title-panel.leaderboard-panel { width: 1120px; max-width: 100%; }
+.leaderboard-rule { margin: 0 0 8px; color: #e5e7eb; }
+.leaderboard-note { margin: 4px 0; color: #a6acb8; font-size: 13px; line-height: 1.6; }
+.leaderboard-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 14px 0; }
+.leaderboard-status { margin: 0; color: #b8bfce; font-size: 13px; }
+.leaderboard-toolbar .tbtn { flex: none; padding: 8px 14px; font-size: 14px; min-height: 44px; }
+.leaderboard-scroll { overflow-x: auto; overscroll-behavior-x: contain; }
+.leaderboard-grid { display: grid; grid-template-columns: repeat(4, minmax(230px, 1fr)); gap: 12px; min-width: 956px; }
+.leaderboard-column { background: #1d2026; border: 1px solid #343944; border-radius: 10px; overflow: hidden; }
+.leaderboard-column h4 { margin: 0; padding: 14px 12px; font-size: 16px; color: #e3e7ef; border-bottom: 1px solid #343944; }
+.leaderboard-column table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: 12px; }
+.leaderboard-column th, .leaderboard-column td { padding: 10px 6px; text-align: center; white-space: nowrap; border-bottom: 1px solid #2b3039; }
+.leaderboard-column th { color: #aeb7c6; font-weight: 400; font-size: 12px; }
+.leaderboard-column td { color: #e3e7ef; }
+.leaderboard-column tbody tr:nth-child(-n+3) td:first-child { color: #ebcc89; }
+.leaderboard-empty { padding: 20px 8px; text-align: center; color: #a6acb8; font-size: 13px; }
+.leaderboard-swipe { display: none; color: #a6acb8; font-size: 12px; }
+@media (max-width: 1050px) { .leaderboard-swipe { display: block; } }

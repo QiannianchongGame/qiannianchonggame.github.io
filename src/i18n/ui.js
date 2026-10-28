@@ -2,6 +2,7 @@
 window.Y2K_UI_REVIEWED = ["en", "ja"];
 window.Y2K_UI = {
   "en": {
+    "排行榜": "Leaderboard",
     "文件夹": "Folder",
     "文本文档": "Text Document",
     "日志文件": "Log File",
@@ -416,6 +417,7 @@ window.Y2K_UI = {
     "手机": "Phone"
   },
   "ja": {
+    "排行榜": "ランキング",
     "放大 +": "拡大 +",
     "关闭": "閉じる",
     "适应窗口": "ウィンドウに合わせる",

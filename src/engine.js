@@ -258,7 +258,7 @@ const Y2K = (() => {
       v: VER, player: player || _t('老K'), flags: { start: true }, opened: {}, hints: {}, notes: [], noteCh: {}, collected: [],
       dlg: {}, dlgQ: {}, chat: {}, unread: {}, wait: {}, mails: [], mailRead: {}, items: [], itemSeen: {}, boardFill: {},
       seenBoards: {}, seenAsk: {}, chapter: null, chTime: null, stage: 'off', clock: '1900-01-01 00:00', clockAt: Date.now(),
-      showHidden: false, playMs: 0, created: Date.now(), newNotes: 0, newBoards: 0, sound: true, readingSeen: {},
+      showHidden: false, playMs: 0, runId: window.Y2KLeaderboard?.newRun(), finishRecords: {}, created: Date.now(), newNotes: 0, newBoards: 0, sound: true, readingSeen: {},
     };
   }
   const compiled = {};
@@ -376,8 +376,16 @@ const Y2K = (() => {
     if (slot === 'auto') { if (saveT) return; saveT = setTimeout(() => { saveT = 0; writeSave('auto'); }, 400); return; }
     return writeSave(slot);
   }
-  function tickPlay() { if (S && lastTick) { S.playMs += Math.min(60000, Date.now() - lastTick); } lastTick = Date.now(); }
-  let lastTick = 0;
+  function tickPlay() {
+    const now = Date.now();
+    if (S && playClockRunning && lastTick) S.playMs = Math.max(0, Number(S.playMs) || 0) + Math.max(0, now - lastTick);
+    lastTick = now;
+  }
+  let lastTick = 0, playClockRunning = false;
+  function syncPlayClock() {
+    tickPlay();
+    playClockRunning = !titleOn && document.visibilityState === 'visible' && !document.querySelector('.ending');
+  }
   function writeSave(slot) {
     tickPlay();
     S.saved = Date.now();
@@ -401,7 +409,8 @@ const Y2K = (() => {
     closeAllWins(); closeOverlay(); closeModal();
     S = Object.assign(fresh(o.player), o);
     flagVer++; cardQ.length = 0; cardOn = false; pendingEnding = null;
-    lastTick = Date.now();
+    lastTick = Date.now(); playClockRunning = false;
+    window.Y2KLeaderboard?.resume(S);
     ui.tab = 'msg'; ui.chat = null; ui.mail = null; ui.item = null;
     ui._viewKey = null; ui.scroll = {}; ui.menuView = null;
     ui.noteTab = 'questions'; ui.noteQuery = ''; ui.itemQuery = '';
@@ -560,6 +569,8 @@ const Y2K = (() => {
   }
   function showEnding(id) {
     const e = D.endings[id]; if (!e) return;
+    tickPlay(); playClockRunning = false;
+    window.Y2KLeaderboard?.capture(S, id);
     if (preEndSnap) LS.set(KEY.pre, preEndSnap);
     setFlag('ending_' + id);
     if (!S.ends) S.ends = [];
@@ -572,7 +583,7 @@ const Y2K = (() => {
       h('h1', { text: e.title }),
       h('div', { class: 'body', html: fmt(e.html) }),
       h('div', { class: 'acts' },
-        ['C', 'H'].includes(id) ? h('button', { class: 'tbtn', text: _t('回到 3 号机'), onclick: () => { closeOverlay(); renderAll(); showCards(); } }) : null,
+        ['C', 'H'].includes(id) ? h('button', { class: 'tbtn', text: _t('回到 3 号机'), onclick: () => { closeOverlay(); syncPlayClock(); renderAll(); showCards(); } }) : null,
         LS.get(KEY.pre) ? h('button', { class: 'tbtn', text: _t('回到结局前继续'), onclick: () => { const o = readSave('pre'); if (o) loadState(o); } }) : null,
         h('button', { class: 'tbtn', text: _t('返回标题画面'), onclick: () => { closeOverlay(); showTitle(); } }))));
     sfx('boot');
@@ -1291,6 +1302,8 @@ const Y2K = (() => {
   // ============================================================
   let titleOn = false;
   function showTitle() {
+    if (S && !titleOn && lastTick) writeSave('auto');
+    tickPlay(); playClockRunning = false;
     window.Y2KStats?.setPlaying(false);
     titleOn = true; closeOverlay(); closeModal();
     clearTimers(); running = {}; typing = {};
@@ -1306,7 +1319,8 @@ const Y2K = (() => {
       h('button', { class: 'tbtn', text: _t('继续调查'), disabled: !auto, onclick: () => { const o = readSave('auto'); if (o) loadState(o); } }),
       h('button', { class: 'tbtn', text: _t('新的调查'), onclick: e => newGamePanel(panel, !!auto, e.currentTarget) }),
       h('button', { class: 'tbtn', text: _t('读取存档'), onclick: e => loadPanel(panel, e.currentTarget) }),
-      h('button', { class: 'tbtn', text: _t('结局收集'), onclick: e => titlePanel(panel, _t('结局收集'), e.currentTarget).append(endingList()) }));
+      h('button', { class: 'tbtn', text: _t('结局收集'), onclick: e => titlePanel(panel, _t('结局收集'), e.currentTarget).append(endingList()) }),
+      h('button', { class: 'tbtn', text: _t('排行榜'), onclick: e => window.Y2KLeaderboard?.mount(titlePanel(panel, _t('排行榜'), e.currentTarget), LANG) }));
     // 语言切换：存进 meta，然后重新载入（译文在启动时写回数据）
     const langs = h('div', { class: 'langs', role: 'group', 'aria-label': 'Language' });
     langs.hidden = READY.length < 2;
@@ -1316,7 +1330,7 @@ const Y2K = (() => {
         h('div', { class: 'community', text: _t('QQ群') + '：1130040971' }),
         h('div', { text: _t('本作纯属虚构 · 建议用电脑上的 Chrome / Edge 打开 · 进度自动保存在本浏览器') })));
   }
-  function hideTitle() { titleOn = false; const tl = $('#title'); tl.hidden = true; tl.innerHTML = ''; tl.classList.remove('panel-open'); window.Y2KStats?.setPlaying(true); showCards(); }
+  function hideTitle() { titleOn = false; syncPlayClock(); const tl = $('#title'); tl.hidden = true; tl.innerHTML = ''; tl.classList.remove('panel-open'); window.Y2KStats?.setPlaying(true); showCards(); }
   function titlePanel(host, title, opener) {
     host.innerHTML = '';
     const tl = $('#title'); tl.classList.add('panel-open');
@@ -1329,7 +1343,7 @@ const Y2K = (() => {
     layer.addEventListener('keydown', e => {
       if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); close(); }
       if (e.key === 'Tab') {
-        const stops = [...dlg.querySelectorAll('button:not(:disabled), input:not(:disabled), textarea:not(:disabled), select:not(:disabled), a[href]')];
+        const stops = [...dlg.querySelectorAll('button:not(:disabled), input:not(:disabled), textarea:not(:disabled), select:not(:disabled), a[href], [tabindex="0"]')];
         const first = stops[0], last = stops[stops.length - 1];
         if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
         else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
@@ -2367,6 +2381,9 @@ const Y2K = (() => {
     });
     setInterval(() => { if (!S) return; renderTray(); const st = $('#phStatus'); if (st) { const t = phoneNow(); st.querySelector('b') && (st.querySelector('b').textContent = t.hm); } }, 15000);
     setInterval(() => { if (S && !titleOn) { tickPlay(); writeSave('auto'); } }, 30000);
+    document.addEventListener('visibilitychange', () => { syncPlayClock(); if (S && !titleOn) writeSave('auto'); });
+    window.addEventListener('pagehide', () => { if (S && !titleOn) writeSave('auto'); playClockRunning = false; });
+    window.addEventListener('pageshow', syncPlayClock);
     window.addEventListener('beforeunload', () => { if (S && !titleOn) writeSave('auto'); });
     window.addEventListener('resize', () => {
       if (!narrow() && ui.phoneOpen) togglePhone(false);
