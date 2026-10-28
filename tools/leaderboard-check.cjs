@@ -25,8 +25,15 @@ html = html.replace(game === '1' ? 'return { add, boot, lang };' : 'return { add
       return route.abort();
     });
     const p = await ctx.newPage(); p.on('pageerror', e => errors.push(e.message)); await p.goto(url);
-    for (const [width, height] of [[1440, 950], [390, 844], [844, 390]]) {
-      await p.setViewportSize({ width, height }); await p.getByRole('button', { name: '排行榜', exact: true }).click();
+    for (const [width, height] of [[1440, 950], [1366, 768], [390, 844], [375, 667], [320, 568], [844, 390], [568, 320]]) {
+      await p.setViewportSize({ width, height });
+      await p.locator('#title').evaluate(el => { el.scrollTop = 0; });
+      const entry = p.getByRole('button', { name: '排行榜', exact: true });
+      const bounds = await entry.boundingBox();
+      assert(bounds.x >= 0 && bounds.y >= 0 && bounds.x + bounds.width <= width && bounds.y + bounds.height <= height, 'leaderboard entry is visible without scrolling');
+      assert(await entry.evaluate(el => { const r = el.getBoundingClientRect(); return el.contains(document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2)); }), 'entry is not covered');
+      if (process.env.LEADERBOARD_SCREENSHOTS) { fs.mkdirSync(process.env.LEADERBOARD_SCREENSHOTS, { recursive: true }); await p.screenshot({ path: path.join(process.env.LEADERBOARD_SCREENSHOTS, `game${game}-${kind}-entry-${width}.png`) }); }
+      await entry.click();
       await p.waitForFunction(() => document.querySelectorAll('.leaderboard-column tbody tr').length === 80);
       assert.equal(await p.locator('.leaderboard-column').count(), 4);
       const b = await p.locator('.title-panel').boundingBox();
@@ -44,11 +51,17 @@ html = html.replace(game === '1' ? 'return { add, boot, lang };' : 'return { add
     await p.waitForFunction(() => document.querySelectorAll('.leaderboard-column tbody tr').length === 80);
     await p.keyboard.press('Escape'); assert.equal(await p.locator('.title-panel').count(), 0);
     for (const [lang, label] of [['en', 'Leaderboard'], ['ja', 'ランキング']]) {
+      await p.setViewportSize({ width: 320, height: 568 });
       await p.evaluate(({ key, lang }) => localStorage.setItem(key + 'meta', JSON.stringify({ lang })), { key, lang });
-      await p.reload(); await p.getByRole('button', { name: label, exact: true }).click();
+      await p.reload();
+      assert(await p.evaluate(() => document.querySelector('.title-topbar').getBoundingClientRect().bottom <= document.querySelector('#title .clock').getBoundingClientRect().top), 'translated topbar does not cover title content');
+      await p.getByRole('button', { name: label, exact: true }).click();
       await p.waitForFunction(() => document.querySelectorAll('.leaderboard-column tbody tr').length === 80);
     }
     await p.evaluate(key => localStorage.setItem(key + 'meta', '{}'), key); await p.reload();
+    const direct = await ctx.newPage(); await direct.goto(url + '#leaderboard');
+    await direct.waitForFunction(() => document.querySelectorAll('.leaderboard-column tbody tr').length === 80);
+    await direct.locator('.title-panel-close').click(); assert.equal(await direct.locator('.title-panel').count(), 0); await direct.close();
     await p.getByRole('button', { name: '新的调查', exact: true }).click(); await p.getByRole('button', { name: '开始', exact: true }).click();
     // Freeze wall time, then drive a real ending transition with a known save and hint total.
     await p.evaluate(() => { const d = Y2K.debug; d.flush(); d.state.playMs = 120000; d.state.hints = { puzzle: 2, board: 1 }; window.testNow = Date.now(); Date.now = () => window.testNow; d.tickPlay(); d.state.playMs = 120000; });

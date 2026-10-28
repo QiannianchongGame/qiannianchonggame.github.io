@@ -550,6 +550,11 @@ table.det td.nm svg { width: 16px; height: 16px; }
 
 /* ---------- 语言 ---------- */
 .title .langs { position: absolute; top: max(14px, env(safe-area-inset-top, 0px)); right: max(16px, env(safe-area-inset-right, 0px)); display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+.title .title-topbar { position: absolute; top: max(14px, env(safe-area-inset-top, 0px)); left: max(16px, env(safe-area-inset-left, 0px)); right: max(16px, env(safe-area-inset-right, 0px)); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px 12px; }
+.title .title-topbar .langs { position: static; margin-left: auto; }
+.title .leaderboard-entry { min-height: 44px; padding: 9px 16px; border-color: #c69a40; color: #f1d28f; background: #2b2417; font-size: 14px; letter-spacing: .06em; white-space: nowrap; }
+.title .leaderboard-entry:hover, .title .leaderboard-entry:focus-visible { color: #fff1c4; background: #3a2f1b; outline: 2px solid #f1d28f; outline-offset: 3px; }
+@media (max-width: 380px) { .title { padding-top: 112px; } }
 .lbtn { border: 1px solid #3a3d44; background: rgba(255,255,255,.03); color: #9a9a9a; padding: 6px 12px; border-radius: 4px; cursor: pointer; font: 13px/1.2 var(--font-ph); }
 .lbtn:hover { color: #fff; }
 .lbtn.on { border-color: var(--amber); color: #fff; }
