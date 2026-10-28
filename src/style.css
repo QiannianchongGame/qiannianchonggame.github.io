@@ -467,6 +467,11 @@ table.det td.nm svg { width: 16px; height: 16px; }
 .tbtn:hover { border-color: var(--amber); color: #fff; }
 .tbtn:disabled { opacity: .35; cursor: default; }
 .title .foot { position: absolute; bottom: 14px; left: 0; right: 0; font: 11px var(--font-ph); color: #555; }
+@media (max-height: 600px) {
+  .title { justify-content: flex-start; gap: 10px; padding-top: 64px; padding-bottom: 20px; }
+  .title .menu { margin-top: 8px; }
+  .title .foot { position: static; margin-top: 14px; }
+}
 .panel { width: min(440px, 100%); background: #14161a; border: 1px solid #2c3038; border-radius: 10px; padding: 16px; text-align: left; font-size: 14px; line-height: 1.7; color: #ddd; }
 .panel h3 { margin: 0 0 10px; font-size: 16px; }
 .panel input[type=text] { width: 100%; padding: 9px 10px; border-radius: 6px; border: 1px solid #3a3d44; background: #0b0c0e; color: #fff; font-size: 15px; }

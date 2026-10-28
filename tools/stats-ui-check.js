@@ -42,6 +42,13 @@ async function run(browser, name, api, fixtures) {
   const other = await context(true), phone = await other.newPage(); await phone.goto(game); await phone.locator('.site-stats[data-state="ready"]').waitFor();
   if (process.env.UI_CHECK_OUTPUT) { fs.mkdirSync(process.env.UI_CHECK_OUTPUT, { recursive: true }); await phone.screenshot({ path: path.join(process.env.UI_CHECK_OUTPUT, name + '-stats-mobile.png') }); }
   assert(await phone.locator('.site-stats').evaluate(el => el.getBoundingClientRect().right <= innerWidth));
+  await phone.setViewportSize({ width: 844, height: 390 });
+  assert((await phone.locator('.title h1').boundingBox()).y >= 0);
+  await phone.locator('.site-stats').scrollIntoViewIfNeeded();
+  const statsRect = await phone.locator('.site-stats').boundingBox(), footRect = await phone.locator('.title .foot').boundingBox();
+  assert(statsRect.y >= 0 && statsRect.y + statsRect.height <= 390 && footRect.y >= statsRect.y + statsRect.height, '横屏统计应可滚动到达且不与页脚重叠');
+  if (process.env.UI_CHECK_OUTPUT) await phone.screenshot({ path: path.join(process.env.UI_CHECK_OUTPUT, name + '-stats-landscape.png') });
+  await phone.setViewportSize({ width: 390, height: 844 });
   await start(phone); await count(2, 3);
   await title(p); await count(2, 3); await title(tab); await count(1, 3);
   await phone.evaluate(() => { Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => 'hidden' }); document.dispatchEvent(new Event('visibilitychange')); });
