@@ -262,6 +262,10 @@ const Y2K = (() => {
     };
   }
   const compiled = {};
+  // Existing saves already retain each revealed hint; derive the total from that snapshot.
+  function hintCount(state = S) {
+    return Object.values(state && state.hints || {}).reduce((sum, n) => sum + (Number.isSafeInteger(n) && n > 0 ? n : 0), 0);
+  }
   function compile(expr) {
     const toks = expr.match(/[A-Za-z0-9_]+|[()&|!]/g) || [];
     let i = 0;
@@ -389,7 +393,7 @@ const Y2K = (() => {
     const c = D.chapters.find(x => x.id === s.chapter);
     const d = new Date(s.saved || s.created);
     const pt = Math.round((s.playMs || 0) / 60000);
-    return `${c ? c.num + ' ' + c.name : _t('序章')} ${_t('· 游玩')} ${Math.floor(pt / 60)}${_t('小时')}${pt % 60}${_t('分 ·')} ${d.getMonth() + 1}/${d.getDate()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    return `${c ? c.num + ' ' + c.name : _t('序章')} ${_t('· 游玩')} ${Math.floor(pt / 60)}${_t('小时')}${pt % 60}${_t('分 ·')} ${d.getMonth() + 1}/${d.getDate()} ${pad(d.getHours())}:${pad(d.getMinutes())} · ${_t('提示次数')}：${hintCount(s)}`;
   }
   function loadState(o) {
     clearTimers(); running = {}; typing = {};
@@ -791,7 +795,7 @@ const Y2K = (() => {
       const bar = h('div', { class: 'bar' }, res);
       if (!done()) {
         bar.append(
-          h('button', { class: 'bbtn', text: _t('提示'), onclick: () => { const n = S.hints['board_' + id] || 0; if (n < (b.hints || []).length) { S.hints['board_' + id] = n + 1; draw(); dirty(); } } }),
+          h('button', { class: 'bbtn', text: _t('提示'), disabled: (S.hints['board_' + id] || 0) >= (b.hints || []).length, onclick: () => { const n = S.hints['board_' + id] || 0; if (n < (b.hints || []).length) { S.hints['board_' + id] = n + 1; draw(); dirty(); } } }),
           h('button', { class: 'bbtn', text: _t('清空'), onclick: () => { for (const k in fill) delete fill[k]; active = null; draw(); dirty(); } }),
           h('button', { class: 'bbtn pri', text: _t('检查'), onclick: () => check(res) }));
       }
@@ -1237,6 +1241,7 @@ const Y2K = (() => {
     title(_t('菜单'), currentChapterLabel());
     const sec = (t) => body.append(h('div', { class: 'ph-sec', html: `<span>${t}</span>` }));
     sec(_t('存档'));
+    body.append(h('div', { class: 'ph-card', text: _t('提示次数') + '：' + hintCount() }));
     const auto = readSave('auto');
     body.append(h('div', { class: 'ph-card slot-card' }, h('div', {}, h('div', { class: 'k', text: _t('自动存档（每一步都会自动保存）') }), h('div', { text: describe(auto) }))));
     ['s1', 's2', 's3'].forEach((k, i) => {
