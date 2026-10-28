@@ -69,7 +69,7 @@ const Y2K = (() => {
     const byId = (arr) => { const o = {}; arr.forEach(x => { o[x.id] = x; }); return o; };
     const roots = {
       chapter: byId(D.chapters), app: D.apps, contact: D.contacts2026, file: byId(D.files), dlg: byId(D.dialogues),
-      mail26: byId(D.mails2026), item: byId(D.items2026), ux: byId(D.userExtras), puzzle: D.puzzles, board: D.boards,
+      mail26: byId(D.mails2026), item: byId(D.items2026), reading: byId(D.readings), journal: D.journal, ux: byId(D.userExtras), puzzle: D.puzzles, board: D.boards,
       note: D.notes, col: D.collectibles, ending: D.endings, saver: D.screensaver, bboard: byId(D.bbsBoards), user: byId(D.users),
       thread: byId(D.threads), bmail: byId(D.mails), page: byId(D.pages), gxc: byId(D.gxContacts), gx: byId(D.gxLogs), gxacc: { me: D.gxAccount },
     };
@@ -194,12 +194,14 @@ const Y2K = (() => {
     const button = h('button', Object.assign({ type: 'button' }, attrs), ...children);
     return bindControl(button, action);
   }
+  const controlCancels = new WeakMap();
   function bindControl(button, action, targetOf = () => button) {
     let press = null, suppressClickUntil = 0;
     const reset = () => { press = null; button.classList.remove('pressed-control'); };
     const start = (kind, id, x, y, target) => { reset(); press = { kind, id, x, y, moved: false, target }; if (target === button) button.classList.add('pressed-control'); };
     const move = (x, y) => { if (press && Math.hypot(x - press.x, y - press.y) > 12) { press.moved = true; button.classList.remove('pressed-control'); } };
     const cancel = () => { if (press) suppressClickUntil = Date.now() + 800; reset(); };
+    controlCancels.set(button, cancel);
     const finish = (event, x, y) => {
       if (!press) return;
       const current = press, r = current.target.getBoundingClientRect(); move(x, y); reset();
@@ -740,7 +742,7 @@ const Y2K = (() => {
       if (!cur || !S.wait[contact] || S.wait[contact].id !== id) return;
       const text = p.kind === 'choice' ? p.options[value] : p.kind === 'pick' ? value.map(i => p.options[i]).join('、') : Array.isArray(value) ? value.join('，') : String(value).trim();
       pushChat(contact, { from: 'me', text });
-    }, onWrong: () => { dlg.classList.remove('shake'); void dlg.offsetWidth; dlg.classList.add('shake'); }, extraBtn: h('button', { class: 'b98', type: 'button', text: _t('取消'), onclick: () => closeModal() }) });
+    }, onWrong: () => { dlg.classList.remove('shake'); void dlg.offsetWidth; dlg.classList.add('shake'); }, extraBtn: controlButton({ class: 'b98', text: _t('取消') }, closeModal) });
     dlg.append(h('div', { class: 'titlebar' }, h('span', { html: icon('lock') }), h('span', { class: 't', text: p.title || _t('需要密码') }), controlButton({ class: 'b98 tbb', 'aria-label': _t('关闭'), title: _t('关闭'), text: '×' }, closeModal)), h('div', { class: 'wbody' }, form));
     m.append(shade, dlg);
     form.focusFirst();
@@ -749,7 +751,7 @@ const Y2K = (() => {
     const m = modalRoot(); m.innerHTML = '';
     const dlg = h('div', { class: 'dlg98 out' + (aboveOverlay ? ' raised' : ''), role: 'dialog' });
     const row = h('div', { class: 'row' });
-    (buttons || [{ text: _t('确定') }]).forEach(b => row.append(h('button', { class: 'b98', text: b.text, onclick: () => { closeModal(); b.fn && b.fn(); } })));
+    (buttons || [{ text: _t('确定') }]).forEach(b => row.append(controlButton({ class: 'b98', text: b.text }, () => { closeModal(); b.fn && b.fn(); })));
     dlg.append(h('div', { class: 'titlebar' }, h('span', { class: 't', text: title }), controlButton({ class: 'b98 tbb', 'aria-label': _t('关闭'), title: _t('关闭'), text: '×' }, closeModal)), h('div', { class: 'wbody' }, h('div', { class: 'prompt', html }), row));
     m.append(h('div', { class: 'shade' + (aboveOverlay ? ' raised' : ''), onclick: () => closeModal() }), dlg);
   }
@@ -1339,7 +1341,7 @@ const Y2K = (() => {
     $('#led').classList.toggle('on', S.stage !== 'off');
     if (S.stage === 'off') {
       sc.append(h('div', { class: 'off' },
-        h('button', { class: 'power', 'aria-label': _t('开机'), html: '⏻', onclick: powerOn }),
+        controlButton({ class: 'power', 'aria-label': _t('开机'), html: '⏻' }, powerOn),
         h('div', { html: _t('3 号机已接好电源和显示器。<br>按下电源键开机。') })));
     } else if (S.stage === 'win') {
       buildDesktop();
@@ -1412,7 +1414,7 @@ const Y2K = (() => {
     const sc = screen(); sc.innerHTML = '';
     const dk = h('div', { id: 'desktop' }, h('div', { id: 'icons' }));
     const tb = h('div', { id: 'taskbar', class: 'out' },
-      h('button', { id: 'startbtn', class: 'b98', html: icon('win') + _t('<span>开始</span>'), onclick: (e) => { e.stopPropagation(); toggleStart(); } }),
+      controlButton({ id: 'startbtn', class: 'b98', html: icon('win') + _t('<span>开始</span>') }, toggleStart),
       h('div', { id: 'tasks' }), h('div', { id: 'tray', class: 'in', style: { background: 'transparent' } }));
     sc.append(dk, tb);
     dk.addEventListener('pointerdown', (e) => { if (e.target === dk || e.target.id === 'icons') { selectIcon(null); closeStart(); closeCtx(); } });
@@ -1441,8 +1443,8 @@ const Y2K = (() => {
     box.innerHTML = '';
     desktopEntries().forEach(en => {
       const el = h('div', { class: 'icon', tabindex: 0, html: icon(en.icon, en.locked) + (en.fresh ? NEWDOT : '') + `<span>${esc(en.name)}</span>` });
-      el.onclick = (e) => { selectIcon(el); if (coarse()) en.open(); };
-      el.ondblclick = () => en.open();
+      bindControl(el, () => { selectIcon(el); if (coarse()) en.open(); });
+      el.ondblclick = () => { if (!coarse()) en.open(); };
       el.onkeydown = (e) => { if (e.key === 'Enter') en.open(); };
       bindCtx(el, () => [[_t('打开'), en.open], ...(en.file ? [[_t('属性'), () => showProps(en.file)]] : [])], () => selectIcon(el));
       box.append(el);
@@ -1451,14 +1453,14 @@ const Y2K = (() => {
   function renderTray() {
     const t = $('#tray'); if (!t || !S) return;
     const m = machineNow();
-    t.textContent = m.hm; t.title = `${m.y}${_t('年')}${m.mo}${_t('月')}${m.d}${_t('日')}`;
+    t.textContent = m.hm; t.title = LANG === 'en' ? `${m.y}-${pad(m.mo)}-${pad(m.d)}` : `${m.y}${_t('年')}${m.mo}${_t('月')}${m.d}${_t('日')}`;
   }
   function renderTasks() {
     const box = $('#tasks'); if (!box) return;
     box.innerHTML = '';
     const top = wins.filter(w => !w.min).sort((a, b) => b.z - a.z)[0];
     wins.forEach(w => w.el.classList.toggle('active', w === top));
-    wins.forEach(w => box.append(h('button', { class: 'b98 task' + (w === top ? ' on down' : ''), html: icon(w.o.icon || 'exe') + `<span>${esc(w.title)}</span>`, onclick: () => { if (w === top && !w.min) { w.min = true; w.el.hidden = true; renderTasks(); } else focusWin(w); } })));
+    wins.forEach(w => box.append(controlButton({ class: 'b98 task' + (w === top ? ' on down' : ''), html: icon(w.o.icon || 'exe') + `<span>${esc(w.title)}</span>` }, () => { if (w === top && !w.min) { w.min = true; w.el.hidden = true; renderTasks(); } else focusWin(w); })));
   }
   // 后台状态更新不得替换手指或鼠标正在操作的内容；松手后留出兼容 click 的时间。
   function guardWinInteraction(win) {
@@ -1583,18 +1585,18 @@ const Y2K = (() => {
     // defs: [[label, [[itemLabel, fn, checked], ...]], ...]
     defs.forEach(([label, items]) => {
       const m = h('div', { text: label });
-      m.onclick = (e) => {
+      bindControl(m, (e) => {
         e.stopPropagation();
         const was = m.classList.contains('open');
         win.menu.querySelectorAll('.open').forEach(x => { x.classList.remove('open'); x.querySelector('.dropdown') && x.querySelector('.dropdown').remove(); });
         if (was) return;
         m.classList.add('open');
         const dd = h('div', { class: 'dropdown out' });
-        items.forEach(it => { if (it === '-') return dd.append(h('div', { class: 'sep98', style: { padding: 0 } })); dd.append(h('div', { class: it[2] ? 'chk' : '', text: it[0], onclick: (ev) => { ev.stopPropagation(); m.classList.remove('open'); dd.remove(); it[1](); } })); });
+        items.forEach(it => { if (it === '-') return dd.append(h('div', { class: 'sep98', style: { padding: 0 } })); dd.append(bindControl(h('div', { class: it[2] ? 'chk' : '', text: it[0] }), () => { m.classList.remove('open'); dd.remove(); it[1](); })); });
         m.append(dd);
         const off = (ev) => { if (!m.contains(ev.target)) { m.classList.remove('open'); dd.remove(); document.removeEventListener('pointerdown', off, true); } };
         document.addEventListener('pointerdown', off, true);
-      };
+      }, e => e.target.closest('.dropdown') ? null : m);
       win.menu.append(m);
     });
   }
@@ -1608,7 +1610,7 @@ const Y2K = (() => {
     closeCtx(); const dk = host || desktop(); if (!dk || !items.length) return;
     const dr = dk.getBoundingClientRect();
     ctxEl = h('div', { class: 'ctx out', role: 'menu', style: { zIndex: Math.max(7100, zTop + 1) } });
-    items.forEach(([t, fn]) => ctxEl.append(h('button', { class: 'ctx-item', type: 'button', role: 'menuitem', text: t, onclick: () => { closeCtx(); fn(); } })));
+    items.forEach(([t, fn]) => ctxEl.append(controlButton({ class: 'ctx-item', role: 'menuitem', text: t }, () => { closeCtx(); fn(); })));
     ctxEl.onkeydown = e => {
       if (!['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(e.key)) return;
       e.preventDefault(); const buttons = [...ctxEl.querySelectorAll('button')], i = buttons.indexOf(document.activeElement);
@@ -1623,7 +1625,11 @@ const Y2K = (() => {
     if (keyboard) ctxEl.querySelector('button')?.focus();
   }
   function bindCtx(el, items, select, host) {
-    const show = (x, y, keyboard) => { if (select) select(); showCtx(items(), x, y, keyboard, host); };
+    const show = (x, y, keyboard) => {
+      controlCancels.get(el)?.();
+      el.querySelectorAll('.pressed-control').forEach(control => controlCancels.get(control)?.());
+      if (select) select(); showCtx(items(), x, y, keyboard, host);
+    };
     el.addEventListener('contextmenu', e => {
       if (e.target.closest('input, textarea, select, [contenteditable="true"]')) return;
       e.preventDefault(); e.stopPropagation();
@@ -1642,7 +1648,10 @@ const Y2K = (() => {
       const { clientX, clientY } = e.touches[0];
       lp = setTimeout(() => { if (el.isConnected) { touchOpened = true; suppressContextUntil = Date.now() + 1000; show(clientX, clientY); } }, 550);
     }, { passive: true });
-    el.addEventListener('touchend', e => { cancel(); touching = false; if (touchOpened) { e.preventDefault(); touchOpened = false; } }, { passive: false });
+    // 子按钮会在松手时执行并停止冒泡；提前取消长按计时，避免稍后误弹属性菜单。
+    el.addEventListener('pointerup', cancel, true);
+    el.addEventListener('pointercancel', cancel, true);
+    el.addEventListener('touchend', e => { cancel(); touching = false; if (touchOpened) { e.preventDefault(); touchOpened = false; } }, { capture: true, passive: false });
     el.addEventListener('touchmove', cancel, { passive: true });
     el.addEventListener('touchcancel', () => { cancel(); touching = false; touchOpened = false; }, { passive: true });
   }
@@ -1658,7 +1667,7 @@ const Y2K = (() => {
     items.push(['help', _t('帮助'), () => msgBox(_t('帮助'), helpText())]);
     items.push(['shutdown', _t('关闭系统...'), () => msgBox(_t('关闭 Windows'), _t('机房 3 号机是 BBS 服务器，请勿关机！！！<br><span style="color:#666">—— 机箱上贴着的纸条</span>'), [{ text: _t('返回标题画面'), fn: () => { writeSave('auto'); showTitle(); } }, { text: _t('取消') }])]);
     const ul = h('ul');
-    items.forEach(([ic, n, fn]) => ul.append(h('li', { html: icon(ic) + `<span>${esc(n)}</span>`, onclick: () => { closeStart(); fn(); } })));
+    items.forEach(([ic, n, fn]) => ul.append(bindControl(h('li', { html: icon(ic) + `<span>${esc(n)}</span>` }), () => { closeStart(); fn(); })));
     const m = h('div', { id: 'startmenu', class: 'out' }, h('div', { class: 'side', html: '<b>Windows</b>98' }), ul);
     dk.parentNode.append(m);
     $('#startbtn').classList.add('down');
@@ -1719,7 +1728,7 @@ const Y2K = (() => {
   }
   function newUnder(prefix) { return D.files.some(f => (f.path === prefix || f.path.startsWith(prefix + '/')) && isNewFile(f) && reachablePath(f.path)); }
   function recycleHasNew() { return recycleItems().some(f => !S.opened[f.id]); }
-  const NEWDOT = '<i class="newdot" aria-label="新"></i>';
+  const NEWDOT = `<i class="newdot" aria-label="${esc(_t('新'))}"></i>`;
   function recycleItems() { return D.files.filter(f => f.deleted && !S.flags['restored_' + f.id] && test(f.requires)); }
   function sizeOf(f) {
     if (f.size) return f.size;
@@ -1790,7 +1799,7 @@ const Y2K = (() => {
     win.setTitle(title);
     win.o.icon = p === '' ? 'computer' : 'folder';
     const go = (np) => { st.path = np; st.sel = null; win.resetScroll = true; win.refresh(true); };
-    const sel = () => st.sel && listDir(st.path).find(x => x.path === st.sel);
+    const sel = () => st.sel && items.find(x => x.path === st.sel);
     menus(win, [
       [_t('文件(F)'), [[_t('打开'), () => { const s = sel(); s && openEntry(s); }], [_t('属性'), () => { const s = sel(); s && showProps(s.file || s.entry || { path: s.path, type: 'folder' }); }], '-', [_t('关闭'), () => closeWin(win)]]],
       [_t('查看(V)'), [[_t('大图标'), () => { st.view = 'icons'; win.refresh(true); }, st.view === 'icons'], [_t('详细资料'), () => { st.view = 'details'; win.refresh(true); }, st.view === 'details'], '-',
@@ -1798,8 +1807,8 @@ const Y2K = (() => {
       [_t('帮助(H)'), [[_t('关于 Windows'), () => msgBox(_t('关于 Windows'), _t('Microsoft Windows 98<br>本机已授权给：梧城市第七中学 微机室'))]]],
     ]);
     win.top.append(h('div', { class: 'toolbar98' },
-      h('button', { class: 'b98', text: _t('↑ 向上'), disabled: p === '', onclick: () => go(p === 'A:' || p === 'C:' ? '' : parentOf(p)) }),
-      h('button', { class: 'b98', text: _t('属性'), onclick: () => { const s = sel(); if (s) showProps(s.file || s.entry || { path: s.path, type: 'folder' }); else msgBox(_t('属性'), _t('请先单击选中一个文件。')); } })),
+      controlButton({ class: 'b98', text: _t('↑ 向上'), disabled: p === '' }, () => go(p === 'A:' || p === 'C:' ? '' : parentOf(p))),
+      controlButton({ class: 'b98', text: _t('属性') }, () => { const s = sel(); if (s) showProps(s.file || s.entry || { path: s.path, type: 'folder' }); else msgBox(_t('属性'), _t('请先单击选中一个文件。')); })),
       h('div', { class: 'addr' }, h('span', { text: _t('地址') }), h('input', { class: 'f98', value: p === '' ? _t('我的电脑') : dispPath(p) + (p.length === 2 ? '\\' : ''), readonly: true })));
     const body = win.body;
     body.innerHTML = '';
@@ -1821,8 +1830,8 @@ const Y2K = (() => {
         const hid = (f && f.hidden) || (it.entry && it.entry.hidden);
         const el = h('div', { class: 'icon' + (st.sel === it.path ? ' sel' : '') + (hid ? ' hid' : ''), tabindex: 0, html: icon(ic, locked) + ((it.folder ? it.path !== '#display' && newUnder(it.path) : isNewFile(f)) ? NEWDOT : '') + `<span>${esc(it.label || nameOf(it.path))}</span>` });
         const select = () => { st.sel = it.path; fl.querySelectorAll('.sel').forEach(x => x.classList.remove('sel')); el.classList.add('sel'); win.status.firstChild && (win.status.firstChild.textContent = statusText(it)); };
-        el.onclick = () => { select(); if (coarse()) openEntry(it); };
-        el.ondblclick = () => openEntry(it);
+        bindControl(el, () => { select(); if (coarse()) openEntry(it); });
+        el.ondblclick = () => { if (!coarse()) openEntry(it); };
         el.onkeydown = (e) => { if (e.key === 'Enter') openEntry(it); };
         bindCtx(el, () => [[_t('打开'), () => openEntry(it)], [_t('属性'), () => showProps(f || it.entry || { path: it.path, type: 'folder' })]], select);
         fl.append(el);
@@ -1837,8 +1846,8 @@ const Y2K = (() => {
           h('td', { class: 'nm', html: icon(it.folder ? 'folder' : TYPEICON[f.type], locked) + esc(nameOf(it.path)) + ((it.folder ? newUnder(it.path) : isNewFile(f)) ? `<span class="newtag">${_t('新')}</span>` : '') }),
           h('td', { text: it.folder ? '' : sizeOf(f) }), h('td', { text: it.folder ? _t('文件夹') : TYPENAME[f.type] || '' }), h('td', { text: (f || it.entry || {}).date || '' }));
         const select = () => { st.sel = it.path; tb.querySelectorAll('.sel').forEach(x => x.classList.remove('sel')); tr.classList.add('sel'); win.status.firstChild && (win.status.firstChild.textContent = statusText(it)); };
-        tr.onclick = () => { select(); if (coarse()) openEntry(it); };
-        tr.ondblclick = () => openEntry(it);
+        bindControl(tr, () => { select(); if (coarse()) openEntry(it); });
+        tr.ondblclick = () => { if (!coarse()) openEntry(it); };
         tr.tabIndex = 0;
         tr.onkeydown = e => { if (e.key === 'Enter') openEntry(it); };
         bindCtx(tr, () => [[_t('打开'), () => openEntry(it)], [_t('属性'), () => showProps(f || it.entry || { path: it.path, type: 'folder' })]], select);
@@ -1846,7 +1855,7 @@ const Y2K = (() => {
       });
       body.append(tb);
     }
-    const statusText = (it) => it ? (it.folder ? nameOf(it.path) : `${nameOf(it.path)}　${sizeOf(it.file)}　${it.file.date || ''}`) : `${items.length} ${_t('个对象')}` + (S.showHidden ? '' : _t('（隐藏文件未显示）'));
+    const statusText = (it) => it ? (it.folder || it.drive ? it.label || nameOf(it.path) : `${nameOf(it.path)}　${sizeOf(it.file)}　${it.file.date || ''}`) : `${items.length} ${_t('个对象')}` + (S.showHidden ? '' : _t('（隐藏文件未显示）'));
     win.status.append(h('div', { text: statusText(sel()) }));
   }
 
@@ -1857,11 +1866,11 @@ const Y2K = (() => {
     win.o.icon = items.length ? 'recyclefull' : 'recycle';
     win.top.append(h('div', { class: 'toolbar98' }, h('span', { text: _t('选中文件后点"还原"，文件会回到原来的位置。') })));
     if (!items.length) { win.body.append(h('div', { class: 'empty98', text: _t('回收站是空的。') })); return; }
-    const tb = h('table', { class: 'det' });
+    const tb = h('table', { class: 'det recycle-table' });
     tb.append(h('tr', {}, ...[_t('名称'), _t('原位置'), _t('删除日期'), _t('大小'), ''].map(t => h('th', { class: 'out', text: t }))));
     items.forEach(f => {
       tb.append(h('tr', {}, h('td', { class: 'nm', html: icon(TYPEICON[f.type] || 'txt') + esc(nameOf(f.path)) + (S.opened[f.id] ? '' : `<span class="newtag">${_t('新')}</span>`) }), h('td', { text: dispPath(parentOf(f.path)) }), h('td', { text: f.deletedAt || f.date || '' }), h('td', { text: sizeOf(f) }),
-        h('td', {}, h('button', { class: 'b98', style: { minWidth: 0 }, text: _t('还原'), onclick: () => { markInteraction(); setFlag('restored_' + f.id); toast(_t('已还原到 ') + dispPath(parentOf(f.path))); dirty(); } }))));
+        h('td', {}, controlButton({ class: 'b98', style: { minWidth: 0 }, text: _t('还原') }, () => { markInteraction(); setFlag('restored_' + f.id); toast(_t('已还原到 ') + dispPath(parentOf(f.path))); dirty(); win.refresh(true); }))));
     });
     win.body.append(tb);
     win.status.append(h('div', { text: `${items.length} ${_t('个对象')}` }));
@@ -1927,14 +1936,19 @@ const Y2K = (() => {
       const deck = h('div', { class: 'deck' });
       const cas = h('div', { class: 'cassette' + (st.playing ? ' playing' : ''), style: { '--spd': (1.6 / +spd) + 's' } }, h('div', { class: 'lbl', text: `${tape.side ? tape.side + _t(' 面　') : ''}${tape.label || nameOf(f.path)}` }), h('div', { class: 'reel' }), h('div', { class: 'reel' }));
       const range = h('input', { type: 'range', min: 0, max: SPEEDS.length - 1, step: 1, value: st.si, id: 'spd_' + f.id, 'aria-label': _t('转速') });
-      range.oninput = () => { st.si = +range.value; st.playing = false; st.shown = ''; win.refresh(true); };
+      const speedLabel = h('span', { class: 'spd', text: spd + '×' });
+      range.oninput = () => {
+        st.si = +range.value; st.playing = false; st.shown = '';
+        cas.classList.remove('playing'); cas.style.setProperty('--spd', (1.6 / +SPEEDS[st.si]) + 's');
+        speedLabel.textContent = SPEEDS[st.si] + '×'; tr.textContent = _t('（按"播放"开始）');
+      };
       const tr = h('div', { class: 'tr in', text: st.shown || _t('（按"播放"开始）') });
       deck.append(cas,
-        h('div', { class: 'ctrl' }, h('span', { text: _t('转速') }), range, h('span', { class: 'spd', text: spd + '×' })),
+        h('div', { class: 'ctrl' }, h('span', { text: _t('转速') }), range, speedLabel),
         h('div', { class: 'ticks', html: SPEEDS.map(s => `<span>${s}</span>`).join('') }),
         h('div', { class: 'ctrl' },
-          h('button', { class: 'b98', text: _t('▶ 播放'), onclick: () => play() }),
-          h('button', { class: 'b98', text: _t('■ 停止'), onclick: () => { st.playing = false; win.refresh(true); } })),
+          controlButton({ class: 'b98', text: _t('▶ 播放') }, () => play()),
+          controlButton({ class: 'b98', text: _t('■ 停止') }, () => { st.playing = false; win.refresh(true); })),
         h('div', { text: _t('听到的内容：') }), tr);
       win.body.append(deck);
       function textFor(s) {
@@ -1971,8 +1985,8 @@ const Y2K = (() => {
         h('div', { text: _t('压缩包注释：') }), h('div', { class: 'cmt in', html: fmt(esc(z.comment || _t('（无）'))).replace(/\n/g, '<br>') }),
         h('div', { style: { overflow: 'auto', maxHeight: '160px' } }, tb),
         h('div', { class: 'row', style: { display: 'flex', gap: '6px', flexWrap: 'wrap' } },
-          unlocked ? h('button', { class: 'b98', text: _t('打开解压目录'), onclick: () => z.extractTo && openExplorer(normPath(z.extractTo)) })
-            : h('button', { class: 'b98', text: _t('解压…'), onclick: () => askPuzzle(f.lock, () => { toast(_t('已解压到 ') + dispPath(z.extractTo), 'good'); dirty(); }) }))));
+          unlocked ? controlButton({ class: 'b98', text: _t('打开解压目录') }, () => z.extractTo && openExplorer(normPath(z.extractTo)))
+            : controlButton({ class: 'b98', text: _t('解压…') }, () => askPuzzle(f.lock, () => { toast(_t('已解压到 ') + dispPath(z.extractTo), 'good'); dirty(); })))));
       win.status.append(h('div', { text: unlocked ? _t('已解压到 ') + dispPath(z.extractTo) : _t('文件已加密，需要密码') }));
     } });
   }
@@ -1983,7 +1997,7 @@ const Y2K = (() => {
       const box = h('div', { style: { padding: '12px', display: 'flex', flexDirection: 'column', gap: '10px' } },
         h('div', { class: 'in', style: { height: '130px', background: '#000', display: 'flex', alignItems: 'center', overflow: 'hidden' } }, h('div', { style: { color: '#ffd84a', fontFamily: 'var(--font-hand)', fontSize: '18px', whiteSpace: 'nowrap', padding: '0 10px' }, text: saverText().slice(0, 18) + '…' })),
         h('div', {}, _t('屏幕保护程序：'), h('select', { class: 'f98', id: 'saverSel' }, h('option', { text: _t('字幕') }))),
-        h('div', {}, _t('等待：1 分钟　'), h('button', { class: 'b98', text: _t('设置…'), onclick: () => msgBox(_t('字幕设置'), _t('文字：<br><div class="in" style="padding:4px;margin-top:4px">') + esc(saverText()) + '</div>') }), ' ', h('button', { class: 'b98', text: _t('预览'), onclick: () => showSaver() })));
+        h('div', {}, _t('等待：1 分钟　'), controlButton({ class: 'b98', text: _t('设置…') }, () => msgBox(_t('字幕设置'), _t('文字：<br><div class="in" style="padding:4px;margin-top:4px">') + esc(saverText()) + '</div>')), ' ', controlButton({ class: 'b98', text: _t('预览') }, () => showSaver())));
       win.body.append(box);
     } });
   }
@@ -2029,8 +2043,8 @@ const Y2K = (() => {
       left.append(h('div', { class: 'grp', text: `${g}（${cs.length}）` }));
       cs.forEach(c => {
         const n = gxLogsFor(c.id).length;
-        left.append(h('div', { class: 'ct' + (st.c === c.id ? ' sel' : '') + (n ? '' : ' none'), onclick: () => { st.c = c.id; st.d = null; win.refresh(true); } },
-          h('div', { class: 'av', text: c.nick[0] }), h('div', {}, h('div', { text: c.nick }), h('small', { text: `${c.number}　${n} ${_t('段记录')}` }))));
+        left.append(bindControl(h('div', { class: 'ct' + (st.c === c.id ? ' sel' : '') + (n ? '' : ' none') },
+          h('div', { class: 'av', text: c.nick[0] }), h('div', {}, h('div', { text: c.nick }), h('small', { text: `${c.number}　${n} ${_t('段记录')}` }))), () => { st.c = c.id; st.d = null; win.refresh(true); }));
       });
     });
     const right = h('div', { class: 'right' });
@@ -2041,7 +2055,7 @@ const Y2K = (() => {
       if (!logs.length) right.append(h('div', { class: 'empty98', text: _t('和 ') + c.nick + _t(' 没有本地聊天记录。') }));
       else {
         const dates = h('div', { class: 'dates' });
-        logs.forEach((l, i) => dates.append(h('button', { class: 'b98' + (st.d === l.id ? ' down' : ''), text: l.date + (logs.filter(x => x.date === l.date).length > 1 ? ' #' + (logs.filter(x => x.date === l.date).indexOf(l) + 1) : '') + (S.opened[l.id] ? '' : ' •'), onclick: () => { st.d = l.id; win.resetScroll = true; win.refresh(true); } })));
+        logs.forEach((l, i) => dates.append(controlButton({ class: 'b98' + (st.d === l.id ? ' down' : ''), text: l.date + (logs.filter(x => x.date === l.date).length > 1 ? ' #' + (logs.filter(x => x.date === l.date).indexOf(l) + 1) : '') + (S.opened[l.id] ? '' : ' •') }, () => { st.d = l.id; win.resetScroll = true; win.refresh(true); })));
         right.append(dates);
         const log = h('div', { class: 'log' });
         const L = logs.find(x => x.id === st.d);
@@ -2063,12 +2077,12 @@ const Y2K = (() => {
     const res = h('div', { style: { maxHeight: '220px', overflow: 'auto', background: '#fff', padding: '4px' }, class: 'in' });
     const run = () => {
       res.innerHTML = ''; const q = inp.value.trim(); if (!q) return;
-      D.gxLogs.filter(l => test(l.requires)).forEach(l => l.lines.forEach(x => { if (x.text.includes(q)) { const c = D.gxContacts.find(y => y.id === l.contact); res.append(h('div', { style: { padding: '3px', cursor: 'pointer', borderBottom: '1px dotted #ccc' }, html: `<b>${esc(c ? c.nick : '')}</b> ${esc(l.date)} ${esc(x.time || '')}<br>${esc(x.text).replace(new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), '<span style="background:#ff0">$&</span>')}`, onclick: () => { closeModal(); win.state.c = l.contact; win.state.d = l.id; win.refresh(true); } })); } }));
+      D.gxLogs.filter(l => test(l.requires)).forEach(l => l.lines.forEach(x => { if (x.text.includes(q)) { const c = D.gxContacts.find(y => y.id === l.contact); res.append(bindControl(h('div', { style: { padding: '3px', cursor: 'pointer', borderBottom: '1px dotted #ccc' }, html: `<b>${esc(c ? c.nick : '')}</b> ${esc(l.date)} ${esc(x.time || '')}<br>${esc(x.text).replace(new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), '<span style="background:#ff0">$&</span>')}` }), () => { closeModal(); win.state.c = l.contact; win.state.d = l.id; win.refresh(true); })); } }));
       if (!res.children.length) res.append(h('div', { text: _t('没有找到。') }));
     };
     inp.onkeydown = (e) => { if (e.key === 'Enter') run(); };
-    const dlg = h('div', { class: 'dlg98 out' }, h('div', { class: 'titlebar' }, h('span', { class: 't', text: _t('查找聊天记录') }), h('button', { class: 'b98 tbb', text: '×', onclick: closeModal })),
-      h('div', { class: 'wbody' }, h('div', { text: _t('查找内容：') }), inp, h('div', { class: 'row' }, h('button', { class: 'b98', text: _t('查找'), onclick: run })), res));
+    const dlg = h('div', { class: 'dlg98 out' }, h('div', { class: 'titlebar' }, h('span', { class: 't', text: _t('查找聊天记录') }), controlButton({ class: 'b98 tbb', text: '×', 'aria-label': _t('关闭') }, closeModal)),
+      h('div', { class: 'wbody' }, h('div', { text: _t('查找内容：') }), inp, h('div', { class: 'row' }, controlButton({ class: 'b98', text: _t('查找') }, run)), res));
     m.append(h('div', { class: 'shade', onclick: closeModal }), dlg); inp.focus();
   }
 
@@ -2260,7 +2274,7 @@ const Y2K = (() => {
       const id2 = h('input', { id: 'lgd', value: fd, placeholder: _t('日期，如 2000-01-01'), style: { width: '150px', font: 'inherit' } });
       const go = (o) => ieGo(win, `http://${host}/admin/log.asp?user=${encodeURIComponent(iu.value.trim())}&date=${encodeURIComponent(id2.value.trim())}&order=${o || order}`);
       iu.onkeydown = id2.onkeydown = (e) => { if (e.key === 'Enter') go(); };
-      wrap.append(h('div', { style: { margin: '4px 0 8px', display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center' } }, _t('筛选：'), iu, id2, h('button', { class: 'b98', text: _t('筛选'), onclick: () => go() }), h('button', { class: 'b98', text: order === 'desc' ? _t('改为从旧到新') : _t('改为从新到旧'), onclick: () => go(order === 'desc' ? 'asc' : 'desc') }), h('span', { style: { color: '#666' }, text: `${_t('共')} ${rows.length} ${_t('条（时间为服务器时间）')}` })));
+      wrap.append(h('div', { style: { margin: '4px 0 8px', display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center' } }, _t('筛选：'), iu, id2, controlButton({ class: 'b98', text: _t('筛选') }, () => go()), controlButton({ class: 'b98', text: order === 'desc' ? _t('改为从旧到新') : _t('改为从新到旧') }, () => go(order === 'desc' ? 'asc' : 'desc')), h('span', { style: { color: '#666' }, text: `${_t('共')} ${rows.length} ${_t('条（时间为服务器时间）')}` })));
       wrap.append(h('div', { html: `<table class="t"><tr><th>${_t('时间')}</th><th>${_t('用户')}</th><th>IP</th><th>${_t('机器名')}</th></tr>${rows.slice(0, 400).map(l => `<tr><td>${esc(l.time)}</td><td>${esc(l.user)}</td><td>${esc(l.ip || '')}</td><td>${esc(l.host || '')}</td></tr>`).join('') || _t('<tr><td colspan="4">没有记录。</td></tr>')}</table>` }));
       node.append(wrap);
       return { title: _t('登录日志'), node };
@@ -2315,7 +2329,7 @@ const Y2K = (() => {
       h('div', { id: 'app' },
         h('div', { id: 'deskwrap' }, h('div', { id: 'monitor' }, h('div', { id: 'screen' }), h('div', { class: 'brand', text: _t('七中机房 · 3 号') }), h('div', { class: 'led', id: 'led' }))),
         h('div', { id: 'phone' }, h('div', { class: 'ph-status', id: 'phStatus' }), h('div', { class: 'ph-main' }, h('div', { class: 'ph-head', id: 'phHead' }), h('div', { class: 'ph-body', id: 'phBody' }), h('div', { class: 'ph-choices', id: 'phFoot', hidden: true })), h('div', { class: 'ph-tabs', id: 'phTabs' }))),
-      h('button', { id: 'phoneFab', 'aria-label': _t('手机'), onclick: () => togglePhone() }),
+      controlButton({ id: 'phoneFab', 'aria-label': _t('手机') }, () => togglePhone()),
       h('div', { id: 'modal' }), h('div', { id: 'overlay' }), h('div', { id: 'title', class: 'title', hidden: true }), h('div', { id: 'toast' }));
     ['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach(ev => document.addEventListener(ev, resetIdle, { passive: true }));
     document.addEventListener('keydown', (e) => {

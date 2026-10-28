@@ -296,13 +296,14 @@ async function run(browser, name) {
     }), Object.entries(map));
     assert.deepEqual(missingAnswers, []);
     const stored = await q.evaluate(() => localStorage.getItem('y2k_auto'));
-    await q.getByRole('button', { name: '继续调查', exact: true }).click();
+    const labels = await q.evaluate(code => ({ resume: Y2K_UI[code]['继续调查'], title: Y2K_UI[code]['返回标题画面'] }), code);
+    await q.getByRole('button', { name: labels.resume, exact: true }).click();
     assert.equal(await q.locator('#title').isVisible(), false);
     assert.equal(await q.evaluate(() => Y2K.debug.state.player), JSON.parse(stored).player);
     // 检查译文数组和追加答案仍然保留，选择题仍按原选项位置判定。
     assert(await q.evaluate(() => Object.values(Y2K.debug.D.puzzles).filter(p => p.kind === 'choice').every(p => Y2K.debug.checkPuzzle(p, p._ai))));
     await q.locator('#phTabs button').nth(5).click();
-    await q.getByRole('button', { name: '返回标题画面', exact: true }).click();
+    await q.getByRole('button', { name: labels.title, exact: true }).click();
   }
   console.log(`${name}: 中英日切换、记住语言后刷新、已有存档继续及录音速度译文通过`);
   assert.deepEqual(errors, []);

@@ -5,7 +5,7 @@ const vm = require('vm');
 const root = path.join(__dirname, '..');
 const [lang, ...chs] = process.argv.slice(2);
 if (!lang) { console.log('用法：node tools/i18n-check.js <en|ja> [base ch0 ch1 ...]'); process.exit(1); }
-const all = ['base', 'ch0', 'ch1', 'ch2', 'ch3', 'ch4', 'ch5', 'ch6'];
+const all = ['base', 'ch0', 'ch1', 'ch2', 'ch3', 'ch4', 'ch5', 'ch6', 'story'];
 const list = chs.length ? chs : all;
 const load = (file) => {
   let data = null;

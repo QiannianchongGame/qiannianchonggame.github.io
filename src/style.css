@@ -211,6 +211,9 @@ table.det td.nm svg { width: 16px; height: 16px; }
 .ie-body { background: #fff; color: #000; }
 .bbs { font: 12px/1.6 SimSun, "宋体", serif; color: #000; padding: 0 0 20px; min-width: 0; }
 .bbs a { color: #0645ad; text-decoration: none; cursor: pointer; touch-action: manipulation; }
+.i18n-notes { margin: 12px 0; padding: 8px 10px; border: 1px solid #c7c7b8; background: #faf9f3; font: 13px/1.7 sans-serif; color: #34352f; overflow-wrap: anywhere; }
+.i18n-notes summary { cursor: pointer; padding: 4px 0; }
+.i18n-notes p { margin: 6px 0; }
 .bbs a:hover { text-decoration: underline; color: #c00; }
 .bbs .top { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 10px 12px 6px; border-bottom: 3px solid var(--bbs-leaf); background: linear-gradient(#f4f9ef, #fff); }
 .bbs .logo { font: bold 28px/1 var(--font-hand); color: var(--bbs-leaf); letter-spacing: .08em; }
@@ -506,6 +509,18 @@ table.det td.nm svg { width: 16px; height: 16px; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
 @media (pointer: coarse), (max-width: 960px) {
+  #desktop { bottom: 44px; }
+  #taskbar { height: 44px; }
+  #startmenu { bottom: 44px; }
+  #startbtn, #tray { height: 36px; }
+  #tasks { overflow-x: auto; }
+  #desktop .b98, #modal .b98 { min-height: 36px; touch-action: manipulation; }
+  #startmenu li { min-height: 44px; }
+  .menubar > div { padding: 8px 10px; }
+  .dropdown div:not(.sep98), .ctx-item { min-height: 36px; padding-top: 8px; padding-bottom: 8px; }
+  .recycle-table td:last-child, .recycle-table th:last-child { position: sticky; right: 0; background: #fff; }
+  .recycle-table th:last-child { z-index: 2; background: var(--w-face); }
+  .recycle-table .b98 { min-width: 48px !important; }
   .win > .titlebar { height: 44px; gap: 5px; }
   .win > .titlebar .b98.tbb { width: 44px; min-width: 44px; height: 36px; }
   .task { min-height: 36px; touch-action: manipulation; }

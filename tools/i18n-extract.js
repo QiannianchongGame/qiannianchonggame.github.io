@@ -10,7 +10,7 @@ const dir = path.join(root, 'src', 'content');
 const outDir = path.join(root, 'src', 'i18n', 'zh');
 const order = ['base', 'ch0', 'ch1', 'ch2', 'ch3', 'ch4', 'ch5', 'ch6', 'story'];
 
-const TEXT_KEYS = new Set(['num', 'name', 'intro', 'sub', 'avatar', 'desc', 'nick', 'title', 'sig', 'gender', 'text', 'html', 'caption', 'comment',
+const TEXT_KEYS = new Set(['num', 'name', 'intro', 'sub', 'avatar', 'desc', 'nick', 'title', 'sig', 'gender', 'text', 'html', 'caption', 'comment', 'question',
   'label', 'prompt', 'placeholder', 'solvedText', 'wrongText', 'npc', 'me', 'sys', 'subject', 'body', 'source', 'toast', 'where', 'homeNotice', 'homeSource', 'group']);
 const LIST_KEYS = new Set(['hints', 'reply', 'options', 'entries']);
 const MAP_KEYS = new Set(['words', 'speeds']);
@@ -24,6 +24,12 @@ function walk(obj, base, out, inList) {
   for (const [k, v] of Object.entries(obj)) visit(k, v, base, out, false);
 }
 function visit(k, v, base, out, textByContainer) {
+  // 近似答案的键是谜题答案，必须保持原样；反馈文字仍须翻译。
+  if (k === 'near' && v && typeof v === 'object' && !textByContainer) {
+    for (const [answer, feedback] of Object.entries(v))
+      if (typeof feedback === 'string' && CJK.test(feedback)) out[`${base}.near.${answer}`] = feedback;
+    return;
+  }
   if (SKIP.has(k) && !textByContainer) return;
   const key = base + '.' + k;
   if (typeof v === 'string') { if ((textByContainer || TEXT_KEYS.has(k)) && CJK.test(v)) out[key] = v; return; }
@@ -44,6 +50,8 @@ function extract(o, out, saverBase) {
   each(o.dialogues, 'dlg');
   each(o.mails2026, 'mail26');
   each(o.items2026, 'item');
+  each(o.readings, 'reading');
+  eachObj(o.journal, 'journal');
   each(o.userExtras, 'ux');
   eachObj(o.puzzles, 'puzzle');
   eachObj(o.boards, 'board');

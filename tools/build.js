@@ -28,7 +28,9 @@ const ui = fs.existsSync(path.join(root, uiFile)) ? wrap(uiFile) : '';
 // 译到一半的语言不出现在标题画面上，避免玩家玩到中英混杂的版本。
 const vm = require('vm');
 const loadMap = (p) => { let m = null; try { vm.runInNewContext(read(p), { Y2K: { lang: (l, o) => { m = o; } } }); } catch (e) { m = null; } return m; };
-const uiLangs = (() => { if (!ui) return []; const box = {}; try { vm.runInNewContext(read(uiFile), { window: box }); } catch (e) { return []; } return Object.keys(box.Y2K_UI || {}); })();
+const uiBundle = (() => { if (!ui) return {}; const box = {}; try { vm.runInNewContext(read(uiFile), { window: box }); } catch (e) { return {}; } return box; })();
+const uiMaps = uiBundle.Y2K_UI || {}, uiReviewed = uiBundle.Y2K_UI_REVIEWED || [];
+const uiKeys = [...new Set([...engine.matchAll(/\b_t\('((?:[^'\\]|\\.)*)'\)/g)].map(m => new Function("return '" + m[1] + "'")()))];
 const readyLangs = ['zh'], langFiles = [], skipped = [];
 for (const l of ['en', 'ja']) {
   const files = [], missing = [];
@@ -39,7 +41,13 @@ for (const l of ['en', 'ja']) {
     const lack = zh ? Object.keys(zh).filter(k => !tr || !(k in tr)).length : 0;
     if (!tr || lack) missing.push(`${f}${tr ? `（缺 ${lack} 条）` : '（无译文）'}`); else files.push(trPath);
   }
-  if (!uiLangs.includes(l)) missing.push('界面词表');
+  const uiMap = uiMaps[l];
+  if (!uiMap) missing.push('界面词表');
+  else {
+    const lack = uiKeys.filter(k => typeof uiMap[k] !== 'string' || !uiMap[k].trim()).length;
+    if (lack) missing.push(`界面词表（缺 ${lack} 条）`);
+    else if (!uiReviewed.includes(l)) missing.push('界面译文尚未校对完成');
+  }
   if (missing.length) skipped.push(`${l}：${missing.join('、')}`); else { readyLangs.push(l); langFiles.push(...files); }
 }
 const langScript = `<script>window.Y2K_LANGS=${JSON.stringify(readyLangs)};</script>`;
