@@ -477,6 +477,15 @@ table.det td.nm svg { width: 16px; height: 16px; }
 .panel input[type=text] { width: 100%; padding: 9px 10px; border-radius: 6px; border: 1px solid #3a3d44; background: #0b0c0e; color: #fff; font-size: 15px; }
 .panel .row { display: flex; gap: 8px; justify-content: flex-end; margin-top: 12px; flex-wrap: wrap; }
 .panel .muted { color: #888; font-size: 13px; }
+.title.panel-open { overflow: hidden; }
+.title-panel-layer { position: fixed; inset: 0; z-index: 2; display: flex; align-items: center; justify-content: center; padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); background: rgba(0,0,0,.72); overscroll-behavior: contain; }
+.panel.title-panel { display: flex; flex-direction: column; max-height: 100%; min-height: 0; padding: 0; overflow: hidden; box-shadow: 0 16px 60px rgba(0,0,0,.5); }
+.title-panel-head { flex: none; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 10px 8px 20px; border-bottom: 1px solid #2c3038; }
+.title-panel-head h3 { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+.tbtn.title-panel-close { flex: none; width: 44px; height: 44px; padding: 0; font-size: 26px; line-height: 1; letter-spacing: 0; touch-action: manipulation; }
+.title-panel-body { min-height: 0; overflow: auto; padding: 16px 20px 20px; overscroll-behavior: contain; }
+.title-panel .endgrid > div > span:first-child { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.title-panel .endgrid .tbtn { flex: none; white-space: nowrap; padding: 6px 12px; }
 .endgrid { display: grid; gap: 6px; margin: 8px 0; }
 .endgrid div { padding: 8px 10px; border-radius: 6px; background: #1d2026; display: flex; justify-content: space-between; gap: 8px; }
 .endgrid div.no { color: #555; }

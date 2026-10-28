@@ -1286,7 +1286,7 @@ const Y2K = (() => {
     clearTimers(); running = {}; typing = {};
     clearTimeout(dirtyT); dirtyT = 0;
     clearTimeout(saveT); saveT = 0;
-    const tl = $('#title'); tl.hidden = false; tl.innerHTML = '';
+    const tl = $('#title'); tl.hidden = false; tl.innerHTML = ''; tl.classList.remove('panel-open');
     const clk = h('div', { class: 'clock', text: '1900-01-01 00:00:00' });
     let sec = 0; const iv = setInterval(() => { if (!titleOn) return clearInterval(iv); sec++; clk.textContent = `1900-01-01 00:${pad(Math.floor(sec / 60))}:${pad(sec % 60)}`; }, 1000);
     const auto = readSave('auto');
@@ -1294,9 +1294,9 @@ const Y2K = (() => {
     const panel = h('div');
     menu.append(
       h('button', { class: 'tbtn', text: _t('继续调查'), disabled: !auto, onclick: () => { const o = readSave('auto'); if (o) loadState(o); } }),
-      h('button', { class: 'tbtn', text: _t('新的调查'), onclick: () => newGamePanel(panel, !!auto) }),
-      h('button', { class: 'tbtn', text: _t('读取存档'), onclick: () => loadPanel(panel) }),
-      h('button', { class: 'tbtn', text: _t('结局收集'), onclick: () => { panel.innerHTML = ''; panel.append(h('div', { class: 'panel' }, h('h3', { text: _t('结局收集') }), endingList())); } }));
+      h('button', { class: 'tbtn', text: _t('新的调查'), onclick: e => newGamePanel(panel, !!auto, e.currentTarget) }),
+      h('button', { class: 'tbtn', text: _t('读取存档'), onclick: e => loadPanel(panel, e.currentTarget) }),
+      h('button', { class: 'tbtn', text: _t('结局收集'), onclick: e => titlePanel(panel, _t('结局收集'), e.currentTarget).append(endingList()) }));
     // 语言切换：存进 meta，然后重新载入（译文在启动时写回数据）
     const langs = h('div', { class: 'langs', role: 'group', 'aria-label': 'Language' });
     langs.hidden = READY.length < 2;
@@ -1304,9 +1304,28 @@ const Y2K = (() => {
     tl.append(langs, clk, h('h1', { html: _t('千年<span>虫</span>') }), h('div', { class: 'sub', text: _t('梧城七中 · 1999—2000') }), menu, panel, window.Y2KStats?.mount(LANG),
       h('div', { class: 'foot', text: _t('本作纯属虚构 · 建议用电脑上的 Chrome / Edge 打开 · 进度自动保存在本浏览器') }));
   }
-  function hideTitle() { titleOn = false; const tl = $('#title'); tl.hidden = true; tl.innerHTML = ''; window.Y2KStats?.setPlaying(true); showCards(); }
-  function newGamePanel(panel, hasSave) {
-    panel.innerHTML = '';
+  function hideTitle() { titleOn = false; const tl = $('#title'); tl.hidden = true; tl.innerHTML = ''; tl.classList.remove('panel-open'); window.Y2KStats?.setPlaying(true); showCards(); }
+  function titlePanel(host, title, opener) {
+    host.innerHTML = '';
+    const tl = $('#title'); tl.classList.add('panel-open');
+    const close = () => { host.innerHTML = ''; tl.classList.remove('panel-open'); if (opener?.isConnected) opener.focus(); };
+    const closeBtn = controlButton({ class: 'tbtn title-panel-close', text: '×', 'aria-label': _t('关闭'), title: _t('关闭') }, close);
+    const body = h('div', { class: 'title-panel-body' });
+    const dlg = h('div', { class: 'panel title-panel', role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': 'title-panel-heading' },
+      h('div', { class: 'title-panel-head' }, h('h3', { id: 'title-panel-heading', text: title }), closeBtn), body);
+    const layer = h('div', { class: 'title-panel-layer' }, dlg);
+    layer.addEventListener('keydown', e => {
+      if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); close(); }
+      if (e.key === 'Tab') {
+        const stops = [...dlg.querySelectorAll('button:not(:disabled), input:not(:disabled), textarea:not(:disabled), select:not(:disabled), a[href]')];
+        const first = stops[0], last = stops[stops.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+    });
+    host.append(layer); closeBtn.focus(); return body;
+  }
+  function newGamePanel(panel, hasSave, opener) {
     const inp = h('input', { type: 'text', id: 'nick', maxlength: 12, placeholder: _t('老K'), value: '' });
     const go = () => {
       const name = inp.value.trim() || _t('老K');
@@ -1314,15 +1333,14 @@ const Y2K = (() => {
       loadState(fresh(name));
     };
     inp.onkeydown = (e) => { if (e.key === 'Enter') go(); };
-    panel.append(h('div', { class: 'panel' }, h('h3', { text: _t('你的昵称') }),
+    titlePanel(panel, _t('你的昵称'), opener).append(
       h('div', { class: 'muted', text: _t('你是一个做"老电脑考古"视频的 UP 主。委托人会这样称呼你。') }), h('div', { style: { height: '8px' } }), inp,
       hasSave ? h('div', { class: 'muted', style: { marginTop: '8px' }, text: _t('注意：开始新调查会覆盖自动存档（手动存档位不受影响）。') }) : null,
-      h('div', { class: 'row' }, h('button', { class: 'tbtn', text: _t('开始'), onclick: go }))));
+      h('div', { class: 'row' }, h('button', { class: 'tbtn', text: _t('开始'), onclick: go })));
     inp.focus();
   }
-  function loadPanel(panel) {
-    panel.innerHTML = '';
-    const p = h('div', { class: 'panel' }, h('h3', { text: _t('读取存档') }));
+  function loadPanel(panel, opener) {
+    const p = titlePanel(panel, _t('读取存档'), opener);
     [['auto', _t('自动存档')], ['s1', _t('存档位 1')], ['s2', _t('存档位 2')], ['s3', _t('存档位 3')]].forEach(([k, n]) => {
       const s = readSave(k);
       p.append(h('div', { class: 'endgrid' }, h('div', { class: s ? '' : 'no' }, h('span', { text: n + '　' + describe(s) }), s ? h('button', { class: 'tbtn', style: { padding: '4px 10px' }, text: _t('读取'), onclick: () => loadState(readSave(k)) }) : null)));
@@ -1330,7 +1348,6 @@ const Y2K = (() => {
     const tb = h('textarea', { class: 'ph-input', rows: 3, placeholder: _t('或者粘贴存档码'), id: 'titleCode' });
     p.append(h('div', { class: 'row', style: { justifyContent: 'flex-start' } }, h('button', { class: 'tbtn', text: _t('导入存档文件'), onclick: () => importFile() })), h('div', { style: { height: '8px' } }), tb,
       h('div', { class: 'row' }, h('button', { class: 'tbtn', text: _t('读取存档码'), onclick: () => { try { const o = JSON.parse(b64d(tb.value)); if (!o.v) throw 0; loadState(o); } catch (e) { toast(_t('存档码无效')); } } })));
-    panel.append(p);
   }
 
   // ============================================================

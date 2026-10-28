@@ -46,6 +46,7 @@ node tools/build.js
 node tools/ui-check.js
 node tools/ui-check.js --webkit
 node tools/desktop-touch-check.js --webkit
+node tools/title-panel-check.js --webkit
 node tools/i18n-check.js en
 node tools/i18n-check.js ja
 node tools/i18n-evidence-check.js
