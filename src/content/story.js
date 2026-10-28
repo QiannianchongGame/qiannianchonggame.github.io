@@ -40,7 +40,7 @@
           { requires: 'solved_c0_tag', text: '3 号机兼作校园 BBS 服务器，管理员是许嘉。' },
           { requires: 'solved_c0_bios', text: '机器停在 2000 年 4 月 5 日早上，发现许嘉的那一天。' },
         ] },
-      ch1: { question: '冒用许嘉账号发帖的人，当时坐在哪里？',
+      ch1: { question: "林晚的旧事在电脑里留下了哪些记录？",
         steps: [
           { until: 'seen_t1139', text: '先从站务公告寻找删帖记录。页面里留下了帖子的编号线索。', source: url('/board.asp?id=zhanwu') },
           { until: 'seen_t1137', text: '删帖公告不能代替原帖。尝试从旧地址进入被隐藏的帖子。', source: url('/thread.asp?id=1139') },
@@ -54,7 +54,7 @@
           { requires: 'solved_c1_p_alibi', text: '许嘉在省城考试，原帖却从校内发出。' },
           { requires: 'solved_c1_admin', text: '后台记录可用来核对登录时间，需与其他材料相互印证。' },
         ] },
-      ch2: { question: '跨年那晚，一条署名 X 的传呼怎样把周婷引向水塔？',
+      ch2: { question: "跨年晚会之后，周婷为什么会去水塔？",
         steps: [
           { until: 'seen_c2_notes1231', text: '先读许嘉的跨年调查笔记，找到他保存的寻呼资料。', source: file('c2_notes1231') },
           { until: 'solved_c2_bpnum', text: '寻呼记录里有很多号码。论坛中的一段私人留言能确认周婷的呼机号。', source: url('/thread.asp?id=1410') },
@@ -65,12 +65,12 @@
           { until: 'solved_c2_photo', text: '合影与背面名单互相对照。水渍遮住的名字，要从其他记录核实。', source: file('c2_photo') },
           { until: 'board_c2_final', text: '将传呼、离场和注册时间拼到推理板，保留仍不确定的部分。', source: { type: 'board', id: 'c2_final' } },
         ], facts: [
-          { requires: 'solved_c2_pager', text: '有人冒用熟悉的落款，把周婷约去水塔。' },
+          { requires: 'solved_c2_pager', text: "传呼把周婷约去水塔，署名身份仍须核实。" },
           { requires: 'solved_c2_booth', text: '传呼来自操场东侧电话亭。' },
           { requires: 'solved_c2_xsig', text: '同一时刻，许嘉账号在机房服务器上活动，仍需注意日志的证明范围。' },
           { requires: 'solved_c2_lan', text: '千年虫从校内网络注册。' },
         ] },
-      ch3: { question: '有人用已经去世的林晚的账号，给宋知远发了什么？',
+      ch3: { question: "宋知远出事前，收到了什么消息？",
         steps: [
           { until: 'solved_c3_p_repair', text: '修复鸽讯损坏的会话段，先看宋知远出事前一晚说了什么。', source: file('c3_damaged') },
           { until: 'solved_c3_p_y2kmail', text: '站内信可按发信人或日期排序。宋知远提到的威胁，未必排在二月。', source: url('/admin/mail.asp') },
@@ -86,7 +86,7 @@
           { requires: 'solved_c3_p_wflogin', text: '晚风账号在林晚去世后被他人使用。' },
           { requires: 'solved_c3_p_jys', text: '发信机器是教研室的 JYS-486。' },
         ] },
-      ch4: { question: '广播、教研室和钥匙之间，还缺哪一层证据？',
+      ch4: { question: "广播中的录音，与前两起事件有什么联系？",
         steps: [
           { until: 'seen_c4_wav0321', text: '广播回放有部分被下线。先读论坛的录音说明，找到保存位置。', source: url('/board.asp?id=xiaoyuan') },
           { until: 'solved_c4_p_tape', text: '在播放器中调整速度，听清广播开头。', source: file('c4_wav0321') },
@@ -102,9 +102,9 @@
           { requires: 'solved_c4_p_father', text: '韩立是林晚的父亲；流言曲解了父女关系。' },
           { requires: 'seen_c4_m_xuning1', text: '值班记录对韩立的跨年行踪提出了独立证明。' },
         ] },
-      ch5: { question: '许嘉留下的遗书，究竟是谁打出来的？',
+      ch5: { question: "许嘉去世前留下了什么？原来的结论有哪些依据？",
         steps: [
-          { until: 'solved_c5_p_typo', text: '读遗书原文，再对照许嘉平时的文件。错字类型比语气可靠。', source: file('c5_f_letter') },
+          { until: 'solved_c5_p_typo', text: "读遗书原文，再对照许嘉平时的文件。先找差异，不急着判断作者。", source: file('c5_f_letter') },
           { until: 'solved_c5_p_ime', text: '许嘉写过五笔和拼音各自会打错什么字。', source: file('c5_f_imestat') },
           { until: 'solved_c5_p_typist', text: '把遗书的同音字与现有聊天对照。先确认规律，不凭一个字认人。', source: file('c5_f_handover') },
           { until: 'solved_c5_p_gxdate', text: '备份索引保存了被删除会话的日期。按说明恢复。', source: file('c5_f_gxidx') },
@@ -116,10 +116,10 @@
         ], facts: [
           { requires: 'solved_c5_p_ime', text: '遗书的同音错字与许嘉平时的五笔习惯不符。' },
           { requires: 'solved_c5_p_gxdate', text: '圣诞夜，许嘉只把三个名字告诉了何蔓。' },
-          { requires: 'solved_c5_p_lie1', text: '何蔓持有钥匙，与她早先的说法不一致。' },
+          { requires: 'solved_c5_p_lie1', text: "何蔓当年持有教研室钥匙，有接触机器的条件。" },
           { requires: 'solved_c5_p_lie2', text: '她知道未对外公布的磁带细节。' },
         ] },
-      ch6: { question: '许嘉最后留下的数字，能把证据带到谁的手中？',
+      ch6: { question: "最后恢复的文件，能否指向许嘉留下的原件？",
         steps: [
           { until: 'c6_got_notebook', text: '先读许宁发来的工作日志，保留数字的原始顺序。', source: { type: 'chat', id: 'xuning' } },
           { until: 'solved_c6_p_lastpoem', text: '压缩包注释提到“她最后的一首诗”。从发帖时间确认是哪首。', source: url('/board.asp?id=wenxue') },

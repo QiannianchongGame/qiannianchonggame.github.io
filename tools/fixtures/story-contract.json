@@ -13,13 +13,13 @@
     "c2_bpnum": "8dbe9879ed777dae9819fb5079dab87081800593c050808e82090f4a5ecbe0ea",
     "c2_pager": "2e11537b185c7e5218f84cc729c70a5c40fefd68576e7e4b268da3094dc1531a",
     "c2_booth": "e43166eb74ce4ccfa95ab1f6bf8cda9876d9d8d49d9b5f4a6287463a08c98773",
-    "c2_xsig": "e2585d8412d09f90b9d739de43bb70df968db42f2071a881e652449505d782d6",
-    "c2_lan": "2171f5fbaaeab95b3e296e3eafb0c70527373c7d194ced54b248d3a4e2dccca4",
+    "c2_xsig": "ba4a84399f09ebf0d6daf464929bdd20cc3cfcd196f9b5b08af36694fc1506eb",
+    "c2_lan": "382118a172a455945b79169ed859c55d21f05a34cf077a03f5fdad236037b326",
     "c2_photo": "83067d6f4b4d857f34aef6ace682b11bd5a0451afe98c0c3a12c0c67b425f771",
     "c2_timeline": "10bdb3b9ace7eaca9a88d4d4a8bf627db21fa2614448bb9c44c2bbfafcc248e5",
     "c3_p_repair": "d2f33d618fc58365788f10b454fdc3ff0c9048bf6761c083da66eb63df7e1d3a",
     "c3_p_y2kmail": "0f5ee044ae02dc72cc0a66650666ef7ba1bdb8761a2d136646e22e8aa66d3ef3",
-    "c3_p_clientclock": "aa63efae1c4e014048a6919424e4aba81f16de5145a605cccf3ed04374a83a61",
+    "c3_p_clientclock": "9aa284d858804a04c2d3cb207769c25f6ee7112d104cb6eecead70d9094a9463",
     "c3_p_seat": "0af611fa9951ea57ad022d1cad98f04c9af720e3979d5724bd386f4b28eee809",
     "c3_p_card": "24c73dbd846490ed79fa720151ffb5c1418e34e0b63cb77eb8e93c57b0bb22fa",
     "c3_p_oldplace": "5764cd589bed24bc7fb574b4b7c24f353df7213b086443962e5bfa304b8b4579",
@@ -33,16 +33,16 @@
     "c4_p_familypw": "6d8a2e9920cf36e795e03100e5fc2e718783cab5c22cb16b3ea5a72371ccefe0",
     "c4_p_father": "2f98f766bf2fd674c7ff6eba65fa9a65982c60c2942155613971fab07f97c21f",
     "c5_p_typo": "928f2351aa04d3cd011a391b4ba797251bda5df20ffbbe429a04015386c981c0",
-    "c5_p_ime": "5d05ae0f0c92756db25b45d86b4b2a3ea85f76670f7bcac90c2ef1dff6edd441",
+    "c5_p_ime": "d2458ce51651a58e302d78ef35ab8ac65b4aaccdc6b083fc64d38897a4431651",
     "c5_p_typist": "02f1d62b2717fa0525f84f41797a72b5832b5cc71a7e7acbcd75e989c75b9983",
     "c5_p_gxdate": "353408b0991f012c47a654a7304e2628624909903a41da78aa53d46e57af0f05",
-    "c5_p_bday": "a961d7bb091ac8a374d641eeb657a6055bf2b03bace31b0d21f635c20e3a36f1",
+    "c5_p_bday": "0f55b38f07bd75e10d070f9931f4f62b7a0eaba7801364497f5aa79f63c06080",
     "c5_p_night": "6e7e87f7246b08a7f157445953fac7e0fd6380c6a336ce0ce720ca3077233f8f",
-    "c5_p_lie1": "f2f6ceef072995f7d0fd560e24febd7d80e036b01a02d0554d5e5c277b87e9b4",
-    "c5_p_lie2": "090a6f440238ef77538d0e3530a7b224a4de7f8fa00f6420d63d07449472bf28",
+    "c5_p_lie1": "74138e11332d398ee141ed8ed8755c65a94561bb63b2b3d78b48d02471b1e868",
+    "c5_p_lie2": "df7df9f2c3d005d5282b3d0c0123e13f9991df529e54bb6e5064fb42f0cbeed5",
     "c6_p_lastpoem": "90903b91cd28e9af5e45d36573a7636cba3537f74614f5fe525ef1ab09d7cac7",
     "c6_p_zip": "dfe5ecd421c7e8456d4bff3b3bc85f94c9bb41a4f12ffcf086e8d4adc9b92037",
-    "c6_p_evidence": "22660356989fac16c1244b2014e241a330f9a40724e5ed422a8e0525ca62c004",
+    "c6_p_evidence": "ac5efa718669680e7ba2b17173061d47a9ea689868297e9e50d7755bf7419d59",
     "c6_p_wanfeng": "c06f7cbf5a6e294235cff06c754de3861972ef9129c928513e9ac454b61d3ec3"
   },
   "boards": {
@@ -392,6 +392,11 @@
         },
         {
           "type": null,
+          "needs": "seen_c0_it_letter",
+          "source": {
+            "type": "item",
+            "id": "c0_it_letter"
+          },
           "choice": [
             {
               "replies": 1
@@ -670,9 +675,7 @@
             },
             {
               "replies": 3,
-              "action": {
-                "note": "c1_n_lastlogin"
-              }
+              "action": {}
             }
           ]
         },
@@ -1914,7 +1917,12 @@
           "type": "npc"
         },
         {
-          "type": "npc"
+          "type": "npc",
+          "needs": "seen_c4_m_xuning1",
+          "source": {
+            "type": "mail",
+            "id": "c4_m_xuning1"
+          }
         },
         {
           "type": "npc"
@@ -2162,6 +2170,11 @@
         },
         {
           "type": null,
+          "needs": "seen_c5_f_zip",
+          "source": {
+            "type": "file",
+            "id": "c5_f_zip"
+          },
           "choice": [
             {
               "replies": 3
@@ -2403,7 +2416,7 @@
       ]
     },
     "c6_d_confront": {
-      "trigger": "c6_route_c",
+      "trigger": "c6_route_c & dlg_c6_d_xuning2",
       "contact": "heman",
       "steps": [
         {

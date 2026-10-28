@@ -149,6 +149,9 @@ async function run(browser, name) {
 
   // 在真实的序章对话中输入答案，检查聊天记录只出现一次。
   await q.evaluate(() => { Y2K.debug.ui.chat = 'heman'; Y2K.debug.renderPhone(); });
+  await q.waitForFunction(() => Y2K.debug.state.wait.heman?.type === 'evidence');
+  await q.locator('#phFoot').getByRole('button', { name: '查看原件', exact: true }).click();
+  await q.evaluate(() => { Y2K.debug.ui.tab = 'msg'; Y2K.debug.ui.chat = 'heman'; Y2K.debug.renderPhone(); });
   await q.waitForFunction(() => Y2K.debug.state.wait.heman?.type === 'choice');
   await q.locator('#phFoot button').first().click();
   await q.waitForFunction(() => Y2K.debug.state.wait.heman?.type === 'puzzle');

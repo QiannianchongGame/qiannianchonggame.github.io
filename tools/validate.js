@@ -130,7 +130,14 @@ reqOf(D.userExtras, 'ux'); reqOf(D.gxlogs, 'gx'); reqOf(D.mails2026, 'mail26'); 
 reqOf(D.users, 'user');
 Object.entries(D.puzzles).forEach(([id, p]) => exprFlags(p.requires, 'puzzle ' + id));
 Object.entries(D.boards).forEach(([id, p]) => exprFlags(p.requires, 'board ' + id));
-D.dialogues.forEach(d => { exprFlags(d.trigger, 'dialogue ' + d.id); (d.steps || []).forEach(s => s.wait && exprFlags(s.wait, 'dialogue wait ' + d.id)); });
+D.dialogues.forEach(d => { exprFlags(d.trigger, 'dialogue ' + d.id); (d.steps || []).forEach(s => {
+  if (s.wait) exprFlags(s.wait, 'dialogue wait ' + d.id);
+  if (s.needs) {
+    exprFlags(s.needs, 'dialogue evidence ' + d.id);
+    const sources = { item: D.items2026, file: D.files, mail: D.mails2026 };
+    if (!s.source || !sources[s.source.type]?.some(x => x.id === s.source.id)) E('dialogue ' + d.id + ': 缺少可打开的前置资料');
+  }
+}); });
 D.chapters.forEach(c => exprFlags(c.trigger, 'chapter ' + c.id));
 Object.entries(D.apps).forEach(([id, a]) => exprFlags(a.requires, 'app ' + id));
 Object.entries(D.adminSections).forEach(([id, a]) => exprFlags(a, 'admin ' + id));

@@ -9,7 +9,7 @@ const baseline=JSON.parse(fs.readFileSync(path.join(__dirname,'fixtures/story-co
 const plain=x=>JSON.parse(JSON.stringify(x));
 const hash=x=>crypto.createHash('sha256').update(JSON.stringify(x)).digest('hex');
 const action=a=>a?Object.fromEntries(Object.entries(a).filter(([k])=>k!=='toast')):undefined;
-const shape=d=>({trigger:d.trigger,contact:d.contact,steps:d.steps.map(s=>({type:s.npc!==undefined?'npc':s.me!==undefined?'me':s.sys!==undefined?'sys':null,wait:s.wait,puzzle:s.puzzle,action:action(s.action),choice:s.choice?.map(o=>({replies:(o.reply||[]).length,action:action(o.action)}))}))});
+const shape=d=>({trigger:d.trigger,contact:d.contact,steps:d.steps.map(s=>({type:s.npc!==undefined?'npc':s.me!==undefined?'me':s.sys!==undefined?'sys':null,wait:s.wait,needs:s.needs,source:s.needs?s.source:undefined,puzzle:s.puzzle,action:action(s.action),choice:s.choice?.map(o=>({replies:(o.reply||[]).length,action:action(o.action)}))}))});
 for(const[id,h]of Object.entries(baseline.puzzles))assert.equal(hash(data.puzzles[id]),h,'谜题原始规则变化 '+id);
 for(const[id,b]of Object.entries(baseline.boards)){const v=data.boards[id];assert.deepEqual(plain({slots:v.slots,words:v.words,requires:v.requires,onSolve:action(v.onSolve),placeholders:[...v.text.matchAll(/\{([A-Za-z0-9_]+)\}/g)].map(x=>x[1]).sort()}),b,'推理板规则变化 '+id);}
 for(const[id,s]of Object.entries(baseline.dialogues)){const d=data.dialogues.find(d=>d.id===id);assert.deepEqual(plain(shape(d)),s,'旧存档会话位置变化 '+id);}

@@ -799,7 +799,7 @@ const Y2K = (() => {
       sheet.append(h('h2', { text: b.title }), h('div', { class: 'intro', html: fmt(b.intro || _t('先点一个空格，再点下方的词语填进去；也可以直接把词语拖进空格。右键（或再点一次空格后点"清空"）可以清除。全部填对才算通过。')) }));
       const hn = S.hints['board_' + id] || 0;
       (b.hints || []).slice(0, hn).forEach((t, i) => sheet.append(h('div', { class: 'hintbox', html: `<b>${_t('提示')} ${i + 1}：</b>` + fmt(t) })));
-      if (done()) sheet.append(h('div', { class: 'solved', html: (id === 'c4_final' ? _t('已整理，仍待核验。') : _t('✔ 推理成立。')) + (b.solvedText ? '<br>' + fmt(b.solvedText) : '') }));
+      if (done()) sheet.append(h('div', { class: 'solved', html: (['c2_final', 'c4_final', 'c5_final'].includes(id) ? _t('已整理，仍待核验。') : _t('✔ 推理成立。')) + (b.solvedText ? '<br>' + fmt(b.solvedText) : '') }));
       sheet.append(bar, txt);
       if (!done()) {
         const bank = h('div', { class: 'bank' });
@@ -899,6 +899,9 @@ const Y2K = (() => {
     }
     const s = d.steps[st.i];
     if (!s) { st.done = 1; setFlag('dlg_' + d.id); S.dlgQ[c].shift(); delete S.wait[c]; dirty(); return stepDlg(c); }
+    // Keep existing step indexes for old saves, but do not offer replies about unread evidence.
+    if (s.needs && !test(s.needs)) { S.wait[c] = { type: 'evidence', source: s.source }; renderPhone(); return; }
+    if (S.wait[c] && S.wait[c].type === 'evidence') delete S.wait[c];
     if (s.npc !== undefined || (s.html && s.me === undefined)) return timed(typeDelay(s.npc), () => { pushChat(c, { from: 'npc', text: s.npc || '', html: s.html, ref: { d: d.id, i: st.i } }); next(); }, true);
     if (s.me !== undefined) {
       if (stale) { delete S.wait[c]; const ref = { d: d.id, i: st.i }; return timed(60, () => { pushChat(c, { from: 'me', text: s.me, html: s.html, ref }); next(); }); }
@@ -1123,6 +1126,8 @@ const Y2K = (() => {
             if (w.type === 'reply') foot.append(h('button', { class: 'ph-btn', html: fmt(esc(d.steps[step].me)), onclick: () => sendReply(c, d.id, step) }));
             else d.steps[step].choice.forEach((o, i) => foot.append(h('button', { class: 'ph-btn', html: fmt(esc(o.text)), onclick: () => choose(c, i, d.id, step) })));
           }
+        } else if (w && w.type === 'evidence') {
+          foot.hidden = false; foot.append(sourceButton(w.source));
         } else if (w && w.type === 'puzzle') {
           const p = D.puzzles[w.id];
           foot.hidden = false; foot.append(h('button', { class: 'ph-btn pri', text: _t('回答：') + (p ? p.title : ''), onclick: () => askPuzzle(w.id, null, true, c) }));

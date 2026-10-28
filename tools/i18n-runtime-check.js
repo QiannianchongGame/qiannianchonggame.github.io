@@ -127,12 +127,12 @@ async function run(browser, lang) {
   });
   if (lang === 'en') {
     assert.equal(actual.title, 'Power On');
-    assert(actual.question.includes('Xu Jia'));
+    assert(actual.question.includes('Lin Wan'));
     assert(actual.reading.includes('fraction problem'));
     assert(actual.letter.includes('He liked Lin Wan'));
   } else {
     assert.equal(actual.title, '起動');
-    assert(actual.question.includes('許嘉'));
+    assert(actual.question.includes('林晚'));
     assert(actual.reading.includes('分数の問題'));
     assert(actual.letter.includes('彼は林晩が好き'));
   }

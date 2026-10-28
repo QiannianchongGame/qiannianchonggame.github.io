@@ -90,6 +90,7 @@ function simulate(choicePolicy) {
         while (st.i < d.steps.length) {
           const s = d.steps[st.i];
           if (s.action) act(s.action, 'dialogue ' + d.id);
+          if (s.needs && !test(s.needs)) { blocked = true; break; }
           if (s.wait && !test(s.wait)) { blocked = true; break; }
           if (s.puzzle) { tryLock(s.puzzle, 'dialogue ' + d.id); if (!F['solved_' + s.puzzle]) { blocked = true; break; } }
           if (s.choice) {
