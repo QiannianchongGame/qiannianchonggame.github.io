@@ -47,12 +47,13 @@ async function run(browser, name, api, fixtures) {
   async function start(p) { await button(p, '新的调查').click(); await button(p, '开始').click(); await p.locator('.card').click(); }
   async function title(p) { if (await p.locator('#phoneFab').isVisible()) await p.locator('#phoneFab').click(); await p.locator('#phTabs button').nth(5).click(); await button(p, '返回标题画面').click(); }
   const c = await context(), p = await c.newPage(); await p.goto(game);
-  await p.locator('.site-stats[data-state="ready"]').waitFor(); await count(0, 1);
-  assert.equal(await p.locator('[data-stat="visits"]').innerText(), '1'); assert.equal(await p.locator('[data-stat="online"]').innerText(), '0');
+  await p.locator('.site-stats[data-state="ready"]').waitFor(); await count(1, 1);
+  assert.equal(await p.locator('[data-stat="visits"]').innerText(), '1'); assert.equal(await p.locator('[data-stat="online"]').innerText(), '1');
   await start(p); await count(1, 1);
   const tab = await c.newPage(); await tab.goto(game); await tab.locator('.site-stats[data-state="ready"]').waitFor(); await start(tab); await count(1, 1);
   assert.equal(messages.filter(x => x.event === 'visit')[0].visitorId, messages.filter(x => x.event === 'visit')[1].visitorId);
   const other = await context(true), phone = await other.newPage(); await phone.goto(game); await phone.locator('.site-stats[data-state="ready"]').waitFor();
+  await count(2, 2); assert.equal(await phone.locator('[data-stat="online"]').innerText(), '2', '两位访客停留主页应显示两人在线');
   if (process.env.UI_CHECK_OUTPUT) { fs.mkdirSync(process.env.UI_CHECK_OUTPUT, { recursive: true }); await phone.screenshot({ path: path.join(process.env.UI_CHECK_OUTPUT, name + '-stats-mobile.png') }); }
   assert(await phone.locator('.site-stats').evaluate(el => el.getBoundingClientRect().right <= innerWidth));
   await phone.setViewportSize({ width: 844, height: 390 });
@@ -63,24 +64,24 @@ async function run(browser, name, api, fixtures) {
   if (process.env.UI_CHECK_OUTPUT) await phone.screenshot({ path: path.join(process.env.UI_CHECK_OUTPUT, name + '-stats-landscape.png') });
   await phone.setViewportSize({ width: 390, height: 844 });
   await start(phone); await count(2, 2);
-  await title(p); await count(2, 2); await title(tab); await count(1, 2);
+  await title(p); await count(2, 2); await title(tab); await count(2, 2);
   await phone.evaluate(() => { Object.defineProperty(document, 'visibilityState', { configurable: true, get: () => 'hidden' }); document.dispatchEvent(new Event('visibilitychange')); });
-  await count(0, 2);
+  await count(2, 2);
   fail = true; await p.evaluate(() => window.dispatchEvent(new Event('online'))); await p.locator('.site-stats[data-state="error"]').waitFor();
   assert.equal(await p.locator('[data-stat="visits"]').innerText(), '—', '失败不能伪装为零或旧实时数字');
   fail = false; await p.evaluate(() => window.dispatchEvent(new Event('online'))); await p.locator('.site-stats[data-state="ready"]').waitFor();
   const visitId = await p.evaluate(() => sessionStorage.getItem('y2k_stats_visit'));
   for (let i = 0; i < 3; i++) {
-    await p.reload(); await p.locator('.site-stats[data-state="ready"]').waitFor(); await count(0, 2);
+    await p.reload(); await p.locator('.site-stats[data-state="ready"]').waitFor(); await count(2, 2);
     assert.equal(await p.evaluate(() => sessionStorage.getItem('y2k_stats_visit')), visitId, '刷新应沿用原访问标识');
   }
   const retryContext = await context(), retry = await retryContext.newPage(); loseResponse = true; await retry.goto(game); await retry.locator('.site-stats[data-state="error"]').waitFor();
-  await retry.evaluate(() => window.dispatchEvent(new Event('online'))); await retry.locator('.site-stats[data-state="ready"]').waitFor(); await count(0, 3);
+  await retry.evaluate(() => window.dispatchEvent(new Event('online'))); await retry.locator('.site-stats[data-state="ready"]').waitFor(); await count(3, 3);
   await Promise.all([p.waitForEvent('load'), p.locator('.lbtn[lang="en"]').click()]); await p.locator('.site-stats[data-state="ready"]').waitFor(); assert((await p.locator('.site-stats').innerText()).includes('Total visits'));
   await Promise.all([p.waitForEvent('load'), p.locator('.lbtn[lang="ja"]').click()]); await p.locator('.site-stats[data-state="ready"]').waitFor(); assert((await p.locator('.site-stats').innerText()).includes('累計アクセス'));
-  await count(0, 3);
+  await count(3, 3);
   // 退出其中一页再进入，另一页仍打开，不应增加。
-  await p.goto('about:blank'); await p.goto(game); await p.locator('.site-stats[data-state="ready"]').waitFor(); await count(0, 3);
+  await p.goto('about:blank'); await p.goto(game); await p.locator('.site-stats[data-state="ready"]').waitFor(); await count(3, 3);
   // 所有页面都退出后，同一个浏览器重新进入才新增一次。
   const visitor = await p.evaluate(() => localStorage.getItem('y2k_stats_visitor'));
   await Promise.all([p.goto('about:blank'), tab.goto('about:blank')]);
@@ -89,9 +90,10 @@ async function run(browser, name, api, fixtures) {
     if (Date.now() > deadline) throw new Error('退出没有结束访问：' + JSON.stringify(messages.filter(m => m.visitorId === visitor).slice(-12)));
     await new Promise(resolve => setTimeout(resolve, 25));
   }
-  await p.goto(game); await p.locator('.site-stats[data-state="ready"]').waitFor(); await count(0, 4);
+  await count(2, 3);
+  await p.goto(game); await p.locator('.site-stats[data-state="ready"]').waitFor(); await count(3, 4);
   assert.notEqual(await p.evaluate(() => sessionStorage.getItem('y2k_stats_visit')), visitId);
-  await p.reload(); await p.locator('.site-stats[data-state="ready"]').waitFor(); await count(0, 4);
+  await p.reload(); await p.locator('.site-stats[data-state="ready"]').waitFor(); await count(3, 4);
   const offline = await other.newPage(); let calls = 0; offline.on('request', r => { if (r.url() === config.endpoint) calls++; });
   await offline.goto(pathToFileURL(path.join(root, '千年虫.html')).href); assert((await offline.locator('.site-stats').innerText()).includes('离线模式')); assert.equal(calls, 0);
   assert.deepEqual(errors, []); for (const item of contexts) await item.close(); server.closeAllConnections(); await new Promise(resolve => server.close(resolve)); servers.delete(server); db.close();

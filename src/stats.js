@@ -2,9 +2,9 @@
 // 只传递随机标识与游玩状态；与剧情、昵称和存档无关。
 window.Y2KStats = (() => {
   const words = {
-    zh: ['累计访问', '在线游玩', '同一访客刷新、多标签页不重复计数；全部退出后再次进入才新增一次。在线人数约每 30 秒更新。', '正在读取统计', '统计暂时不可用', '离线模式', '本地预览不计入统计'],
-    en: ['Total visits', 'Playing now', 'Refreshes and multiple tabs count as one visit. A new visit starts after all game pages are closed. Online counts update about every 30 seconds.', 'Loading statistics', 'Statistics temporarily unavailable', 'Offline mode', 'Local previews are not counted'],
-    ja: ['累計アクセス', 'プレイ中', '再読み込みや複数タブは1回の訪問として集計します。すべてのゲームページを閉じてから再訪すると加算されます。オンライン人数は約30秒ごとに更新します。', '統計を読み込み中', '統計を取得できません', 'オフラインモード', 'ローカルプレビューは集計対象外です'],
+    zh: ['累计访问', '当前在线', '同一访客刷新、多标签页不重复计数；全部退出后再次进入才新增一次。在线包含主页和后台页面，同一浏览器只计一人，约每 30 秒更新。', '正在读取统计', '统计暂时不可用', '离线模式', '本地预览不计入统计'],
+    en: ['Total visits', 'Online now', 'Refreshes and multiple tabs count as one visit. A new visit starts after all game pages are closed. Online includes home and background pages, with one person per browser, and updates about every 30 seconds.', 'Loading statistics', 'Statistics temporarily unavailable', 'Offline mode', 'Local previews are not counted'],
+    ja: ['累計アクセス', '現在オンライン', '再読み込みや複数タブは1回の訪問として集計します。すべてのゲームページを閉じてから再訪すると加算されます。ホーム画面やバックグラウンドもオンラインに含み、ブラウザーごとに1人として約30秒ごとに更新します。', '統計を読み込み中', '統計を取得できません', 'オフラインモード', 'ローカルプレビューは集計対象外です'],
   };
   let started = false, playing = false, pageId, sessionId, visitorId, registered = false;
   let flight = false, queued = false, seq = 0, lastApplied = 0, values = null, mode = 'loading';
