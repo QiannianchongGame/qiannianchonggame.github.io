@@ -474,8 +474,9 @@ table.det td.nm svg { width: 16px; height: 16px; }
 .tbtn { border: 1px solid #3a3d44; background: rgba(255,255,255,.03); color: #ddd; padding: 11px 16px; border-radius: 4px; cursor: pointer; font: 15px var(--font-ph); letter-spacing: .15em; }
 .tbtn:hover { border-color: var(--amber); color: #fff; }
 .tbtn:disabled { opacity: .35; cursor: default; }
-.title .foot { position: absolute; bottom: 14px; left: 0; right: 0; font: 11px var(--font-ph); color: #555; }
-@media (max-height: 600px) {
+.title .foot { position: absolute; bottom: max(14px, env(safe-area-inset-bottom, 0px)); left: 0; right: 0; padding: 0 16px; font: 11px/1.6 var(--font-ph); color: #555; }
+.title .community { margin-bottom: 6px; color: #92959d; font-size: 12px; user-select: text; }
+@media (max-height: 760px) {
   .title { justify-content: flex-start; gap: 10px; padding-top: 64px; padding-bottom: 20px; }
   .title .menu { margin-top: 8px; }
   .title .foot { position: static; margin-top: 14px; }
@@ -743,6 +744,7 @@ window.Y2K_UI = {
     "读取存档": "Load save",
     "千年<span>虫</span>": "Millennium <span>Bug</span>",
     "梧城七中 · 1999—2000": "Wucheng No. 7 High · 1999–2000",
+    "QQ群": "QQ group",
     "本作纯属虚构 · 建议用电脑上的 Chrome / Edge 打开 · 进度自动保存在本浏览器": "A work of fiction · Chrome or Edge on a computer recommended · Progress saves in this browser",
     "你的昵称": "Your nickname",
     "你是一个做\"老电脑考古\"视频的 UP 主。委托人会这样称呼你。": "You make videos about uncovering old computers. Your client will address you by this name.",
@@ -1185,6 +1187,7 @@ window.Y2K_UI = {
     "读取存档": "セーブを読み込む",
     "千年<span>虫</span>": "千年<span>虫</span>",
     "梧城七中 · 1999—2000": "梧城七中 · 1999—2000",
+    "QQ群": "QQグループ",
     "本作纯属虚构 · 建议用电脑上的 Chrome / Edge 打开 · 进度自动保存在本浏览器": "この作品はフィクションです · パソコンのChrome／Edgeを推奨 · 進行状況はこのブラウザに保存されます",
     "你的昵称": "あなたのニックネーム",
     "你是一个做\"老电脑考古\"视频的 UP 主。委托人会这样称呼你。": "あなたは古いパソコンを調べる動画の投稿者です。依頼人はこの名前で呼びます。",
@@ -2840,7 +2843,9 @@ const Y2K = (() => {
     langs.hidden = READY.length < 2;
     Object.entries(LANGS).filter(([code]) => READY.includes(code)).forEach(([code, label]) => langs.append(h('button', { class: 'lbtn' + (code === LANG ? ' on' : ''), lang: code, 'aria-pressed': code === LANG ? 'true' : 'false', text: label, onclick: () => { if (code === LANG) return; const m = meta(); m.lang = code; setMeta(m); location.reload(); } })));
     tl.append(langs, clk, h('h1', { html: _t('千年<span>虫</span>') }), h('div', { class: 'sub', text: _t('梧城七中 · 1999—2000') }), menu, panel, window.Y2KStats?.mount(LANG),
-      h('div', { class: 'foot', text: _t('本作纯属虚构 · 建议用电脑上的 Chrome / Edge 打开 · 进度自动保存在本浏览器') }));
+      h('div', { class: 'foot' },
+        h('div', { class: 'community', text: _t('QQ群') + '：1130040971' }),
+        h('div', { text: _t('本作纯属虚构 · 建议用电脑上的 Chrome / Edge 打开 · 进度自动保存在本浏览器') })));
   }
   function hideTitle() { titleOn = false; const tl = $('#title'); tl.hidden = true; tl.innerHTML = ''; tl.classList.remove('panel-open'); window.Y2KStats?.setPlaying(true); showCards(); }
   function titlePanel(host, title, opener) {

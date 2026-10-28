@@ -466,8 +466,9 @@ table.det td.nm svg { width: 16px; height: 16px; }
 .tbtn { border: 1px solid #3a3d44; background: rgba(255,255,255,.03); color: #ddd; padding: 11px 16px; border-radius: 4px; cursor: pointer; font: 15px var(--font-ph); letter-spacing: .15em; }
 .tbtn:hover { border-color: var(--amber); color: #fff; }
 .tbtn:disabled { opacity: .35; cursor: default; }
-.title .foot { position: absolute; bottom: 14px; left: 0; right: 0; font: 11px var(--font-ph); color: #555; }
-@media (max-height: 600px) {
+.title .foot { position: absolute; bottom: max(14px, env(safe-area-inset-bottom, 0px)); left: 0; right: 0; padding: 0 16px; font: 11px/1.6 var(--font-ph); color: #555; }
+.title .community { margin-bottom: 6px; color: #92959d; font-size: 12px; user-select: text; }
+@media (max-height: 760px) {
   .title { justify-content: flex-start; gap: 10px; padding-top: 64px; padding-bottom: 20px; }
   .title .menu { margin-top: 8px; }
   .title .foot { position: static; margin-top: 14px; }
