@@ -12,7 +12,7 @@ html = html.replace(game === '1' ? 'return { add, boot, lang };' : 'return { add
   try {
     const ctx = await browser.newContext({ viewport: { width: 1440, height: 950 } });
     const errors = [], posts = []; let fail = false;
-    const data = { game, limit: 20, endings: Object.fromEntries(['A', 'B', 'C', 'H'].map(id => [id, Array.from({ length: 20 }, (_, i) => ({ durationMs: 61000 + Math.floor(i / 2) * 1000, hints: i % 2 }))])) };
+    const data = { game, limit: 20, endings: Object.fromEntries(['A', 'B', 'C', 'H'].map(id => [id, Array.from({ length: 20 }, (_, i) => ({ durationMs: 61000 + Math.floor(i / 2) * 1000, hints: i % 2, review: i === 0 ? `${id}：故事读完了，还是忘不掉。\n<script>window.reviewXSS=true</script>` : i === 19 ? '长评'.repeat(250) : null }))])) };
     await ctx.route('**/*', route => {
       const req = route.request();
       if (req.url().startsWith('file:')) return route.continue();
@@ -42,6 +42,19 @@ html = html.replace(game === '1' ? 'return { add, boot, lang };' : 'return { add
       const sizes = await p.locator('.leaderboard-scroll').evaluate(el => ({ width: el.clientWidth, scroll: el.scrollWidth }));
       if (width < 1000) assert(sizes.scroll > sizes.width);
       assert(!(await p.locator('.leaderboard-grid').innerText()).includes('nickname'));
+      // Every number in a row exposes the same review; tooltip remains in the viewport.
+      const numbers = p.locator('.leaderboard-column').first().locator('tbody tr').first().locator('button');
+      for (let n = 0; n < 3; n++) {
+        await numbers.nth(n).scrollIntoViewIfNeeded();
+        await p.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+        await numbers.nth(n).hover();
+        await p.locator('.leaderboard-review:not([hidden])').waitFor();
+        assert.equal(await p.locator('.leaderboard-review-text').textContent(), data.endings.A[0].review);
+        assert.equal(await p.locator('.leaderboard-review script').count(), 0);
+        const tip = await p.locator('.leaderboard-review').boundingBox();
+        assert(tip.x >= 0 && tip.y >= 0 && tip.x + tip.width <= width && tip.y + tip.height <= height + 1);
+      }
+      await p.keyboard.press('Escape'); assert.equal(await p.locator('.leaderboard-review:not([hidden])').count(), 0);
       if (process.env.LEADERBOARD_SCREENSHOTS) { fs.mkdirSync(process.env.LEADERBOARD_SCREENSHOTS, { recursive: true }); await p.screenshot({ path: path.join(process.env.LEADERBOARD_SCREENSHOTS, `game${game}-${kind}-${width}.png`) }); }
       await p.locator('.title-panel-close').click(); assert.equal(await p.locator('.title-panel').count(), 0);
       assert(await p.evaluate(() => document.querySelector('.site-stats').getBoundingClientRect().bottom <= document.querySelector('.foot').getBoundingClientRect().top), 'home footer stays below statistics');
@@ -58,6 +71,9 @@ html = html.replace(game === '1' ? 'return { add, boot, lang };' : 'return { add
       assert(await p.evaluate(() => document.querySelector('.title-topbar').getBoundingClientRect().bottom <= document.querySelector('#title .clock').getBoundingClientRect().top), 'translated topbar does not cover title content');
       await p.getByRole('button', { name: label, exact: true }).click();
       await p.waitForFunction(() => document.querySelectorAll('.leaderboard-column tbody tr').length === 80);
+      await p.locator('.leaderboard-number').first().focus();
+      assert.equal(await p.locator('.leaderboard-review-text').textContent(), data.endings.A[0].review);
+      await p.keyboard.press('Escape');
     }
     await p.evaluate(key => localStorage.setItem(key + 'meta', '{}'), key); await p.reload();
     const direct = await ctx.newPage(); await direct.goto(url + '#leaderboard');
@@ -69,9 +85,21 @@ html = html.replace(game === '1' ? 'return { add, boot, lang };' : 'return { add
     await p.evaluate(() => { const d = Y2K.debug; d.flush(); d.state.playMs = 120000; d.state.hints = { puzzle: 2, board: 1 }; window.testNow = Date.now(); Date.now = () => window.testNow; d.tickPlay(); d.state.playMs = 120000; });
     for (const ending of ['A', 'B', 'C', 'H']) {
       await p.evaluate(ending => Y2K.debug.showEnding(ending), ending);
+      const dialog = p.locator('.finish-review'); await dialog.waitFor();
+      assert((await dialog.locator('.finish-review-summary').textContent()).includes('00:02:00.000'));
+      assert((await dialog.locator('.finish-review-summary').textContent()).includes('3'));
+      const review = ending === 'B' ? '' : `${ending}：仍然记得那个夏天。\nThank you. 🙂`;
+      await dialog.locator('textarea').fill(review);
+      await p.evaluate(() => { window.testNow += 10000; Y2K.debug.tickPlay(); });
+      assert.equal(await p.evaluate(() => Y2K.debug.state.playMs), 120000, 'review writing is paused');
+      if (process.env.LEADERBOARD_SCREENSHOTS) await p.screenshot({ path: path.join(process.env.LEADERBOARD_SCREENSHOTS, `game${game}-${kind}-review-${ending}.png`) });
+      await dialog.locator('.finish-review-submit').click();
       await p.waitForFunction(() => Object.keys(JSON.parse(localStorage.getItem(`y2k${window.Y2K_STATS_CONFIG.game}_leaderboard_pending`) || '{}')).length === 0);
       const last = posts.at(-1); assert.equal(last.ending, ending); assert.equal(last.durationMs, 120000); assert.equal(last.hints, 3);
-      assert.deepEqual(Object.keys(last).sort(), ['durationMs', 'ending', 'game', 'hints', 'playerId', 'runId'].sort());
+      assert.equal(last.review, review);
+      assert.deepEqual(Object.keys(last).sort(), ['durationMs', 'ending', 'game', 'hints', 'playerId', 'runId', 'review'].sort());
+      await p.evaluate(ending => Y2K.debug.showEnding(ending), ending);
+      assert.equal(await p.locator('.finish-review').count(), 0, 'rereading does not repeat the prompt');
     }
     assert.equal(new Set(posts.map(x => x.playerId)).size, 1);
     await p.evaluate(() => { window.testNow += 600000; Y2K.debug.tickPlay(); });
@@ -94,6 +122,8 @@ html = html.replace(game === '1' ? 'return { add, boot, lang };' : 'return { add
     await p.waitForTimeout(150); assert.equal(posts.length, legacyPosts, 'legacy unlocked endings are not backfilled');
     fail = true;
     await p.evaluate(() => { const d = Y2K.debug; d.state.ends = []; d.showEnding('B'); });
+    await p.locator('.finish-review textarea').fill('断网时的感受\n离开后仍然记得。');
+    await p.locator('.finish-review-submit').click();
     await p.waitForTimeout(150);
     assert(Object.keys(await p.evaluate(() => JSON.parse(localStorage.getItem(`y2k${window.Y2K_STATS_CONFIG.game}_leaderboard_pending`)))).length > 0);
     const retry = posts.at(-1); fail = false; await p.reload();

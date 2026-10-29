@@ -65,6 +65,7 @@ async function ending(browser,name,route){
   await p.waitForFunction(()=>Y2K.debug.state.wait.heman?.type==='choice');await p.locator('#phFoot button').first().tap();
  }
  await p.locator('.ending').waitFor({state:'visible'});assert.equal(await p.locator('.ending h1').innerText(),route==='C'?'归零':'格式化');
+ if(await p.locator('.finish-review').count())await p.locator('.finish-review-skip').tap();
  if(route==='C'){
   assert((await p.locator('.ending').innerText()).includes('6 月 21 日'));
   await p.getByRole('button',{name:'回到 3 号机',exact:true}).tap();
@@ -75,6 +76,7 @@ async function ending(browser,name,route){
   await p.locator('.bbs').getByRole('button',{name:'草稿箱（1）',exact:true}).tap();
   await p.locator('#pz_c6_p_wanfeng').fill('820916');await p.locator('#modal').getByRole('button',{name:'确定',exact:true}).tap();
   await p.locator('.ending').waitFor({state:'visible'});assert.equal(await p.locator('.ending h1').innerText(),'晚风');
+  if(await p.locator('.finish-review').count())await p.locator('.finish-review-skip').tap();
   await p.getByRole('button',{name:'回到 3 号机',exact:true}).tap();
   assert(await p.evaluate(()=>Y2K.debug.state.flags.ending_H&&Y2K.debug.test(Y2K.debug.D.mails.find(m=>m.id==='story_delivered_draft').requires)));
  }

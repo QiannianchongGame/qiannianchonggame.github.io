@@ -417,6 +417,8 @@ const Y2K = (() => {
     ui.reading = null; ui.clueScope = 'current'; ui.clueGroups = {};
     hideTitle();
     renderScreen(); renderAll(); dirty();
+    const unfinishedReview = Object.keys(S.finishRecords || {}).find(id => S.finishRecords[id]?.review === null);
+    if (unfinishedReview) showEnding(unfinishedReview);
   }
   function exportSave() {
     tickPlay();
@@ -588,6 +590,7 @@ const Y2K = (() => {
         h('button', { class: 'tbtn', text: _t('返回标题画面'), onclick: () => { closeOverlay(); showTitle(); } }))));
     sfx('boot');
     openOverlay(el);
+    window.Y2KLeaderboard?.requestReview(el, S, id, LANG, () => writeSave('auto'));
   }
   function imageSize(root) {
     const svg = root.querySelector('svg'), img = root.querySelector('img');
