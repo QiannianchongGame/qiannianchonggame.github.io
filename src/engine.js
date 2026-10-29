@@ -1310,8 +1310,11 @@ const Y2K = (() => {
     clearTimeout(dirtyT); dirtyT = 0;
     clearTimeout(saveT); saveT = 0;
     const tl = $('#title'); tl.hidden = false; tl.innerHTML = ''; tl.classList.remove('panel-open');
-    const clk = h('div', { class: 'clock', text: '1900-01-01 00:00:00' });
-    let sec = 0; const iv = setInterval(() => { if (!titleOn) return clearInterval(iv); sec++; clk.textContent = `1900-01-01 00:${pad(Math.floor(sec / 60))}:${pad(sec % 60)}`; }, 1000);
+    tl.style.backgroundImage = window.Y2K_PHOTOS?.title_cover ? 'linear-gradient(90deg, rgba(5,7,9,.82), rgba(5,7,9,.60)), url("' + window.Y2K_PHOTOS.title_cover.data + '")' : '';
+    const titleStart = Date.parse('2026-10-27T21:40:00Z'), titleOpened = Date.now();
+    const titleTime = () => new Date(titleStart + Date.now() - titleOpened).toISOString().slice(0, 19).replace('T', ' ');
+    const clk = h('div', { class: 'clock', text: titleTime() });
+    const iv = setInterval(() => { if (!titleOn || !clk.isConnected) return clearInterval(iv); clk.textContent = titleTime(); }, 1000);
     const auto = readSave('auto');
     const menu = h('div', { class: 'menu' });
     const panel = h('div');
@@ -1325,10 +1328,10 @@ const Y2K = (() => {
     const langs = h('div', { class: 'langs', role: 'group', 'aria-label': 'Language' });
     langs.hidden = READY.length < 2;
     Object.entries(LANGS).filter(([code]) => READY.includes(code)).forEach(([code, label]) => langs.append(h('button', { class: 'lbtn' + (code === LANG ? ' on' : ''), lang: code, 'aria-pressed': code === LANG ? 'true' : 'false', text: label, onclick: () => { if (code === LANG) return; const m = meta(); m.lang = code; setMeta(m); location.reload(); } })));
-    tl.append(h('div', { class: 'title-topbar' }, leaderboard, langs), clk, h('h1', { html: _t('千年<span>虫</span>') }), h('div', { class: 'sub', text: _t('梧城七中 · 1999—2000') }), menu, panel, window.Y2KStats?.mount(LANG),
+    tl.append(h('div', { class: 'title-topbar' }, leaderboard, langs), h('div', { class: 'title-content' }, clk, h('h1', { html: _t('千年<span>虫</span> 1') }), h('div', { class: 'sub', text: _t('梧城七中 · 1999—2000') }), menu, panel, window.Y2KStats?.mount(LANG),
       h('div', { class: 'foot' },
         h('div', { class: 'community', text: _t('QQ群') + '：1130040971' }),
-        h('div', { text: _t('本作纯属虚构 · 建议用电脑上的 Chrome / Edge 打开 · 进度自动保存在本浏览器') })));
+        h('div', { text: _t('本作纯属虚构 · 建议用电脑上的 Chrome / Edge 打开 · 进度自动保存在本浏览器') }))));
     return panel;
   }
   function showAuthorNote(panel, onClose) {
@@ -1383,7 +1386,7 @@ const Y2K = (() => {
     inp.onkeydown = (e) => { if (e.key === 'Enter') go(); };
     titlePanel(panel, _t('你的昵称'), opener).append(
       h('div', { class: 'muted', text: _t('你是一个做"老电脑考古"视频的 UP 主。委托人会这样称呼你。') }), h('div', { style: { height: '8px' } }), inp,
-      hasSave ? h('div', { class: 'muted', style: { marginTop: '8px' }, text: _t('注意：开始新调查会覆盖自动存档（手动存档位不受影响）。') }) : null,
+      ...(hasSave ? [h('div', { class: 'muted', style: { marginTop: '8px' }, text: _t('注意：开始新调查会覆盖自动存档（手动存档位不受影响）。') })] : []),
       h('div', { class: 'row' }, h('button', { class: 'tbtn', text: _t('开始'), onclick: go })));
     inp.focus();
   }
@@ -2388,7 +2391,7 @@ const Y2K = (() => {
     if (LANG !== 'zh') applyLang(LANGMAP[LANG]);
     applyPhotos();
     document.documentElement.lang = { zh: 'zh-CN', en: 'en', ja: 'ja' }[LANG];
-    document.title = _t('千年虫');
+    document.title = _t('千年虫 1');
     index(); buildFS();
     document.body.innerHTML = '';
     document.body.append(

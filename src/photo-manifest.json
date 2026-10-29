@@ -2,75 +2,145 @@
   "deskmates": {
     "file": "assets/photos/deskmates.webp",
     "overlay": "date",
-    "targets": [{ "collection": "files", "id": "c1_photo_deskmates" }],
+    "targets": [
+      {
+        "collection": "files",
+        "id": "c1_photo_deskmates"
+      }
+    ],
     "prompt": "Using the established character sheet, preserve Lin Wan (bottom-left, short bob) and He Man (top-right, longer straight hair). Exactly two girls at one classroom desk, Lin Wan at left holding a pen and He Man at right turning a shared exercise book. Neutral expressions, natural separate hands, worn classroom, soft afternoon window light, ordinary 1999 compact-camera film snapshot, muted colors, no readable generated text or date. Story source: Xu Jia's April 9 test photograph, developed and scanned April 11; Lin Wan's note on the back records their mathematics lesson."
   },
   "birthday": {
     "file": "assets/photos/birthday.webp",
     "overlay": "date",
-    "targets": [{ "collection": "items2026", "id": "c0_it_photo" }],
+    "targets": [
+      {
+        "collection": "items2026",
+        "id": "c0_it_photo"
+      }
+    ],
     "prompt": "Sketch-to-render: transform the supplied birthday-photo schematic into a candid 1998 Chinese secondary-school computer-room film snapshot. A shy 17-year-old boy looks down beside a birthday cake, three classmates gather around him, CRT computers in the background, numeral candles 1 and 7, faded color, direct flash; reserve the lower right for the exact date."
   },
   "bbs_computer": {
     "file": "assets/photos/bbs-computer.webp",
     "overlay": "date",
-    "targets": [{ "collection": "files", "id": "c1_photo_open" }],
+    "targets": [
+      {
+        "collection": "files",
+        "id": "c1_photo_open"
+      }
+    ],
     "prompt": "Photorealistic archival 1998 Chinese school computer lab snapshot: beige CRT monitor and keyboard, a simple white 1990s Chinese BBS page in a Windows 98 browser, fluorescent lighting, film grain and slight hand shake. Reserve the lower right for the date."
   },
   "student_portrait": {
     "file": "assets/photos/student-portrait.webp",
     "overlay": "portrait",
-    "targets": [{ "collection": "files", "id": "c1_ticket" }],
+    "targets": [
+      {
+        "collection": "files",
+        "id": "c1_ticket"
+      }
+    ],
     "prompt": "Photorealistic 1999 informatics competition identity photograph, using the birthday photo as the reference for Xu Jia's face and hair: neutral front-facing teenage student in school uniform, pale background, gently faded print."
   },
   "millennium_group": {
     "file": "assets/photos/millennium-group.webp",
     "overlay": "group",
-    "targets": [{ "collection": "files", "id": "c2_photo" }],
+    "targets": [
+      {
+        "collection": "files",
+        "id": "c2_photo"
+      }
+    ],
     "prompt": "Edit the established 1999 school group photograph using a natural, understated school snapshot as a style reference. Preserve all fourteen individual identities, sexes, clothing and positions: six girls in front, seven boys behind and a male teacher at right. Keep Zhou Ting and He Man linked at the arms. Use varied neutral expressions and modest closed-mouth smiles. Redraw Wang Lei's arm from his shoulder through an outward bent elbow to a coherent wrist and V-sign hand that partly covers Ma Jun's face. Preserve the water tower, empty countdown sign and clock, with muted film-flash lighting. Make the distant clock softly out of focus and low contrast, with its hands roughly showing just before midnight. Leave room for accurate numbers, countdown and date.",
     "character_reference": "assets/photos/characters-reference.webp"
   },
   "photo_back": {
     "file": "assets/photos/photo-back.webp",
     "overlay": "document",
-    "targets": [{ "collection": "files", "id": "c2_photoback" }],
+    "targets": [
+      {
+        "collection": "files",
+        "id": "c2_photoback"
+      }
+    ],
     "prompt": "Photorealistic reverse of a 1999 color print, viewed straight on: aged off-white photographic paper, subtle creases, two pale water stains, empty surface for the original handwritten evidence."
   },
   "ice_group": {
     "file": "assets/photos/ice-group.webp",
     "overlay": "ice",
-    "targets": [{ "collection": "files", "id": "c3_photo_ice" }],
+    "targets": [
+      {
+        "collection": "files",
+        "id": "c3_photo_ice"
+      }
+    ],
     "prompt": "Photorealistic January 1999 Chinese high-school group photograph at a frozen lake: thirteen classmates in winter clothes, eight in back and five in front, all looking at the camera. Preserve the character-reference identities of Zhou Ting, He Man, Lin Wan, Song Zhiyuan and Wang Lei; Xu Jia is the photographer and does not appear. Bare willow on the north shore, wooden park sign and distant warning sign, overcast light, faded compact-camera film scan.",
     "character_reference": "assets/photos/characters-reference.webp"
   },
   "duty_log": {
     "file": "assets/photos/duty-log.webp",
     "overlay": "document",
-    "targets": [{ "collection": "mails2026", "id": "c4_m_xuning1" }, { "collection": "items2026", "id": "c4_it_dutylog" }],
+    "targets": [
+      {
+        "collection": "mails2026",
+        "id": "c4_m_xuning1"
+      },
+      {
+        "collection": "items2026",
+        "id": "c4_it_dutylog"
+      }
+    ],
     "prompt": "Realistic overhead documentary photo of a 1999 school-district emergency duty ledger: large blank cream lined page, faded paper fibers, plain desk and warm office lighting, reserved for accurate original evidence text."
   },
   "diary_page": {
     "file": "assets/photos/diary-page.webp",
     "overlay": "document",
-    "targets": [{ "collection": "files", "id": "c5_f_diary" }],
+    "targets": [
+      {
+        "collection": "files",
+        "id": "c5_f_diary"
+      }
+    ],
     "prompt": "Realistic nearly flatbed-scanned 1998 student diary page: a warm ivory sheet with faint blue horizontal ruling, red margin and slight wear, blank for the original handwritten evidence."
   },
   "key_half": {
     "file": "assets/photos/key-half.webp",
     "overlay": "document",
-    "targets": [{ "collection": "items2026", "id": "c5_it_keyhalf" }],
+    "targets": [
+      {
+        "collection": "items2026",
+        "id": "c5_it_keyhalf"
+      }
+    ],
     "prompt": "Realistic overhead evidence photograph of a torn half-row of an old key sign-out register tucked into a faded dark blue physics workbook; pale cream paper with jagged left edge and faint table grid, blank for exact original form text."
   },
   "father_notebook": {
     "file": "assets/photos/father-notebook.webp",
     "overlay": "document",
-    "targets": [{ "collection": "items2026", "id": "c6_it_notebook" }],
+    "targets": [
+      {
+        "collection": "items2026",
+        "id": "c6_it_notebook"
+      }
+    ],
     "prompt": "Realistic overhead evidence photo of an old engineer's notebook: one large blank cream lined page, dark green cloth binding at left, brown desktop, warm flashlight light, reserved for the original notes and pager code."
   },
   "evidence_box": {
     "file": "assets/photos/evidence-box.webp",
     "overlay": "date",
-    "targets": [{ "collection": "items2026", "id": "c6_it_box" }],
+    "targets": [
+      {
+        "collection": "items2026",
+        "id": "c6_it_box"
+      }
+    ],
     "prompt": "Realistic 2026 phone photograph in a dusty water-tower maintenance opening: flashlight illuminates an open rusty biscuit tin with a faded peony, a blue diary, school sign-in sheet, black 3.5-inch floppy disk and folded envelope. Reserve the lower right for the exact timestamp."
+  },
+  "title_cover": {
+    "file": "assets/photos/title-cover.png",
+    "overlay": "none",
+    "targets": [],
+    "prompt": "Built-in image_gen edit of millennium-group.webp. Preserve all fourteen fictional people, faces, clothing, positions and restrained expressions. Present the same softly focused late-1999 compact-camera group photograph as a faded matte print on a dark worn wooden desk beside a beige keyboard, with film grain and subtle handling marks. Landscape title background, quiet surrounding space, no text, date stamps, UI or new clues."
   }
 }

@@ -12,7 +12,7 @@ const debugBuild = args.includes('--debug');
 const files = order.filter(f => fs.existsSync(path.join(dir, f))).map(f => 'src/content/' + f).concat(args.filter(a => !a.startsWith('--')));
 const safe = (s) => s.replace(/<\/script/gi, '<\\/script');
 
-const css = read('src/style.css') + '\n' + read('src/leaderboard.css');
+const css = read('src/style.css') + '\n' + read('src/leaderboard.css') + '\n' + read('src/title.css');
 // 正式包不暴露调试入口；node tools/build.js --debug 才保留 Y2K.debug
 let engine = read('src/engine.js');
 if (!debugBuild) {
@@ -58,7 +58,7 @@ const photoManifest = JSON.parse(read('src/photo-manifest.json'));
 const photoAssets = {};
 for (const [id, photo] of Object.entries(photoManifest)) {
   const binary = fs.readFileSync(path.join(root, photo.file));
-  photoAssets[id] = { data: 'data:image/webp;base64,' + binary.toString('base64'), overlay: photo.overlay, targets: photo.targets };
+  photoAssets[id] = { data: 'data:image/' + (photo.file.endsWith('.png') ? 'png' : 'webp') + ';base64,' + binary.toString('base64'), overlay: photo.overlay, targets: photo.targets };
 }
 const photos = `<script>window.Y2K_PHOTOS=${safe(JSON.stringify(photoAssets))};</script>`;
 
@@ -67,8 +67,8 @@ const html = `<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="《千年虫》：在旧电脑、校园 BBS 和手机消息之间寻找线索的悬疑解谜游戏。">
-<title>千年虫</title>
+<meta name="description" content="《千年虫 1》：在旧电脑、校园 BBS 和手机消息之间寻找线索的悬疑解谜游戏。">
+<title>千年虫 1</title>
 <style>
 ${css}
 </style>
