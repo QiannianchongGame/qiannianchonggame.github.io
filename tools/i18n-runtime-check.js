@@ -31,6 +31,8 @@ const source = { files: [], puzzles: {}, boards: {} };
 for (const ch of chapterFiles) vm.runInNewContext(fs.readFileSync(path.join(root, 'src/content', ch + '.js'), 'utf8'), { Y2K: { add: o => { source.files.push(...o.files || []); Object.assign(source.puzzles, o.puzzles || {}); Object.assign(source.boards, o.boards || {}); } } });
 async function run(browser, lang) {
   const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+  // 本测试从已读作者说明的状态开始；弹窗生命周期由 title-panel-check 覆盖。
+  await ctx.addInitScript(() => sessionStorage.setItem('y2k_author_note_seen', '1'));
   await ctx.addInitScript(code => localStorage.setItem('y2k_meta', JSON.stringify({ lang: code })), lang);
   await ctx.route('http://wyjm.test/i18n', route => route.fulfill({ contentType: 'text/html', body: html }));
   const page = await ctx.newPage(), errors = [];
@@ -193,6 +195,8 @@ async function run(browser, lang) {
 }
 async function switching(browser) {
   const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+  // 本测试从已读作者说明的状态开始；弹窗生命周期由 title-panel-check 覆盖。
+  await ctx.addInitScript(() => sessionStorage.setItem('y2k_author_note_seen', '1'));
   await ctx.route('http://wyjm.test/i18n', route => route.fulfill({ contentType: 'text/html', body: html }));
   const page = await ctx.newPage(), errors = [];
   page.on('pageerror', e => errors.push(e.message));

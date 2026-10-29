@@ -41,6 +41,8 @@ async function closeDialog(p) { await p.locator('#modal').getByRole('button', { 
 
 async function desktopTest(browser, name) {
   const context = await browser.newContext({ viewport: { width: 1440, height: 950 } });
+  // 本测试从已读作者说明的状态开始；弹窗生命周期由 title-panel-check 覆盖。
+  await context.addInitScript(() => sessionStorage.setItem('y2k_author_note_seen', '1'));
   const { p, errors } = await game(context);
   const docs = p.locator('#icons .icon').filter({ hasText: '我的文档' });
   await right(p, docs); assert.equal(await lastPrevented(p), true);
@@ -106,6 +108,8 @@ async function desktopTest(browser, name) {
 
 async function touchTest(browser, name) {
   const context = await browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
+  // 本测试从已读作者说明的状态开始；弹窗生命周期由 title-panel-check 覆盖。
+  await context.addInitScript(() => sessionStorage.setItem('y2k_author_note_seen', '1'));
   const { p, errors } = await game(context);
   await p.evaluate(() => Y2K.debug.openApp('mydocs'));
   await p.locator('.win.active .flist .icon').filter({ hasText: '照片' }).tap();

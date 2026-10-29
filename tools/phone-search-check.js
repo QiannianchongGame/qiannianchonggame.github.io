@@ -10,6 +10,8 @@ const html = release.replace('return { add, boot, lang };', 'return { add, boot,
 
 async function check(browser, name, mobile) {
   const context = await browser.newContext({ viewport: mobile ? { width: 390, height: 844 } : { width: 1440, height: 950 }, hasTouch: mobile, isMobile: mobile });
+  // 本测试从已读作者说明的状态开始；弹窗生命周期由 title-panel-check 覆盖。
+  await context.addInitScript(() => sessionStorage.setItem('y2k_author_note_seen', '1'));
   const page = await context.newPage(); page.setDefaultTimeout(8000);
   const errors = []; page.on('pageerror', e => errors.push(e.message));
   await context.route('http://wyjm.test/game', r => r.fulfill({ contentType: 'text/html', body: html }));

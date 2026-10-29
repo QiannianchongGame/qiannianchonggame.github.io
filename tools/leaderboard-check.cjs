@@ -25,6 +25,7 @@ html = html.replace(game === '1' ? 'return { add, boot, lang };' : 'return { add
       return route.abort();
     });
     const p = await ctx.newPage(); p.on('pageerror', e => errors.push(e.message)); await p.goto(url);
+    if (game === '1') await p.locator('.author-note .title-panel-close').click();
     for (const [width, height] of [[1440, 950], [1366, 768], [390, 844], [375, 667], [320, 568], [844, 390], [568, 320]]) {
       await p.setViewportSize({ width, height });
       await p.locator('#title').evaluate(el => { el.scrollTop = 0; });
@@ -60,6 +61,7 @@ html = html.replace(game === '1' ? 'return { add, boot, lang };' : 'return { add
     }
     await p.evaluate(key => localStorage.setItem(key + 'meta', '{}'), key); await p.reload();
     const direct = await ctx.newPage(); await direct.goto(url + '#leaderboard');
+    if (game === '1') await direct.locator('.author-note .title-panel-close').click();
     await direct.waitForFunction(() => document.querySelectorAll('.leaderboard-column tbody tr').length === 80);
     await direct.locator('.title-panel-close').click(); assert.equal(await direct.locator('.title-panel').count(), 0); await direct.close();
     await p.getByRole('button', { name: '新的调查', exact: true }).click(); await p.getByRole('button', { name: '开始', exact: true }).click();
@@ -99,6 +101,7 @@ html = html.replace(game === '1' ? 'return { add, boot, lang };' : 'return { add
     assert.deepEqual(posts.at(-1), retry, 'retry preserves completion snapshot across reload');
     const count = posts.length;
     const offline = await ctx.newPage(); await offline.goto(require('node:url').pathToFileURL(path.join(root, game === '1' ? '千年虫.html' : '千年虫2.html')).href);
+    if (game === '1') await offline.locator('.author-note .title-panel-close').click();
     await offline.getByRole('button', { name: '排行榜', exact: true }).click(); await offline.getByText('排行榜仅在在线版开放。', { exact: true }).waitFor();
     assert.equal(posts.length, count); assert.deepEqual(errors, []);
     console.log(`PASS game ${game} ${kind}: four columns/top20, phone scroll/close, errors/retry, 3 languages, 4 ending snapshots, timing pauses, legacy saves, offline isolation`);

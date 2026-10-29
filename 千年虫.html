@@ -493,6 +493,12 @@ table.det td.nm svg { width: 16px; height: 16px; }
 .title-panel-head h3 { margin: 0; min-width: 0; overflow-wrap: anywhere; }
 .tbtn.title-panel-close { flex: none; width: 44px; height: 44px; padding: 0; font-size: 26px; line-height: 1; letter-spacing: 0; touch-action: manipulation; }
 .title-panel-body { min-height: 0; overflow: auto; padding: 16px 20px 20px; overscroll-behavior: contain; }
+.panel.title-panel.author-note { width: min(600px, 100%); }
+.author-note .title-panel-body { font-size: 15px; line-height: 1.9; user-select: text; }
+.author-note p { margin: 0 0 16px; }
+.author-note-qq { color: var(--amber); }
+.author-note-signature { text-align: right; }
+.author-note-signature time { color: #92959d; font-size: 13px; }
 .title-panel .endgrid > div > span:first-child { flex: 1; min-width: 0; overflow-wrap: anywhere; }
 .title-panel .endgrid .tbtn { flex: none; white-space: nowrap; padding: 6px 12px; }
 .endgrid { display: grid; gap: 6px; margin: 8px 0; }
@@ -622,6 +628,14 @@ try {
 window.Y2K_UI_REVIEWED = ["en", "ja"];
 window.Y2K_UI = {
   "en": {
+    "作者的话": "A note from the author",
+    "大家好，我是《千年虫》的作者 shark，目前是北京大学的一名在校生。": "Hi everyone, I'm shark, the creator of Millennium Bug and a current student at Peking University.",
+    "谢谢大家的支持，也很高兴有这么多人喜欢这个题材。这个故事和剧本花了很长时间打磨，但仍有不少可以改进的地方。无论是剧情中没讲清楚的细节、谜题的难度，还是游玩时遇到的问题，我都很想听听大家的真实感受。": "Thank you for your support. I'm glad so many of you enjoy this kind of story. I've spent a long time working on the story and script, but there's still room for improvement. Whether it's an unclear plot detail, the difficulty of a puzzle, or a problem you encounter while playing, I'd love to hear your honest thoughts.",
+    "《千年虫》计划做成三部曲，目前第二部还在制作中。希望能把后面的故事认真写好，也期待和大家一起讨论它接下来的样子。": "Millennium Bug is planned as a trilogy, with the second game still in development. I want to give the stories ahead the care they deserve, and I look forward to hearing your thoughts on where the series goes next.",
+    "欢迎加入 QQ 交流群：": "Join our QQ group: ",
+    "聊聊剧情，交流解谜心得，也欢迎直接提意见。": "Come talk about the story, share puzzle-solving tips, and tell me what you think could be improved.",
+    "感谢你愿意花时间走进这个故事。": "Thank you for taking the time to step into this story.",
+    "2026年10月": "October 2026",
     "排行榜": "Leaderboard",
     "文件夹": "Folder",
     "文本文档": "Text Document",
@@ -1037,6 +1051,14 @@ window.Y2K_UI = {
     "手机": "Phone"
   },
   "ja": {
+    "作者的话": "作者より",
+    "大家好，我是《千年虫》的作者 shark，目前是北京大学的一名在校生。": "こんにちは。『千年虫』の作者、sharkです。現在、北京大学に在学しています。",
+    "谢谢大家的支持，也很高兴有这么多人喜欢这个题材。这个故事和剧本花了很长时间打磨，但仍有不少可以改进的地方。无论是剧情中没讲清楚的细节、谜题的难度，还是游玩时遇到的问题，我都很想听听大家的真实感受。": "応援ありがとうございます。この題材を気に入ってくださる方がこんなに多く、とてもうれしいです。物語と脚本には長い時間をかけましたが、まだ改善できるところがあると思っています。説明が足りない場面、謎解きの難しさ、プレイ中に困ったことなど、皆さんの率直な感想をぜひ聞かせてください。",
+    "《千年虫》计划做成三部曲，目前第二部还在制作中。希望能把后面的故事认真写好，也期待和大家一起讨论它接下来的样子。": "『千年虫』は三部作を予定しており、現在は第二作を制作中です。これからの物語も丁寧に書いていきたいと思っています。シリーズの今後についても、皆さんとお話しできるのを楽しみにしています。",
+    "欢迎加入 QQ 交流群：": "QQ交流グループへの参加もお待ちしています：",
+    "聊聊剧情，交流解谜心得，也欢迎直接提意见。": "物語の感想や謎解きのコツを語り合ったり、改善してほしい点を教えていただけたらうれしいです。",
+    "感谢你愿意花时间走进这个故事。": "この物語に触れる時間をとってくださり、ありがとうございます。",
+    "2026年10月": "2026年10月",
     "排行榜": "ランキング",
     "放大 +": "拡大 +",
     "关闭": "閉じる",
@@ -3008,12 +3030,34 @@ const Y2K = (() => {
       h('div', { class: 'foot' },
         h('div', { class: 'community', text: _t('QQ群') + '：1130040971' }),
         h('div', { text: _t('本作纯属虚构 · 建议用电脑上的 Chrome / Edge 打开 · 进度自动保存在本浏览器') })));
+    return panel;
+  }
+  function showAuthorNote(panel, onClose) {
+    // 只在本标签页第一次打开时展示；不写入玩家存档，也不在返回标题时调用。
+    try {
+      if (sessionStorage.getItem('y2k_author_note_seen')) return false;
+      sessionStorage.setItem('y2k_author_note_seen', '1');
+    } catch (e) {
+      // 禁用会话存储时仍允许游玩，并避免刷新或浏览器后退时重复提示。
+      const navigation = performance.getEntriesByType?.('navigation')[0];
+      if (navigation && navigation.type !== 'navigate') return false;
+    }
+    const body = titlePanel(panel, _t('作者的话'), $('#title .menu button:not(:disabled)'), onClose);
+    body.parentElement.classList.add('author-note');
+    body.append(
+      h('p', { text: _t('大家好，我是《千年虫》的作者 shark，目前是北京大学的一名在校生。') }),
+      h('p', { text: _t('谢谢大家的支持，也很高兴有这么多人喜欢这个题材。这个故事和剧本花了很长时间打磨，但仍有不少可以改进的地方。无论是剧情中没讲清楚的细节、谜题的难度，还是游玩时遇到的问题，我都很想听听大家的真实感受。') }),
+      h('p', { text: _t('《千年虫》计划做成三部曲，目前第二部还在制作中。希望能把后面的故事认真写好，也期待和大家一起讨论它接下来的样子。') }),
+      h('p', {}, _t('欢迎加入 QQ 交流群：'), h('strong', { class: 'author-note-qq', text: '1130040971' }), h('br'), _t('聊聊剧情，交流解谜心得，也欢迎直接提意见。')),
+      h('p', { text: _t('感谢你愿意花时间走进这个故事。') }),
+      h('div', { class: 'author-note-signature' }, h('div', { text: '—— shark🦈' }), h('time', { datetime: '2026-10', text: _t('2026年10月') })));
+    return true;
   }
   function hideTitle() { titleOn = false; syncPlayClock(); const tl = $('#title'); tl.hidden = true; tl.innerHTML = ''; tl.classList.remove('panel-open'); window.Y2KStats?.setPlaying(true); showCards(); }
-  function titlePanel(host, title, opener) {
+  function titlePanel(host, title, opener, onClose) {
     host.innerHTML = '';
     const tl = $('#title'); tl.classList.add('panel-open');
-    const close = () => { host.innerHTML = ''; tl.classList.remove('panel-open'); if (opener?.isConnected) opener.focus(); };
+    const close = () => { host.innerHTML = ''; tl.classList.remove('panel-open'); if (opener?.isConnected) opener.focus(); onClose?.(); };
     const closeBtn = controlButton({ class: 'tbtn title-panel-close', text: '×', 'aria-label': _t('关闭'), title: _t('关闭') }, close);
     const body = h('div', { class: 'title-panel-body' });
     const dlg = h('div', { class: 'panel title-panel', role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': 'title-panel-heading' },
@@ -4074,8 +4118,9 @@ const Y2K = (() => {
       });
     });
     S = fresh(_t('老K'));
-    showTitle();
-    if (location.hash === '#leaderboard') $('#title .leaderboard-entry')?.click();
+    const panel = showTitle();
+    const openLinkedPanel = () => { if (location.hash === '#leaderboard') $('#title .leaderboard-entry')?.click(); };
+    if (!showAuthorNote(panel, openLinkedPanel)) openLinkedPanel();
     window.Y2KStats?.start();
   }
 

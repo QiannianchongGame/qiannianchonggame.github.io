@@ -2,6 +2,14 @@
 window.Y2K_UI_REVIEWED = ["en", "ja"];
 window.Y2K_UI = {
   "en": {
+    "作者的话": "A note from the author",
+    "大家好，我是《千年虫》的作者 shark，目前是北京大学的一名在校生。": "Hi everyone, I'm shark, the creator of Millennium Bug and a current student at Peking University.",
+    "谢谢大家的支持，也很高兴有这么多人喜欢这个题材。这个故事和剧本花了很长时间打磨，但仍有不少可以改进的地方。无论是剧情中没讲清楚的细节、谜题的难度，还是游玩时遇到的问题，我都很想听听大家的真实感受。": "Thank you for your support. I'm glad so many of you enjoy this kind of story. I've spent a long time working on the story and script, but there's still room for improvement. Whether it's an unclear plot detail, the difficulty of a puzzle, or a problem you encounter while playing, I'd love to hear your honest thoughts.",
+    "《千年虫》计划做成三部曲，目前第二部还在制作中。希望能把后面的故事认真写好，也期待和大家一起讨论它接下来的样子。": "Millennium Bug is planned as a trilogy, with the second game still in development. I want to give the stories ahead the care they deserve, and I look forward to hearing your thoughts on where the series goes next.",
+    "欢迎加入 QQ 交流群：": "Join our QQ group: ",
+    "聊聊剧情，交流解谜心得，也欢迎直接提意见。": "Come talk about the story, share puzzle-solving tips, and tell me what you think could be improved.",
+    "感谢你愿意花时间走进这个故事。": "Thank you for taking the time to step into this story.",
+    "2026年10月": "October 2026",
     "排行榜": "Leaderboard",
     "文件夹": "Folder",
     "文本文档": "Text Document",
@@ -417,6 +425,14 @@ window.Y2K_UI = {
     "手机": "Phone"
   },
   "ja": {
+    "作者的话": "作者より",
+    "大家好，我是《千年虫》的作者 shark，目前是北京大学的一名在校生。": "こんにちは。『千年虫』の作者、sharkです。現在、北京大学に在学しています。",
+    "谢谢大家的支持，也很高兴有这么多人喜欢这个题材。这个故事和剧本花了很长时间打磨，但仍有不少可以改进的地方。无论是剧情中没讲清楚的细节、谜题的难度，还是游玩时遇到的问题，我都很想听听大家的真实感受。": "応援ありがとうございます。この題材を気に入ってくださる方がこんなに多く、とてもうれしいです。物語と脚本には長い時間をかけましたが、まだ改善できるところがあると思っています。説明が足りない場面、謎解きの難しさ、プレイ中に困ったことなど、皆さんの率直な感想をぜひ聞かせてください。",
+    "《千年虫》计划做成三部曲，目前第二部还在制作中。希望能把后面的故事认真写好，也期待和大家一起讨论它接下来的样子。": "『千年虫』は三部作を予定しており、現在は第二作を制作中です。これからの物語も丁寧に書いていきたいと思っています。シリーズの今後についても、皆さんとお話しできるのを楽しみにしています。",
+    "欢迎加入 QQ 交流群：": "QQ交流グループへの参加もお待ちしています：",
+    "聊聊剧情，交流解谜心得，也欢迎直接提意见。": "物語の感想や謎解きのコツを語り合ったり、改善してほしい点を教えていただけたらうれしいです。",
+    "感谢你愿意花时间走进这个故事。": "この物語に触れる時間をとってくださり、ありがとうございます。",
+    "2026年10月": "2026年10月",
     "排行榜": "ランキング",
     "放大 +": "拡大 +",
     "关闭": "閉じる",

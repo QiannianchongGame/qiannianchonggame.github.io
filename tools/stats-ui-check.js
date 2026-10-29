@@ -34,6 +34,8 @@ async function run(browser, name, api, fixtures) {
   const contexts = [];
   async function context(mobile = false) {
     const c = await browser.newContext({ viewport: mobile ? { width: 390, height: 844 } : { width: 1440, height: 950 }, hasTouch: mobile, isMobile: mobile, ignoreHTTPSErrors: true }); contexts.push(c);
+    // 本测试从已读作者说明的状态开始；弹窗生命周期由 title-panel-check 覆盖。
+    await c.addInitScript(() => sessionStorage.setItem('y2k_author_note_seen', '1'));
     c.on('page', p => { p.setDefaultTimeout(10000); p.on('pageerror', e => errors.push(e.message)); }); return c;
   }
   const button = (p, label) => p.getByRole('button', { name: label, exact: true });

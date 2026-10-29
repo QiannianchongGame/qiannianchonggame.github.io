@@ -11,6 +11,8 @@ if (process.env.DESKTOP_CHECK_SCREENSHOT) fs.mkdirSync(process.env.DESKTOP_CHECK
 
 async function run(browser, name, viewport, nativeClick) {
   const context = await browser.newContext({ viewport, hasTouch: true, isMobile: true });
+  // 本测试从已读作者说明的状态开始；弹窗生命周期由 title-panel-check 覆盖。
+  await context.addInitScript(() => sessionStorage.setItem('y2k_author_note_seen', '1'));
   await context.route('http://wyjm.test/desktop', r => r.fulfill({ contentType: 'text/html', body: html }));
   const p = await context.newPage(), errors = [];
   p.setDefaultTimeout(8000); p.on('pageerror', e => errors.push(e.message));

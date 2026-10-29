@@ -1329,12 +1329,34 @@ const Y2K = (() => {
       h('div', { class: 'foot' },
         h('div', { class: 'community', text: _t('QQ群') + '：1130040971' }),
         h('div', { text: _t('本作纯属虚构 · 建议用电脑上的 Chrome / Edge 打开 · 进度自动保存在本浏览器') })));
+    return panel;
+  }
+  function showAuthorNote(panel, onClose) {
+    // 只在本标签页第一次打开时展示；不写入玩家存档，也不在返回标题时调用。
+    try {
+      if (sessionStorage.getItem('y2k_author_note_seen')) return false;
+      sessionStorage.setItem('y2k_author_note_seen', '1');
+    } catch (e) {
+      // 禁用会话存储时仍允许游玩，并避免刷新或浏览器后退时重复提示。
+      const navigation = performance.getEntriesByType?.('navigation')[0];
+      if (navigation && navigation.type !== 'navigate') return false;
+    }
+    const body = titlePanel(panel, _t('作者的话'), $('#title .menu button:not(:disabled)'), onClose);
+    body.parentElement.classList.add('author-note');
+    body.append(
+      h('p', { text: _t('大家好，我是《千年虫》的作者 shark，目前是北京大学的一名在校生。') }),
+      h('p', { text: _t('谢谢大家的支持，也很高兴有这么多人喜欢这个题材。这个故事和剧本花了很长时间打磨，但仍有不少可以改进的地方。无论是剧情中没讲清楚的细节、谜题的难度，还是游玩时遇到的问题，我都很想听听大家的真实感受。') }),
+      h('p', { text: _t('《千年虫》计划做成三部曲，目前第二部还在制作中。希望能把后面的故事认真写好，也期待和大家一起讨论它接下来的样子。') }),
+      h('p', {}, _t('欢迎加入 QQ 交流群：'), h('strong', { class: 'author-note-qq', text: '1130040971' }), h('br'), _t('聊聊剧情，交流解谜心得，也欢迎直接提意见。')),
+      h('p', { text: _t('感谢你愿意花时间走进这个故事。') }),
+      h('div', { class: 'author-note-signature' }, h('div', { text: '—— shark🦈' }), h('time', { datetime: '2026-10', text: _t('2026年10月') })));
+    return true;
   }
   function hideTitle() { titleOn = false; syncPlayClock(); const tl = $('#title'); tl.hidden = true; tl.innerHTML = ''; tl.classList.remove('panel-open'); window.Y2KStats?.setPlaying(true); showCards(); }
-  function titlePanel(host, title, opener) {
+  function titlePanel(host, title, opener, onClose) {
     host.innerHTML = '';
     const tl = $('#title'); tl.classList.add('panel-open');
-    const close = () => { host.innerHTML = ''; tl.classList.remove('panel-open'); if (opener?.isConnected) opener.focus(); };
+    const close = () => { host.innerHTML = ''; tl.classList.remove('panel-open'); if (opener?.isConnected) opener.focus(); onClose?.(); };
     const closeBtn = controlButton({ class: 'tbtn title-panel-close', text: '×', 'aria-label': _t('关闭'), title: _t('关闭') }, close);
     const body = h('div', { class: 'title-panel-body' });
     const dlg = h('div', { class: 'panel title-panel', role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': 'title-panel-heading' },
@@ -2395,8 +2417,9 @@ const Y2K = (() => {
       });
     });
     S = fresh(_t('老K'));
-    showTitle();
-    if (location.hash === '#leaderboard') $('#title .leaderboard-entry')?.click();
+    const panel = showTitle();
+    const openLinkedPanel = () => { if (location.hash === '#leaderboard') $('#title .leaderboard-entry')?.click(); };
+    if (!showAuthorNote(panel, openLinkedPanel)) openLinkedPanel();
     window.Y2KStats?.start();
   }
 

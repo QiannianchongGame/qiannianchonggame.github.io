@@ -7,6 +7,8 @@ assert(release.includes('return { add, boot, lang };'),'请先构建正式版');
 const html=release.replace('return { add, boot, lang };','return { add, boot, lang, debug };');
 async function run(browser,name){
  const context=await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
+ // 本测试从已读作者说明的状态开始；弹窗生命周期由 title-panel-check 覆盖。
+ await context.addInitScript(() => sessionStorage.setItem('y2k_author_note_seen', '1'));
  await context.route('http://wyjm.test/bbs',r=>r.fulfill({contentType:'text/html',body:html}));
  const p=await context.newPage();p.setDefaultTimeout(10000);const errors=[];p.on('pageerror',e=>errors.push(e.message));
  await p.goto('http://wyjm.test/bbs');await p.getByRole('button',{name:'新的调查',exact:true}).click();await p.getByRole('button',{name:'开始',exact:true}).click();await p.locator('.card').click();

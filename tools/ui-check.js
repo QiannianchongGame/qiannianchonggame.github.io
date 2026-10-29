@@ -35,6 +35,8 @@ async function rect(locator) { return locator.boundingBox(); }
 async function run(browser, name) {
   const errors = [];
   const context = await browser.newContext({ viewport: { width: 1440, height: 950 } });
+  // 本测试从已读作者说明的状态开始；弹窗生命周期由 title-panel-check 覆盖。
+  await context.addInitScript(() => sessionStorage.setItem('y2k_author_note_seen', '1'));
   context.on('page', p => { p.setDefaultTimeout(7000); p.on('pageerror', e => errors.push(e.message)); });
   const p = await context.newPage();
   await p.goto(pathToFileURL(file).href);

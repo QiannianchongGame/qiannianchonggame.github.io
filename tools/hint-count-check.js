@@ -7,6 +7,8 @@ const html = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8')
   .replace('const debug = {', 'const debug = { askPuzzle,');
 async function run(browser, name, mobile) {
   const c = await browser.newContext({ viewport: mobile ? { width: 390, height: 844 } : { width: 1440, height: 950 }, isMobile: mobile, hasTouch: mobile, acceptDownloads: true });
+  // 本测试从已读作者说明的状态开始；弹窗生命周期由 title-panel-check 覆盖。
+  await c.addInitScript(() => sessionStorage.setItem('y2k_author_note_seen', '1'));
   await c.route('http://wyjm.test/hints', r => r.fulfill({ contentType: 'text/html', body: html }));
   const p = await c.newPage(), errors = []; p.on('pageerror', e => errors.push(e.message));
   await p.goto('http://wyjm.test/hints');
