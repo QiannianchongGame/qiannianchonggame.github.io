@@ -88,6 +88,15 @@ button { font: inherit; color: inherit; }
 .b98:focus-visible { outline: 1px dotted #000; outline-offset: -5px; }
 .f98 { font: var(--font-98); padding: 3px 4px; border: 0; background: #fff; color: #000; box-shadow: inset -1px -1px var(--w-hi), inset 1px 1px var(--w-lo), inset -2px -2px #dfdfdf, inset 2px 2px var(--w-dk); min-width: 0; }
 .f98:focus { outline: none; }
+/* Native text selection and iPad keyboard gestures must remain available. */
+input, textarea, [contenteditable="true"] { -webkit-user-select: text; user-select: text; }
+@media (any-pointer: coarse) {
+  input:not([readonly]):where(:not([type]), [type=text], [type=search], [type=password], [type=email], [type=url], [type=tel], [type=number]), textarea:not([readonly]) {
+    font-size: 16px !important;
+    min-height: 32px;
+    touch-action: manipulation;
+  }
+}
 .sep98 { height: 2px; border-top: 1px solid var(--w-lo); border-bottom: 1px solid var(--w-hi); margin: 4px 0; }
 
 /* ---------- 桌面 ---------- */
@@ -2045,6 +2054,8 @@ const Y2K = (() => {
     }, { passive: true });
     button.addEventListener('touchmove', e => { if (press && press.kind === 'touch') { const t = [...e.touches].find(t => t.identifier === press.id); if (t) move(t.clientX, t.clientY); } }, { passive: true });
     button.addEventListener('touchend', e => {
+      // Delegated link handlers must leave unrelated input/selection gestures native.
+      if (!targetOf(e)) return;
       const t = press && [...e.changedTouches].find(t => press.kind === 'pointer' || t.identifier === press.id);
       if (t) finish(e, t.clientX, t.clientY);
       else if (Date.now() < suppressClickUntil) { if (e.cancelable) e.preventDefault(); e.stopPropagation(); }
@@ -2065,6 +2076,34 @@ const Y2K = (() => {
   function clearTimers() { timers.forEach(clearTimeout); timers.clear(); }
   const coarse = () => window.matchMedia && matchMedia('(pointer: coarse)').matches;
   const narrow = () => window.innerWidth <= 960;
+  const touchKeyboard = () => navigator.maxTouchPoints > 0 || coarse();
+  const confirmInput = e => e.key === 'Enter' && !e.isComposing && e.keyCode !== 229;
+  const textInputTarget = target => {
+    const input = target?.closest?.('input, textarea, [contenteditable="true"]');
+    if (!input || input.disabled || input.readOnly) return null;
+    return input.isContentEditable || input.tagName === 'TEXTAREA' || ['text', 'search', 'password', 'email', 'url', 'tel', 'number'].includes(input.type) ? input : null;
+  };
+  // iPad can omit the compatibility click after a touch. Focus the actual field
+  // synchronously inside the trusted gesture so WebKit may show its keyboard.
+  // Leave scrolling, selection, paste and native click behavior untouched.
+  function bindTextInputs() {
+    let touch = null, pen = null;
+    const begin = (input, id, x, y) => input && ({ input, id, x, y, moved: false });
+    const move = (press, x, y) => { if (press && Math.hypot(x - press.x, y - press.y) > 12) press.moved = true; };
+    const finish = (press, e, x, y) => {
+      if (!press || !e.isTrusted || press.moved || !press.input.isConnected || textInputTarget(e.target) !== press.input) return;
+      const r = press.input.getBoundingClientRect();
+      if (x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) press.input.focus();
+    };
+    document.addEventListener('touchstart', e => { const t = e.touches[0]; touch = e.touches.length === 1 ? begin(textInputTarget(e.target), t.identifier, t.clientX, t.clientY) : null; }, { capture: true, passive: true });
+    document.addEventListener('touchmove', e => { const t = touch && [...e.touches].find(t => t.identifier === touch.id); if (t) move(touch, t.clientX, t.clientY); }, { capture: true, passive: true });
+    document.addEventListener('touchend', e => { const t = touch && [...e.changedTouches].find(t => t.identifier === touch.id); if (t) { move(touch, t.clientX, t.clientY); finish(touch, e, t.clientX, t.clientY); } touch = null; }, { capture: true, passive: true });
+    document.addEventListener('touchcancel', () => { touch = null; }, { capture: true, passive: true });
+    document.addEventListener('pointerdown', e => { if (e.pointerType === 'pen') pen = begin(textInputTarget(e.target), e.pointerId, e.clientX, e.clientY); }, true);
+    document.addEventListener('pointermove', e => { if (pen && pen.id === e.pointerId) move(pen, e.clientX, e.clientY); }, true);
+    document.addEventListener('pointerup', e => { if (pen && pen.id === e.pointerId) { move(pen, e.clientX, e.clientY); finish(pen, e, e.clientX, e.clientY); pen = null; } }, true);
+    document.addEventListener('pointercancel', () => { pen = null; }, true);
+  }
 
   // ============================================================
   // 状态、条件、动作
@@ -2518,7 +2557,7 @@ const Y2K = (() => {
     const inputs = h('div');
     if (kind === 'text') {
       const inp = h('input', { class: opts.style === 'bios' ? '' : 'f98', type: 'text', id: 'pz_' + id, placeholder: opts.placeholder || p.placeholder || '', autocomplete: 'off', spellcheck: 'false', style: { width: '100%' } });
-      inp.onkeydown = (e) => { if (e.key === 'Enter') submit(); };
+      inp.onkeydown = (e) => { if (confirmInput(e)) submit(); };
       inputs.append(inp); getVal = () => inp.value; focusEl = inp;
     } else if (kind === 'choice' || kind === 'pick') {
       const wrap = h('div', { class: 'opts' });
@@ -2528,7 +2567,7 @@ const Y2K = (() => {
       getVal = () => { const sel = [...wrap.querySelectorAll('input:checked')].map(x => +x.value); return kind === 'choice' ? sel[0] : sel; };
     } else if (kind === 'multi') {
       const g = h('div', { class: 'fields' });
-      const ins = p.fields.map((f, i) => { const inp = h('input', { class: 'f98', type: 'text', id: `pz_${id}_${i}`, autocomplete: 'off', placeholder: f.placeholder || '' }); inp.onkeydown = (e) => { if (e.key === 'Enter') submit(); }; g.append(h('label', { for: `pz_${id}_${i}`, html: fmt(f.label) }), inp); return inp; });
+      const ins = p.fields.map((f, i) => { const inp = h('input', { class: 'f98', type: 'text', id: `pz_${id}_${i}`, autocomplete: 'off', placeholder: f.placeholder || '' }); inp.onkeydown = (e) => { if (confirmInput(e)) submit(); }; g.append(h('label', { for: `pz_${id}_${i}`, html: fmt(f.label) }), inp); return inp; });
       inputs.append(g); getVal = () => ins.map(x => x.value); focusEl = ins[0];
     }
     const hintBox = h('div', { class: 'hints' });
@@ -2562,7 +2601,7 @@ const Y2K = (() => {
     drawHints();
     if (!opts.hidePrompt) box.append(prompt);
     box.append(inputs, msg, hintBox, h('div', { class: 'row' }, hintBtn, opts.extraBtn || null, okBtn));
-    box.focusFirst = () => focusEl && setTimeout(() => focusEl.focus(), 30);
+    box.focusFirst = () => { if (focusEl && !touchKeyboard()) focusEl.focus(); };
     return box;
   }
   function modalRoot() { return $('#modal'); }
@@ -3205,12 +3244,12 @@ const Y2K = (() => {
       LS.del(KEY.pre);
       loadState(fresh(name));
     };
-    inp.onkeydown = (e) => { if (e.key === 'Enter') go(); };
+    inp.onkeydown = (e) => { if (confirmInput(e)) go(); };
     titlePanel(panel, _t('你的昵称'), opener).append(
       h('div', { class: 'muted', text: _t('你是一个做"老电脑考古"视频的 UP 主。委托人会这样称呼你。') }), h('div', { style: { height: '8px' } }), inp,
       ...(hasSave ? [h('div', { class: 'muted', style: { marginTop: '8px' }, text: _t('注意：开始新调查会覆盖自动存档（手动存档位不受影响）。') })] : []),
       h('div', { class: 'row' }, h('button', { class: 'tbtn', text: _t('开始'), onclick: go })));
-    inp.focus();
+    if (!touchKeyboard()) inp.focus();
   }
   function loadPanel(panel, opener) {
     const p = titlePanel(panel, _t('读取存档'), opener);
@@ -3529,13 +3568,14 @@ const Y2K = (() => {
       if (!ctxEl || !touchOpened) show(e.clientX, e.clientY);
     });
     el.addEventListener('keydown', e => {
+      if (e.target.closest('input, textarea, select, [contenteditable="true"]')) return;
       if (e.key !== 'ContextMenu' && !(e.shiftKey && e.key === 'F10')) return;
       e.preventDefault(); e.stopPropagation(); const r = el.getBoundingClientRect(); show(r.left + r.width / 2, r.top + r.height / 2, true);
     });
     let lp = 0, touchOpened = false, touching = false, suppressContextUntil = 0;
     const cancel = () => { clearTimeout(lp); lp = 0; };
     el.addEventListener('touchstart', e => {
-      cancel(); touchOpened = false; touching = e.touches.length === 1; suppressContextUntil = 0; if (!touching) return;
+      cancel(); touchOpened = false; touching = e.touches.length === 1 && !e.target.closest('input, textarea, select, [contenteditable="true"]'); suppressContextUntil = 0; if (!touching) return;
       const { clientX, clientY } = e.touches[0];
       lp = setTimeout(() => { if (el.isConnected) { touchOpened = true; suppressContextUntil = Date.now() + 1000; show(clientX, clientY); } }, 550);
     }, { passive: true });
@@ -3971,10 +4011,10 @@ const Y2K = (() => {
       D.gxLogs.filter(l => test(l.requires)).forEach(l => l.lines.forEach(x => { if (x.text.includes(q)) { const c = D.gxContacts.find(y => y.id === l.contact); res.append(bindControl(h('div', { style: { padding: '3px', cursor: 'pointer', borderBottom: '1px dotted #ccc' }, html: `<b>${esc(c ? c.nick : '')}</b> ${esc(l.date)} ${esc(x.time || '')}<br>${esc(x.text).replace(new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), '<span style="background:#ff0">$&</span>')}` }), () => { closeModal(); win.state.c = l.contact; win.state.d = l.id; win.refresh(true); })); } }));
       if (!res.children.length) res.append(h('div', { text: _t('没有找到。') }));
     };
-    inp.onkeydown = (e) => { if (e.key === 'Enter') run(); };
+    inp.onkeydown = (e) => { if (confirmInput(e)) run(); };
     const dlg = h('div', { class: 'dlg98 out' }, h('div', { class: 'titlebar' }, h('span', { class: 't', text: _t('查找聊天记录') }), controlButton({ class: 'b98 tbb', text: '×', 'aria-label': _t('关闭') }, closeModal)),
       h('div', { class: 'wbody' }, h('div', { text: _t('查找内容：') }), inp, h('div', { class: 'row' }, controlButton({ class: 'b98', text: _t('查找') }, run)), res));
-    m.append(h('div', { class: 'shade', onclick: closeModal }), dlg); inp.focus();
+    m.append(h('div', { class: 'shade', onclick: closeModal }), dlg); if (!touchKeyboard()) inp.focus();
   }
 
   // ---- IE + 梧桐树下 BBS ----
@@ -4007,7 +4047,7 @@ const Y2K = (() => {
       [_t('帮助(H)'), [[_t('关于'), () => msgBox(_t('关于 Internet Explorer'), 'Microsoft Internet Explorer 5.0')]]],
     ]);
     const addr = h('input', { class: 'f98', id: 'ieaddr', value: url, spellcheck: 'false', autocomplete: 'off' });
-    addr.onkeydown = (e) => { if (e.key === 'Enter') { markInteraction(); ieGo(win, addr.value); } };
+    addr.onkeydown = (e) => { if (confirmInput(e)) { markInteraction(); ieGo(win, addr.value); } };
     addr.onfocus = () => addr.select();
     win.top.append(h('div', { class: 'toolbar98' },
       controlButton({ class: 'b98', text: _t('← 后退'), disabled: st.hi === 0 }, () => { st.hi--; win.resetScroll = true; win.refresh(true); }),
@@ -4113,7 +4153,7 @@ const Y2K = (() => {
       const wrap = h('div', { class: 'wrap' });
       const inp = h('input', { id: 'bbsq', value: q, style: { font: 'inherit', padding: '2px 4px', width: '220px' } });
       const go = () => ieGo(win, 'http://' + (D.bbsMeta.host || '192.168.1.103') + '/search.asp?q=' + encodeURIComponent(inp.value.trim()));
-      inp.onkeydown = (e) => { if (e.key === 'Enter') go(); };
+      inp.onkeydown = (e) => { if (confirmInput(e)) go(); };
       wrap.append(h('div', { style: { margin: '6px 0 10px' } }, _t('搜索帖子标题和内容：'), inp, ' ', controlButton({ class: 'b98', text: _t('搜索') }, go)));
       if (q) {
         const res = [];
@@ -4164,7 +4204,7 @@ const Y2K = (() => {
       const iu = h('input', { id: 'lgu', value: fu, placeholder: _t('用户 ID'), style: { width: '100px', font: 'inherit' } });
       const id2 = h('input', { id: 'lgd', value: fd, placeholder: _t('日期，如 2000-01-01'), style: { width: '150px', font: 'inherit' } });
       const go = (o) => ieGo(win, `http://${host}/admin/log.asp?user=${encodeURIComponent(iu.value.trim())}&date=${encodeURIComponent(id2.value.trim())}&order=${o || order}`);
-      iu.onkeydown = id2.onkeydown = (e) => { if (e.key === 'Enter') go(); };
+      iu.onkeydown = id2.onkeydown = (e) => { if (confirmInput(e)) go(); };
       wrap.append(h('div', { style: { margin: '4px 0 8px', display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center' } }, _t('筛选：'), iu, id2, controlButton({ class: 'b98', text: _t('筛选') }, () => go()), controlButton({ class: 'b98', text: order === 'desc' ? _t('改为从旧到新') : _t('改为从新到旧') }, () => go(order === 'desc' ? 'asc' : 'desc')), h('span', { style: { color: '#666' }, text: `${_t('共')} ${rows.length} ${_t('条（时间为服务器时间）')}` })));
       wrap.append(h('div', { html: `<table class="t"><tr><th>${_t('时间')}</th><th>${_t('用户')}</th><th>IP</th><th>${_t('机器名')}</th></tr>${rows.slice(0, 400).map(l => `<tr><td>${esc(l.time)}</td><td>${esc(l.user)}</td><td>${esc(l.ip || '')}</td><td>${esc(l.host || '')}</td></tr>`).join('') || _t('<tr><td colspan="4">没有记录。</td></tr>')}</table>` }));
       node.append(wrap);
@@ -4209,6 +4249,7 @@ const Y2K = (() => {
   // 启动
   // ============================================================
   function boot() {
+    bindTextInputs();
     prepAnswers();
     if (LANG !== 'zh') applyLang(LANGMAP[LANG]);
     applyPhotos();
