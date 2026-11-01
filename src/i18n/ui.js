@@ -2,6 +2,10 @@
 window.Y2K_UI_REVIEWED = ["en", "ja"];
 window.Y2K_UI = {
   "en": {
+    "通关测验": "Completion quiz",
+    "《千年虫1》通关测验二维码": "QR code for the Millennium Bug 1 completion quiz",
+    "已经通关的朋友，欢迎填写《千年虫1》通关测验，回顾故事中的线索，也留下你的评分和感受。": "Finished the game? Take the Millennium Bug 1 completion quiz to revisit the story's clues and share your rating and thoughts.",
+    "点击首页排行榜旁的“通关测验”按钮，扫描二维码即可参与。": "Select Completion quiz beside Leaderboard on the title screen, then scan the QR code to take part.",
     "作者的话": "A note from the author",
     "大家好，我是《千年虫》的作者 shark，目前是北京大学的一名在校生。": "Hi everyone, I'm shark, the creator of Millennium Bug and a current student at Peking University.",
     "谢谢大家的支持，也很高兴有这么多人喜欢这个题材。这个故事和剧本花了很长时间打磨，但仍有不少可以改进的地方。无论是剧情中没讲清楚的细节、谜题的难度，还是游玩时遇到的问题，我都很想听听大家的真实感受。": "Thank you for your support. I'm glad so many of you enjoy this kind of story. I've spent a long time working on the story and script, but there's still room for improvement. Whether it's an unclear plot detail, the difficulty of a puzzle, or a problem you encounter while playing, I'd love to hear your honest thoughts.",
@@ -425,6 +429,10 @@ window.Y2K_UI = {
     "手机": "Phone"
   },
   "ja": {
+    "通关测验": "クリア後クイズ",
+    "《千年虫1》通关测验二维码": "『千年虫1』クリア後クイズのQRコード",
+    "已经通关的朋友，欢迎填写《千年虫1》通关测验，回顾故事中的线索，也留下你的评分和感受。": "クリアした方は、ぜひ『千年虫1』のクイズにご参加ください。物語の手がかりを振り返り、評価や感想もお寄せいただけます。",
+    "点击首页排行榜旁的“通关测验”按钮，扫描二维码即可参与。": "タイトル画面のランキング横にある「クリア後クイズ」を押し、QRコードを読み取ってご参加ください。",
     "作者的话": "作者より",
     "大家好，我是《千年虫》的作者 shark，目前是北京大学的一名在校生。": "こんにちは。『千年虫』の作者、sharkです。現在、北京大学に在学しています。",
     "谢谢大家的支持，也很高兴有这么多人喜欢这个题材。这个故事和剧本花了很长时间打磨，但仍有不少可以改进的地方。无论是剧情中没讲清楚的细节、谜题的难度，还是游玩时遇到的问题，我都很想听听大家的真实感受。": "応援ありがとうございます。この題材を気に入ってくださる方がこんなに多く、とてもうれしいです。物語と脚本には長い時間をかけましたが、まだ改善できるところがあると思っています。説明が足りない場面、謎解きの難しさ、プレイ中に困ったことなど、皆さんの率直な感想をぜひ聞かせてください。",

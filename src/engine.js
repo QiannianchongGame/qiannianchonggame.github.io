@@ -1357,15 +1357,21 @@ const Y2K = (() => {
       h('button', { class: 'tbtn', text: _t('读取存档'), onclick: e => loadPanel(panel, e.currentTarget) }),
       h('button', { class: 'tbtn', text: _t('结局收集'), onclick: e => titlePanel(panel, _t('结局收集'), e.currentTarget).append(endingList()) }));
     const leaderboard = h('button', { class: 'tbtn leaderboard-entry', text: _t('排行榜'), onclick: e => window.Y2KLeaderboard?.mount(titlePanel(panel, _t('排行榜'), e.currentTarget), LANG) });
+    const quiz = h('button', { class: 'tbtn quiz-entry', text: _t('通关测验'), onclick: e => showCompletionQuiz(panel, e.currentTarget) });
     // 语言切换：存进 meta，然后重新载入（译文在启动时写回数据）
     const langs = h('div', { class: 'langs', role: 'group', 'aria-label': 'Language' });
     langs.hidden = READY.length < 2;
     Object.entries(LANGS).filter(([code]) => READY.includes(code)).forEach(([code, label]) => langs.append(h('button', { class: 'lbtn' + (code === LANG ? ' on' : ''), lang: code, 'aria-pressed': code === LANG ? 'true' : 'false', text: label, onclick: () => { if (code === LANG) return; const m = meta(); m.lang = code; setMeta(m); location.reload(); } })));
-    tl.append(h('div', { class: 'title-topbar' }, leaderboard, langs), h('div', { class: 'title-content' }, clk, h('h1', { html: _t('千年<span>虫</span> 1') }), h('div', { class: 'sub', text: _t('梧城七中 · 1999—2000') }), menu, panel, window.Y2KStats?.mount(LANG),
+    tl.append(h('div', { class: 'title-topbar' }, h('div', { class: 'title-actions' }, leaderboard, quiz), langs), h('div', { class: 'title-content' }, clk, h('h1', { html: _t('千年<span>虫</span> 1') }), h('div', { class: 'sub', text: _t('梧城七中 · 1999—2000') }), menu, panel, window.Y2KStats?.mount(LANG),
       h('div', { class: 'foot' },
         h('div', { class: 'community', text: _t('QQ群') + '：1130040971' }),
         h('div', { text: _t('本作纯属虚构 · 建议用电脑上的 Chrome / Edge 打开 · 进度自动保存在本浏览器') }))));
     return panel;
+  }
+  function showCompletionQuiz(panel, opener) {
+    const body = titlePanel(panel, _t('通关测验'), opener);
+    body.parentElement.classList.add('quiz-panel');
+    body.append(h('img', { class: 'quiz-poster', src: window.Y2K_PHOTOS.completion_quiz.data, alt: _t('《千年虫1》通关测验二维码'), width: 640, height: 1068 }));
   }
   function showAuthorNote(panel, onClose) {
     // 只在本标签页第一次打开时展示；不写入玩家存档，也不在返回标题时调用。
@@ -1380,6 +1386,9 @@ const Y2K = (() => {
     const body = titlePanel(panel, _t('作者的话'), $('#title .menu button:not(:disabled)'), onClose);
     body.parentElement.classList.add('author-note');
     body.append(
+      h('p', { text: _t('已经通关的朋友，欢迎填写《千年虫1》通关测验，回顾故事中的线索，也留下你的评分和感受。') }),
+      h('p', { text: _t('点击首页排行榜旁的“通关测验”按钮，扫描二维码即可参与。') }),
+      h('hr', { class: 'author-note-divider' }),
       h('p', { text: _t('大家好，我是《千年虫》的作者 shark，目前是北京大学的一名在校生。') }),
       h('p', { text: _t('谢谢大家的支持，也很高兴有这么多人喜欢这个题材。这个故事和剧本花了很长时间打磨，但仍有不少可以改进的地方。无论是剧情中没讲清楚的细节、谜题的难度，还是游玩时遇到的问题，我都很想听听大家的真实感受。') }),
       h('p', { text: _t('《千年虫》计划做成三部曲，目前第二部还在制作中。希望能把后面的故事认真写好，也期待和大家一起讨论它接下来的样子。') }),
