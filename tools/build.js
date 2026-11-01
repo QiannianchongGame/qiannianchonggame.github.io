@@ -12,7 +12,7 @@ const debugBuild = args.includes('--debug');
 const files = order.filter(f => fs.existsSync(path.join(dir, f))).map(f => 'src/content/' + f).concat(args.filter(a => !a.startsWith('--')));
 const safe = (s) => s.replace(/<\/script/gi, '<\\/script');
 
-const css = read('src/style.css') + '\n' + read('src/leaderboard.css') + '\n' + read('src/title.css');
+const css = read('src/style.css') + '\n' + read('src/leaderboard.css') + '\n' + read('src/feedback.css') + '\n' + read('src/title.css');
 // 正式包不暴露调试入口；node tools/build.js --debug 才保留 Y2K.debug
 let engine = read('src/engine.js');
 if (!debugBuild) {
@@ -52,7 +52,7 @@ for (const l of ['en', 'ja']) {
 }
 const langScript = `<script>window.Y2K_LANGS=${JSON.stringify(readyLangs)};</script>`;
 const translations = langFiles.map(wrap).join('\n');
-const stats = `<script>window.Y2K_STATS_CONFIG=${safe(read('src/stats-config.json'))};</script>\n${wrap('src/stats.js')}\n${wrap('src/leaderboard.js')}`;
+const stats = `<script>window.Y2K_STATS_CONFIG=${safe(read('src/stats-config.json'))};</script>\n${wrap('src/stats.js')}\n${wrap('src/leaderboard.js')}\n${wrap('src/feedback.js')}`;
 // 图片嵌入 HTML，使双击打开的离线版与网页使用完全相同的资源。
 const photoManifest = JSON.parse(read('src/photo-manifest.json'));
 const photoAssets = {};

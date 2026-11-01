@@ -4,5 +4,6 @@
     "https://qiannianchonggame.github.io"
   ],
   "game": "1",
-  "leaderboardEndpoint": "https://qiannianchong-stats.chenhao2003.chatgpt.site/api/leaderboard?game=1"
+  "leaderboardEndpoint": "https://qiannianchong-stats.chenhao2003.chatgpt.site/api/leaderboard?game=1",
+  "feedbackEndpoint": "https://qiannianchong-stats.chenhao2003.chatgpt.site/api/feedback?game=1"
 }

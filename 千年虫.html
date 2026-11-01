@@ -645,6 +645,41 @@ table.det tr.sel .newtag { color: #5a4300; }
 .finish-review-submit { border-color: #b49a63; color: #e8d8b6; }
 @media (max-width: 480px) { .finish-review { padding: 20px; } .finish-review-actions .tbtn { width: 100%; } }
 
+.panel.title-panel.feedback-panel{width:min(960px,100%)}
+.feedback-summary{margin:0 0 8px;color:#edd49b;font-size:16px;font-variant-numeric:tabular-nums}
+.feedback-help{margin:0 0 20px;color:#aeb5c0;font-size:13px;line-height:1.7}
+.feedback-layout{display:grid;grid-template-columns:250px minmax(0,1fr);gap:24px;align-items:start}
+.feedback-form{min-width:0}
+.feedback-ratings{margin:0 0 18px;padding:0;border:0;min-width:0}
+.feedback-ratings legend,.feedback-label{display:block;padding:0;margin:0 0 10px;font-size:14px;color:#e4e6eb}
+.feedback-scores{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.feedback-score{position:relative;cursor:pointer}
+.feedback-score input{position:absolute;inset:0;opacity:0;width:100%;height:100%;margin:0;cursor:pointer}
+.feedback-score span{display:grid;place-items:center;min-height:44px;border:1px solid #444953;border-radius:5px;background:#20232a;color:#d5d9e0;font:15px/1 var(--font-ph)}
+.feedback-score input:checked+span{border-color:#d4ae5a;background:#3a3020;color:#ffe0a0}
+.feedback-score input:focus-visible+span{outline:2px solid #edce8e;outline-offset:2px}
+.feedback-form textarea{box-sizing:border-box;display:block;width:100%;min-height:126px;resize:vertical;padding:10px;border:1px solid #444953;border-radius:5px;background:#101216;color:#eee;font:16px/1.7 var(--font-ph);user-select:text}
+.feedback-form textarea:focus{outline:2px solid #b49a63;outline-offset:2px}
+.feedback-count{margin:5px 0 12px;text-align:right;color:#929aaa;font-size:12px}
+.feedback-form .tbtn,.feedback-toolbar .tbtn,.feedback-pagination .tbtn,.feedback-online{min-height:44px;padding:8px 12px;font-size:14px;letter-spacing:0}
+.feedback-publish{width:100%;color:#edd49b;border-color:#aa884a}
+.feedback-post-status,.feedback-list-status{margin:8px 0;color:#b9c0cc;font-size:13px;line-height:1.6;overflow-wrap:anywhere}
+.feedback-post-status:empty,.feedback-list-status:empty{display:none}
+.feedback-list-section{min-width:0}
+.feedback-toolbar{display:flex;justify-content:flex-end;align-items:center;gap:12px;margin-bottom:10px}
+.feedback-toolbar .feedback-list-status{flex:1;margin:0}
+.feedback-pagination{position:sticky;top:-16px;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0 12px;background:#181b21}
+.feedback-page{font-size:13px;color:#aeb5c0;text-align:center;font-variant-numeric:tabular-nums}
+.feedback-entry{padding:16px 0;border-top:1px solid #353a43;user-select:text}
+.feedback-entry-head{display:flex;align-items:center;flex-wrap:wrap;gap:7px 12px;font-size:13px}
+.feedback-entry-head strong{font-weight:400;color:#ccd2dc}
+.feedback-entry-rating{color:#edd49b;font-variant-numeric:tabular-nums}
+.feedback-entry-head time{margin-left:auto;color:#87909f;font-size:12px}
+.feedback-entry-message{margin:10px 0 0;color:#e2e5eb;font-size:14px;line-height:1.8;white-space:pre-wrap;overflow-wrap:anywhere}
+.feedback-empty{color:#929aaa;font-size:14px;line-height:1.8;padding:16px 0}
+.feedback-online{display:inline-flex;align-items:center;text-decoration:none}
+@media(max-width:700px){.feedback-layout{grid-template-columns:minmax(0,1fr);gap:20px}.feedback-entry-head time{width:100%;margin-left:0}.feedback-form textarea{min-height:110px}.feedback-summary{font-size:14px;line-height:1.8}}
+
 /* Title content is centered as one group; toolbar stays at the top. */
 .title{justify-content:flex-start;gap:0;padding:76px max(16px,env(safe-area-inset-right,0px)) 76px max(16px,env(safe-area-inset-left,0px));background-size:cover;background-position:center}
 .title .title-content{display:flex;flex-direction:column;align-items:center;gap:14px;flex:none;width:min(760px,100%);margin-block:auto}
@@ -654,8 +689,8 @@ table.det tr.sel .newtag { color: #5a4300; }
 .title .title-topbar .langs{position:static;inset:auto;margin-left:auto;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
 .title .title-topbar .langs[hidden]{display:none}
 .title .title-actions{display:flex;align-items:center;flex-wrap:wrap;gap:8px;min-width:0}
-.title .title-topbar .leaderboard-entry,.title .title-topbar .quiz-entry{position:static;inset:auto;flex:none;min-height:44px;margin:0;padding:9px 16px;font-size:14px;letter-spacing:.06em;white-space:nowrap;background:rgba(43,36,23,.9);border-color:#9e7c32;color:#edd49b}
-.title .quiz-entry:hover,.title .quiz-entry:focus-visible{color:#fff1c4;background:#3a2f1b;outline:2px solid #f1d28f;outline-offset:3px}
+.title .title-topbar .leaderboard-entry,.title .title-topbar .quiz-entry,.title .title-topbar .feedback-entry-button{position:static;inset:auto;flex:none;min-height:44px;margin:0;padding:9px 16px;font-size:14px;letter-spacing:.06em;white-space:nowrap;background:rgba(43,36,23,.9);border-color:#9e7c32;color:#edd49b}
+.title .quiz-entry:hover,.title .quiz-entry:focus-visible,.title .feedback-entry-button:hover,.title .feedback-entry-button:focus-visible{color:#fff1c4;background:#3a2f1b;outline:2px solid #f1d28f;outline-offset:3px}
 .panel.title-panel.quiz-panel{width:min(480px,100%)}
 .quiz-panel .title-panel-body{padding:12px}
 .quiz-poster{display:block;width:100%;max-width:440px;height:auto;margin:0 auto;user-select:auto;-webkit-touch-callout:default}
@@ -666,6 +701,7 @@ table.det tr.sel .newtag { color: #5a4300; }
 .title .menu .tbtn{background:rgba(20,23,27,.88)}
 @media(max-width:600px){.title{padding-top:124px}.title .title-content{gap:12px}.title .clock{font-size:13px;letter-spacing:.14em}.title .sub{font-size:12px;letter-spacing:.15em}.title .title-topbar{gap:8px}.title .title-topbar .langs{flex-basis:100%}.title .title-topbar .leaderboard-entry,.title .title-topbar .quiz-entry{font-size:13px;padding:8px 12px}.title .title-topbar .lbtn{font-size:12px;padding:6px 8px}}
 @media(max-width:600px){:lang(en) .title h1{font-size:clamp(30px,8vw,44px);line-height:1.15;letter-spacing:.08em}}
+@media(max-width:600px){.title .title-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;width:100%}.title .title-topbar .title-actions .tbtn{height:100%;padding:8px 6px;font-size:12px;letter-spacing:0;white-space:normal;overflow-wrap:anywhere}}
 
 </style>
 </head>
@@ -679,6 +715,7 @@ try {
 window.Y2K_UI_REVIEWED = ["en", "ja"];
 window.Y2K_UI = {
   "en": {
+    "评分与留言": "Ratings & messages",
     "通关测验": "Completion quiz",
     "《千年虫1》通关测验二维码": "QR code for the Millennium Bug 1 completion quiz",
     "已经通关的朋友，欢迎填写《千年虫1》通关测验，回顾故事中的线索，也留下你的评分和感受。": "Finished the game? Take the Millennium Bug 1 completion quiz to revisit the story's clues and share your rating and thoughts.",
@@ -1106,6 +1143,7 @@ window.Y2K_UI = {
     "手机": "Phone"
   },
   "ja": {
+    "评分与留言": "評価とメッセージ",
     "通关测验": "クリア後クイズ",
     "《千年虫1》通关测验二维码": "『千年虫1』クリア後クイズのQRコード",
     "已经通关的朋友，欢迎填写《千年虫1》通关测验，回顾故事中的线索，也留下你的评分和感受。": "クリアした方は、ぜひ『千年虫1』のクイズにご参加ください。物語の手がかりを振り返り、評価や感想もお寄せいただけます。",
@@ -1543,7 +1581,8 @@ window.Y2K_UI = {
     "https://qiannianchonggame.github.io"
   ],
   "game": "1",
-  "leaderboardEndpoint": "https://qiannianchong-stats.chenhao2003.chatgpt.site/api/leaderboard?game=1"
+  "leaderboardEndpoint": "https://qiannianchong-stats.chenhao2003.chatgpt.site/api/leaderboard?game=1",
+  "feedbackEndpoint": "https://qiannianchong-stats.chenhao2003.chatgpt.site/api/feedback?game=1"
 }
 ;</script>
 <script>/* src/stats.js */
@@ -1838,6 +1877,128 @@ try {
 })();
 
 } catch (e) { console.error('加载失败：src/leaderboard.js', e); }
+</script>
+<script>/* src/feedback.js */
+try {
+// Public feedback has its own anonymous ID and drafts; it never reads game saves.
+(() => {
+  'use strict';
+  const config = window.Y2K_STATS_CONFIG || {}, endpoint = config.feedbackEndpoint;
+  const enabled = !!endpoint && (config.allowedOrigins || []).includes(location.origin);
+  const prefix = 'y2k_feedback_';
+  const read = (key, fallback) => { try { return JSON.parse(localStorage.getItem(prefix + key)) ?? fallback; } catch { return fallback; } };
+  const write = (key, value) => { try { localStorage.setItem(prefix + key, JSON.stringify(value)); } catch {} };
+  const uuid = () => crypto.randomUUID ? crypto.randomUUID() : '10000000-1000-4000-8000-100000000000'.replace(/[018]/g, c => (Number(c) ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> Number(c) / 4).toString(16));
+  let visitor = read('visitor', null);
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(visitor || '')) { visitor = uuid(); write('visitor', visitor); }
+  let draft = read('draft', {}), pending = read('pending', null);
+  if (!draft || typeof draft !== 'object') draft = {};
+  const words = {
+    zh: { title: '评分与留言', help: '匿名发布，所有人都可以看到。评分为 1–10 分，留言选填，最多 500 字。', rating: '你的评分', message: '留言（选填）', placeholder: '聊聊你的感受，也欢迎提出建议……', publish: '匿名发布', sending: '正在发布…', sent: '已发布，谢谢你的分享。', choose: '请先选择 1–10 分。', failed: '发布未确认，请保留内容并重试。', limited: '发布太频繁，请稍后再试。', retry: '重试发布', loading: '正在读取…', loadError: '暂时无法读取，请点击刷新重试。', refresh: '刷新', empty: '还没有评分或留言，欢迎留下第一条。', anonymous: '匿名玩家', ratingOnly: '这位玩家只留下了评分。', previous: '上一页', next: '下一页', pages: (p, n) => `第 ${p} / ${n} 页`, summary: (average, count, total) => `平均评分 ${average === null ? '—' : average.toFixed(1)} / 10 · ${count} 人评分 · ${total} 条反馈`, offline: '评分与留言仅在在线版开放。', online: '打开在线版', list: '玩家评分与留言', pageNav: '留言翻页' },
+    en: { title: 'Ratings & messages', help: 'Post anonymously for everyone to read. Rate from 1 to 10; an optional message can contain up to 500 characters.', rating: 'Your rating', message: 'Message (optional)', placeholder: 'Share your thoughts or suggestions…', publish: 'Post anonymously', sending: 'Posting…', sent: 'Posted. Thank you for sharing.', choose: 'Choose a rating from 1 to 10 first.', failed: 'Posting was not confirmed. Your text is saved; try again.', limited: 'You are posting too quickly. Please try again shortly.', retry: 'Retry posting', loading: 'Loading…', loadError: 'Unable to load feedback. Select Refresh to try again.', refresh: 'Refresh', empty: 'No ratings or messages yet. Be the first to share.', anonymous: 'Anonymous player', ratingOnly: 'This player left a rating only.', previous: 'Previous', next: 'Next', pages: (p, n) => `Page ${p} of ${n}`, summary: (average, count, total) => `Average ${average === null ? '—' : average.toFixed(1)} / 10 · ${count} rated · ${total} posts`, offline: 'Ratings and messages are available in the online edition.', online: 'Open online edition', list: 'Player ratings and messages', pageNav: 'Message pages' },
+    ja: { title: '評価とメッセージ', help: '匿名で投稿し、誰でも閲覧できます。評価は1〜10点、メッセージは任意で500文字までです。', rating: 'あなたの評価', message: 'メッセージ（任意）', placeholder: '感想や改善してほしいことなど……', publish: '匿名で投稿', sending: '投稿中…', sent: '投稿しました。ありがとうございます。', choose: '先に1〜10点の評価を選んでください。', failed: '投稿を確認できませんでした。内容を残して再試行してください。', limited: '投稿の間隔を空けて、もう一度お試しください。', retry: '投稿を再試行', loading: '読込中…', loadError: '読み込めませんでした。「更新」で再試行してください。', refresh: '更新', empty: 'まだ評価やメッセージはありません。最初の感想をどうぞ。', anonymous: '匿名プレイヤー', ratingOnly: '評価のみの投稿です。', previous: '前のページ', next: '次のページ', pages: (p, n) => `${p} / ${n} ページ`, summary: (average, count, total) => `平均 ${average === null ? '—' : average.toFixed(1)} / 10 · ${count}人が評価 · ${total}件`, offline: '評価とメッセージはオンライン版で利用できます。', online: 'オンライン版を開く', list: 'プレイヤーの評価とメッセージ', pageNav: 'ページ切り替え' },
+  };
+  function el(tag, cls, text) { const node = document.createElement(tag); if (cls) node.className = cls; if (text !== undefined) node.textContent = text; return node; }
+  async function request(url, options = {}) {
+    const controller = new AbortController(), timer = setTimeout(() => controller.abort(), 12000);
+    try {
+      const response = await fetch(url, { ...options, credentials: 'omit', cache: 'no-store', signal: controller.signal });
+      const data = await response.json();
+      if (!response.ok) { const error = new Error(data.error || 'request_failed'); error.status = response.status; throw error; }
+      return data;
+    } finally { clearTimeout(timer); }
+  }
+  function mount(body, language = 'zh') {
+    const t = words[language] || words.zh;
+    body.parentElement.classList.add('feedback-panel');
+    if (!enabled) {
+      const link = el('a', 'tbtn feedback-online', t.online); link.href = 'https://qiannianchonggame.github.io/'; link.target = '_blank'; link.rel = 'noopener';
+      body.append(el('p', 'feedback-help', t.offline), link); return;
+    }
+    const summary = el('p', 'feedback-summary', t.loading), help = el('p', 'feedback-help', t.help);
+    const layout = el('div', 'feedback-layout'), form = el('form', 'feedback-form');
+    const fieldset = el('fieldset', 'feedback-ratings'), legend = el('legend', '', t.rating), scores = el('div', 'feedback-scores');
+    fieldset.append(legend, scores);
+    let selected = Number.isInteger(draft.rating) && draft.rating >= 1 && draft.rating <= 10 ? draft.rating : 0;
+    for (let n = 1; n <= 10; n++) {
+      const label = el('label', 'feedback-score'), radio = document.createElement('input');
+      radio.type = 'radio'; radio.name = 'feedback-rating'; radio.value = String(n); radio.checked = selected === n;
+      radio.setAttribute('aria-label', `${n} / 10`);
+      label.append(radio, el('span', '', String(n))); scores.append(label);
+    }
+    const label = el('label', 'feedback-label', t.message); label.htmlFor = 'feedback-message';
+    const input = el('textarea'); input.id = 'feedback-message'; input.rows = 5; input.maxLength = 500; input.placeholder = t.placeholder;
+    input.value = typeof draft.message === 'string' ? draft.message.slice(0, 500) : '';
+    const count = el('p', 'feedback-count', `${input.value.length} / 500`), postStatus = el('p', 'feedback-post-status');
+    count.id = 'feedback-count'; input.setAttribute('aria-describedby', count.id); postStatus.setAttribute('role', 'status');
+    const publish = el('button', 'tbtn feedback-publish', t.publish); publish.type = 'submit';
+    form.append(fieldset, label, input, count, publish, postStatus);
+    const section = el('section', 'feedback-list-section'), toolbar = el('div', 'feedback-toolbar');
+    section.setAttribute('aria-label', t.list);
+    const listStatus = el('p', 'feedback-list-status', t.loading); listStatus.setAttribute('role', 'status');
+    const refresh = el('button', 'tbtn', t.refresh); refresh.type = 'button'; toolbar.append(listStatus, refresh);
+    const nav = el('nav', 'feedback-pagination'); nav.setAttribute('aria-label', t.pageNav);
+    const previous = el('button', 'tbtn', t.previous), pageLabel = el('span', 'feedback-page', t.pages(1, 1)), next = el('button', 'tbtn', t.next);
+    previous.type = next.type = 'button'; previous.disabled = next.disabled = true;
+    pageLabel.setAttribute('aria-live', 'polite'); nav.append(previous, pageLabel, next);
+    const list = el('div', 'feedback-list'); section.append(toolbar, nav, list); layout.append(form, section); body.append(summary, help, layout);
+    let page = 1, pages = 1, generation = 0, loading = false, sending = false;
+    const buttons = () => { previous.disabled = loading || page <= 1; next.disabled = loading || page >= pages; };
+    const remember = () => { draft = { rating: selected, message: input.value }; write('draft', draft); };
+    form.oninput = () => { selected = Number(form.querySelector('input:checked')?.value || 0); count.textContent = `${input.value.length} / 500`; remember(); };
+    async function load(target, scroll = false) {
+      const token = ++generation; loading = true; buttons(); listStatus.textContent = t.loading; list.setAttribute('aria-busy', 'true');
+      try {
+        const url = new URL(endpoint); url.searchParams.set('page', String(target));
+        const data = await request(url.href);
+        if (!body.isConnected || token !== generation) return;
+        if (!Array.isArray(data.items) || !Number.isSafeInteger(data.page) || !Number.isSafeInteger(data.pages) || data.page < 1 || data.pages < data.page) throw Error('invalid_response');
+        page = data.page; pages = data.pages;
+        summary.textContent = t.summary(data.averageRating, data.ratingCount, data.total); pageLabel.textContent = t.pages(page, pages);
+        list.replaceChildren();
+        for (const entry of data.items) {
+          const article = el('article', 'feedback-entry'), head = el('div', 'feedback-entry-head'), date = new Date(entry.createdAt);
+          const time = el('time', ''); if (Number.isFinite(date.getTime())) { time.dateTime = date.toISOString(); time.textContent = date.toLocaleString({ zh: 'zh-CN', en: 'en-US', ja: 'ja-JP' }[language] || 'zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }); }
+          head.append(el('strong', '', t.anonymous), el('span', 'feedback-entry-rating', `${entry.rating} / 10`), time);
+          article.append(head, el('p', 'feedback-entry-message', entry.message || t.ratingOnly)); list.append(article);
+        }
+        if (!data.items.length) list.append(el('p', 'feedback-empty', t.empty));
+        listStatus.textContent = '';
+        if (scroll) section.scrollIntoView({ block: 'start', behavior: 'smooth' });
+      } catch {
+        if (body.isConnected && token === generation) listStatus.textContent = t.loadError;
+      } finally {
+        if (token === generation) { loading = false; buttons(); list.removeAttribute('aria-busy'); }
+      }
+    }
+    previous.onclick = () => load(page - 1, true); next.onclick = () => load(page + 1, true); refresh.onclick = () => load(page);
+    form.onsubmit = async event => {
+      event.preventDefault(); if (sending) return;
+      selected = Number(form.querySelector('input:checked')?.value || 0);
+      if (selected < 1 || selected > 10) { postStatus.textContent = t.choose; return; }
+      const message = input.value.trim();
+      const reuse = pending && pending.visitorId === visitor && pending.rating === selected && pending.message === message;
+      const submission = reuse ? pending : { game: '1', submissionId: uuid(), visitorId: visitor, rating: selected, message };
+      pending = submission; write('pending', pending); remember();
+      sending = true; publish.disabled = true; publish.textContent = t.sending; postStatus.textContent = '';
+      try {
+        const result = await request(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(submission) });
+        if (!result.accepted) throw Error('not_accepted');
+        if (pending?.submissionId === submission.submissionId) { pending = null; write('pending', null); draft = { rating: selected, message: '' }; write('draft', draft); }
+        if (!body.isConnected) return;
+        input.value = ''; count.textContent = '0 / 500'; postStatus.textContent = t.sent;
+        publish.textContent = t.publish; void load(1);
+      } catch (error) {
+        if (!body.isConnected) return;
+        postStatus.textContent = error.status === 429 ? t.limited : t.failed; publish.textContent = t.retry;
+      } finally { sending = false; publish.disabled = false; }
+    };
+    void load(1);
+  }
+  window.Y2KFeedback = { mount };
+})();
+
+} catch (e) { console.error('加载失败：src/feedback.js', e); }
 </script>
 <script>
 'use strict';
@@ -3200,11 +3361,12 @@ const Y2K = (() => {
       h('button', { class: 'tbtn', text: _t('结局收集'), onclick: e => titlePanel(panel, _t('结局收集'), e.currentTarget).append(endingList()) }));
     const leaderboard = h('button', { class: 'tbtn leaderboard-entry', text: _t('排行榜'), onclick: e => window.Y2KLeaderboard?.mount(titlePanel(panel, _t('排行榜'), e.currentTarget), LANG) });
     const quiz = h('button', { class: 'tbtn quiz-entry', text: _t('通关测验'), onclick: e => showCompletionQuiz(panel, e.currentTarget) });
+    const feedback = h('button', { class: 'tbtn feedback-entry-button', text: _t('评分与留言'), onclick: e => window.Y2KFeedback.mount(titlePanel(panel, _t('评分与留言'), e.currentTarget), LANG) });
     // 语言切换：存进 meta，然后重新载入（译文在启动时写回数据）
     const langs = h('div', { class: 'langs', role: 'group', 'aria-label': 'Language' });
     langs.hidden = READY.length < 2;
     Object.entries(LANGS).filter(([code]) => READY.includes(code)).forEach(([code, label]) => langs.append(h('button', { class: 'lbtn' + (code === LANG ? ' on' : ''), lang: code, 'aria-pressed': code === LANG ? 'true' : 'false', text: label, onclick: () => { if (code === LANG) return; const m = meta(); m.lang = code; setMeta(m); location.reload(); } })));
-    tl.append(h('div', { class: 'title-topbar' }, h('div', { class: 'title-actions' }, leaderboard, quiz), langs), h('div', { class: 'title-content' }, clk, h('h1', { html: _t('千年<span>虫</span> 1') }), h('div', { class: 'sub', text: _t('梧城七中 · 1999—2000') }), menu, panel, window.Y2KStats?.mount(LANG),
+    tl.append(h('div', { class: 'title-topbar' }, h('div', { class: 'title-actions' }, leaderboard, quiz, feedback), langs), h('div', { class: 'title-content' }, clk, h('h1', { html: _t('千年<span>虫</span> 1') }), h('div', { class: 'sub', text: _t('梧城七中 · 1999—2000') }), menu, panel, window.Y2KStats?.mount(LANG),
       h('div', { class: 'foot' },
         h('div', { class: 'community', text: _t('QQ群') + '：1130040971' }),
         h('div', { text: _t('本作纯属虚构 · 建议用电脑上的 Chrome / Edge 打开 · 进度自动保存在本浏览器') }))));

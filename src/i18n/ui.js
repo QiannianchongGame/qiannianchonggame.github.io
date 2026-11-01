@@ -2,6 +2,7 @@
 window.Y2K_UI_REVIEWED = ["en", "ja"];
 window.Y2K_UI = {
   "en": {
+    "评分与留言": "Ratings & messages",
     "通关测验": "Completion quiz",
     "《千年虫1》通关测验二维码": "QR code for the Millennium Bug 1 completion quiz",
     "已经通关的朋友，欢迎填写《千年虫1》通关测验，回顾故事中的线索，也留下你的评分和感受。": "Finished the game? Take the Millennium Bug 1 completion quiz to revisit the story's clues and share your rating and thoughts.",
@@ -429,6 +430,7 @@ window.Y2K_UI = {
     "手机": "Phone"
   },
   "ja": {
+    "评分与留言": "評価とメッセージ",
     "通关测验": "クリア後クイズ",
     "《千年虫1》通关测验二维码": "『千年虫1』クリア後クイズのQRコード",
     "已经通关的朋友，欢迎填写《千年虫1》通关测验，回顾故事中的线索，也留下你的评分和感受。": "クリアした方は、ぜひ『千年虫1』のクイズにご参加ください。物語の手がかりを振り返り、評価や感想もお寄せいただけます。",
