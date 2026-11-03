@@ -460,6 +460,8 @@ table.det td.nm svg { width: 16px; height: 16px; }
 .ending .body { font: 16px/2.1 SimSun, serif; color: #c4c4c4; }
 .ending .body p { margin: 0 0 1.1em; }
 .ending .acts { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 30px; }
+.ending-replay { position: fixed; z-index: 9700; animation: none; overscroll-behavior: contain; }
+.ending-replay-close { position: fixed; top: max(8px, env(safe-area-inset-top, 0px)); right: max(8px, env(safe-area-inset-right, 0px)); width: 44px; height: 44px; display: grid; place-items: center; padding: 0; font: 24px/1 var(--font-ph); }
 .title { position: fixed; inset: 0; z-index: 9600; background: radial-gradient(ellipse at 50% 40%, #1b1d22, #050506 70%); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 24px max(16px, env(safe-area-inset-left, 0px)) 24px max(16px, env(safe-area-inset-right, 0px)); text-align: center; overflow: auto; }
 .title .clock { font: 15px/1 var(--font-mono); color: var(--amber); letter-spacing: .25em; text-shadow: 0 0 8px rgba(255,176,0,.6); }
 .title h1 { margin: 0; font: 84px/1 var(--font-hand); letter-spacing: .25em; color: #f1efe9; text-shadow: 0 0 30px rgba(255,255,255,.08); }
@@ -505,6 +507,9 @@ table.det td.nm svg { width: 16px; height: 16px; }
 .endgrid { display: grid; gap: 6px; margin: 8px 0; }
 .endgrid div { padding: 8px 10px; border-radius: 6px; background: #1d2026; display: flex; justify-content: space-between; gap: 8px; }
 .endgrid div.no { color: #555; }
+.endgrid .ending-entry { width: 100%; min-height: 44px; padding: 8px 10px; border: 1px solid #414956; border-radius: 6px; background: #1d2026; color: inherit; font: inherit; text-align: left; display: flex; justify-content: space-between; align-items: center; gap: 8px; cursor: pointer; }
+.endgrid .ending-entry span { overflow-wrap: anywhere; }
+.endgrid .ending-entry:hover, .endgrid .ending-entry:focus-visible { border-color: var(--amber); background: #2b2a24; outline: 2px solid var(--amber); outline-offset: 1px; }
 
 #toast { position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%); z-index: 9800; display: flex; flex-direction: column; gap: 6px; align-items: center; pointer-events: none; width: min(420px, calc(100% - 32px)); }
 .tst { background: rgba(20,22,26,.95); color: #f0f0f0; border: 1px solid #3a3f4a; border-radius: 10px; padding: 9px 14px; font: 13px/1.5 var(--font-ph); box-shadow: 0 8px 24px rgba(0,0,0,.5); animation: tin .25s; text-align: center; }

@@ -609,18 +609,43 @@ const Y2K = (() => {
     if (!S.ends.includes(id)) S.ends.push(id);
     const m = meta(); m.endings = m.endings || {}; if (!m.endings[id]) m.endings[id] = Date.now(); setMeta(m);
     writeSave('auto');
-    const names = { A: _t('结局 A'), B: _t('结局 B'), C: _t('结局 C · 真结局'), H: _t('隐藏结局') };
-    const el = h('div', { class: 'ending' }, h('div', { class: 'in2' },
-      h('div', { class: 'num', text: names[id] || _t('结局') }),
-      h('h1', { text: e.title }),
-      h('div', { class: 'body', html: fmt(e.html) }),
-      h('div', { class: 'acts' },
+    const el = endingPage(id, [
         ['C', 'H'].includes(id) ? h('button', { class: 'tbtn', text: _t('回到 3 号机'), onclick: () => { closeOverlay(); syncPlayClock(); renderAll(); showCards(); } }) : null,
         LS.get(KEY.pre) ? h('button', { class: 'tbtn', text: _t('回到结局前继续'), onclick: () => { const o = readSave('pre'); if (o) loadState(o); } }) : null,
-        h('button', { class: 'tbtn', text: _t('返回标题画面'), onclick: () => { closeOverlay(); showTitle(); } }))));
+        h('button', { class: 'tbtn', text: _t('返回标题画面'), onclick: () => { closeOverlay(); showTitle(); } })]);
     sfx('boot');
     openOverlay(el);
     window.Y2KLeaderboard?.requestReview(el, S, id, LANG, () => writeSave('auto'));
+  }
+  function endingPage(id, actions) {
+    const e = D.endings[id];
+    const names = { A: _t('结局 A'), B: _t('结局 B'), C: _t('结局 C · 真结局'), H: _t('隐藏结局') };
+    return h('div', { class: 'ending' }, h('div', { class: 'in2' },
+      h('div', { class: 'num', text: names[id] || _t('结局') }),
+      h('h1', { text: e.title }),
+      h('div', { class: 'body', html: fmt(e.html) }),
+      h('div', { class: 'acts' }, actions)));
+  }
+  function replayEnding(id, opener) {
+    // 回看只读取解锁记录，不能重新触发结局、存档或成绩提交。
+    if (!meta().endings?.[id] || !D.endings[id] || $('.ending-replay')) return;
+    const close = () => { el.remove(); if (opener?.isConnected) opener.focus({ preventScroll: true }); };
+    const back = controlButton({ class: 'tbtn', text: _t('返回') }, close);
+    const el = endingPage(id, [back]);
+    el.classList.add('ending-replay');
+    el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true');
+    el.setAttribute('aria-labelledby', 'ending-replay-heading');
+    el.querySelector('h1').id = 'ending-replay-heading';
+    const closeBtn = controlButton({ class: 'tbtn ending-replay-close', text: '×', 'aria-label': _t('关闭') }, close);
+    el.prepend(closeBtn);
+    el.addEventListener('keydown', event => {
+      if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); close(); }
+      if (event.key === 'Tab') {
+        if (event.shiftKey && document.activeElement === closeBtn) { event.preventDefault(); back.focus(); }
+        else if (!event.shiftKey && document.activeElement === back) { event.preventDefault(); closeBtn.focus(); }
+      }
+    });
+    document.body.append(el); closeBtn.focus({ preventScroll: true });
   }
   function imageSize(root) {
     const svg = root.querySelector('svg'), img = root.querySelector('img');
@@ -1324,7 +1349,10 @@ const Y2K = (() => {
     const g = h('div', { class: 'endgrid' });
     [['A', _t('结局 A')], ['B', _t('结局 B')], ['C', _t('结局 C')], ['H', _t('隐藏结局')]].forEach(([k, n]) => {
       const e = D.endings[k];
-      g.append(h('div', { class: got[k] ? '' : 'no' }, h('span', { text: n }), h('span', { text: got[k] && e ? (LANG === 'en' ? '“' + e.title + '”' : '「' + e.title + '」') : _t('未达成') })));
+      const unlocked = !!(got[k] && e);
+      const row = unlocked ? controlButton({ class: 'ending-entry', 'data-ending': k }, event => replayEnding(k, event.currentTarget)) : h('div', { class: 'no' });
+      row.append(h('span', { text: n }), h('span', { text: unlocked ? (LANG === 'en' ? '“' + e.title + '”' : '「' + e.title + '」') : _t('未达成') }));
+      g.append(row);
     });
     return g;
   }
