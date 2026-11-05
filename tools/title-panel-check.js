@@ -21,6 +21,9 @@ async function run(browser, name) {
       const saved = await p.evaluate(() => [localStorage.getItem('y2k_auto'), localStorage.getItem('y2k_slot1')]);
       const note = p.getByRole('dialog', { name: labels['作者的话'], exact: true });
       await note.waitFor();
+      const announcement = await p.evaluate(lang => window.Y2K_UI?.[lang]?.['根据玩家反馈，本次修订调整了部分内容和对话，修复了部分逻辑问题和日期错误。'] || '根据玩家反馈，本次修订调整了部分内容和对话，修复了部分逻辑问题和日期错误。', lang);
+      assert((await note.innerText()).includes(announcement), '作者公告显示修订说明');
+      assert(!(await note.innerText()).includes('欢迎填写《千年虫1》通关测验'), '作者公告不再引导填写问卷');
       const nr = await note.boundingBox();
       assert(nr.x >= 15 && nr.y >= 15 && nr.x + nr.width <= viewport.width - 15 && nr.y + nr.height <= viewport.height - 15);
       assert(Math.abs(nr.x + nr.width / 2 - viewport.width / 2) < 2 && Math.abs(nr.y + nr.height / 2 - viewport.height / 2) < 2, '作者弹窗居中');

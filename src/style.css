@@ -275,6 +275,14 @@ table.det td.nm svg { width: 16px; height: 16px; }
 /* 对话框 */
 .dlg98 { position: fixed; z-index: 9450; width: min(460px, calc(100% - 20px)); left: 50%; top: 50%; transform: translate(-50%,-50%); padding: 3px; display: flex; flex-direction: column; max-height: calc(100% - 20px); }
 .dlg98 .wbody { padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+/* 桌面弹窗位于页面外层，需要独立于手机界面的前景色。 */
+.dlg98:not(.dlgph) { color: #141414; color-scheme: light; }
+.dlg98:not(.dlgph) .titlebar { background: var(--w-title); color: #fff; }
+.dlg98:not(.dlgph) .faded { color: #444; opacity: 1; }
+.dlg98:not(.dlgph) .selection-count { color: #444; }
+.dlg98:not(.dlgph) .msg { color: #8b0000; }
+.dlg98:not(.dlgph) .msg.ok { color: #004d00; }
+.dlg98:not(.dlgph) .f98::placeholder { color: #595959; opacity: 1; }
 .dlg98 .prompt { line-height: 1.7; }
 .dlg98 .prompt p { margin: 0 0 6px; }
 .dlg98 .row { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
@@ -299,6 +307,7 @@ table.det td.nm svg { width: 16px; height: 16px; }
 .dlgph .msg.ok { color: var(--ph-good); }
 .dlgph .opts label { padding: 4px 0; }
 .dlgph .fields label { color: #aab; }
+.dlgph .faded, .dlgph .selection-count { color: #b8bfca; opacity: 1; }
 .shade { position: fixed; inset: 0; z-index: 9400; background: rgba(0,0,0,.25); }
 .shade.raised { z-index: 9550; }
 .dlg98.raised { z-index: 9560; }
