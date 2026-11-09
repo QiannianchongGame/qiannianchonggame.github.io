@@ -2418,7 +2418,8 @@ const Y2K = (() => {
     set(k, v) { try { localStorage.setItem(k, v); return true; } catch (e) { return false; } },
     del(k) { try { localStorage.removeItem(k); } catch (e) { } },
   };
-  const KEY = { auto: 'y2k_auto', s1: 'y2k_slot1', s2: 'y2k_slot2', s3: 'y2k_slot3', pre: 'y2k_preend', meta: 'y2k_meta' };
+  const MANUAL_SLOTS = Array.from({ length: 8 }, (_, i) => 's' + (i + 1));
+  const KEY = { auto: 'y2k_auto', ...Object.fromEntries(MANUAL_SLOTS.map((slot, i) => [slot, 'y2k_slot' + (i + 1)])), pre: 'y2k_preend', meta: 'y2k_meta' };
   let saveT = 0, storageOK = true;
   function save(slot) {
     if (!S) return;
@@ -3352,7 +3353,7 @@ const Y2K = (() => {
     body.append(h('div', { class: 'ph-card', text: _t('提示次数') + '：' + hintCount() }));
     const auto = readSave('auto');
     body.append(h('div', { class: 'ph-card slot-card' }, h('div', {}, h('div', { class: 'k', text: _t('自动存档（每一步都会自动保存）') }), h('div', { text: describe(auto) }))));
-    ['s1', 's2', 's3'].forEach((k, i) => {
+    MANUAL_SLOTS.forEach((k, i) => {
       const s = readSave(k);
       body.append(h('div', { class: 'ph-card slot-card' },
         h('div', { style: { minWidth: 0 } }, h('div', { class: 'k', text: `${_t('存档位')} ${i + 1}` }), h('div', { text: describe(s) })),
@@ -3502,7 +3503,7 @@ const Y2K = (() => {
   }
   function loadPanel(panel, opener) {
     const p = titlePanel(panel, _t('读取存档'), opener);
-    [['auto', _t('自动存档')], ['s1', _t('存档位 1')], ['s2', _t('存档位 2')], ['s3', _t('存档位 3')]].forEach(([k, n]) => {
+    [['auto', _t('自动存档')], ...MANUAL_SLOTS.map((k, i) => [k, `${_t('存档位')} ${i + 1}`])].forEach(([k, n]) => {
       const s = readSave(k);
       p.append(h('div', { class: 'endgrid' }, h('div', { class: s ? '' : 'no' }, h('span', { text: n + '　' + describe(s) }), s ? h('button', { class: 'tbtn', style: { padding: '4px 10px' }, text: _t('读取'), onclick: () => loadState(readSave(k)) }) : null)));
     });
