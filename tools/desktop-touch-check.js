@@ -24,8 +24,10 @@ async function run(browser, name, viewport, nativeClick) {
     await p.getByRole('button', { name: '开机', exact: true }).tap();
     await p.locator('#pz_c0_bios').fill(await p.evaluate(() => Y2K.debug.D.puzzles.c0_bios.answers[0]));
     await p.locator('#screen').getByRole('button', { name: 'Enter', exact: true }).tap();
+    await p.locator('[data-puzzle-ack="c0_bios"]').tap();
     await p.locator('#pz_c0_login').fill(await p.evaluate(() => Y2K.debug.D.puzzles.c0_login.answers[0]));
     await p.locator('#screen').getByRole('button', { name: '确定', exact: true }).tap();
+    await p.locator('[data-puzzle-ack="c0_login"]').tap();
     await p.locator('#desktop').waitFor();
     console.log(`${name}: 不补发 click 的电源、BIOS 和 Windows 登录通过`);
   }

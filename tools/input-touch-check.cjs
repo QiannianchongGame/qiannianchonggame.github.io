@@ -40,6 +40,7 @@ async function run(browser,label,viewport){
   assert.equal(await ie.locator('.msg').innerText(),'');
   await password.selectText();await p.keyboard.insertText(await p.evaluate(()=>Y2K.debug.D.puzzles.c1_admin.answers[0]));await p.keyboard.press('Enter');
   await p.waitForFunction(()=>Y2K.debug.state.flags.solved_c1_admin);
+  await p.locator('[data-puzzle-ack="c1_admin"]').tap();
   // Address, forum search and both administrator log filters use actual controls.
   for(const selector of ['#ieaddr']){await p.locator(selector).tap();assert(await p.locator(selector).evaluate(el=>document.activeElement===el));}
   await p.evaluate(()=>Y2K.debug.ieGo('http://192.168.1.103/search.asp'));await p.locator('#bbsq').tap();assert(await p.locator('#bbsq').evaluate(el=>document.activeElement===el),'forum search focus: '+await p.evaluate(()=>document.activeElement?.outerHTML));await p.keyboard.insertText('夏至');assert.equal(await p.locator('#bbsq').inputValue(),'夏至');

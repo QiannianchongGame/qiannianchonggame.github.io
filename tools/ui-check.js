@@ -162,6 +162,7 @@ async function run(browser, name) {
   await q.locator('.dlg98').getByRole('button', { name: '确定', exact: true }).evaluate(el => { el.click(); el.click(); });
   await q.waitForFunction(() => Y2K.debug.state.flags.solved_c0_tag);
   assert.equal(await q.evaluate(() => Y2K.debug.state.chat.heman.filter(m => m.text === '192.168.1.103').length), 1);
+  await q.locator('[data-puzzle-ack="c0_tag"]').click();
   await q.waitForFunction(() => !document.querySelector('#modal .dlg98'));
   console.log(`${name}: 序章实际作答、重复提交保护通过`);
 

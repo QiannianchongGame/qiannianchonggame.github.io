@@ -363,6 +363,8 @@ const Y2K = (() => {
   function update() {
     dirtyT = 0;
     if (!S || titleOn) return;
+    // Record the answer now; let the player finish reading before advancing.
+    if (awaitingPuzzleFeedback()) { save('auto'); return; }
     for (let pass = 0; pass < 4; pass++) {
       const before = flagVer;
       for (const c of D.chapters) {
@@ -436,7 +438,7 @@ const Y2K = (() => {
   function loadState(o) {
     clearTimers(); running = {}; typing = {};
     clearTimeout(dirtyT); dirtyT = 0; clearTimeout(saveT); saveT = 0;
-    closeAllWins(); closeOverlay(); closeModal();
+    closeAllWins(); closeOverlay(); closeModal(false);
     S = Object.assign(fresh(o.player), o);
     flagVer++; cardQ.length = 0; cardOn = false; pendingEnding = null;
     lastTick = Date.now(); playClockRunning = false;
@@ -583,7 +585,7 @@ const Y2K = (() => {
   }
   let cardOn = false;
   function showCards() {
-    if (cardOn || !cardQ.length || titleOn || overlay().classList.contains('on')) return;
+    if (cardOn || !cardQ.length || titleOn || awaitingPuzzleFeedback() || overlay().classList.contains('on')) return;
     const c = cardQ.shift(); cardOn = true;
     const el = h('div', { class: 'card', tabindex: 0 },
       h('div', { class: 'num', text: c.num }),
@@ -726,6 +728,7 @@ const Y2K = (() => {
   // 谜题
   // ============================================================
   function solved(id) { return !!S.flags['solved_' + id]; }
+  function awaitingPuzzleFeedback() { return !!document.querySelector('.pz[data-awaiting-ack]'); }
   function checkPuzzle(p, val) {
     const kind = p.kind || 'text';
     if (kind === 'text') return (p.answers || []).some(a => norm(a) === norm(val));
@@ -749,7 +752,7 @@ const Y2K = (() => {
     const kind = p.kind || 'text';
     const box = h('div', { class: 'pz' });
     const prompt = h('div', { class: 'prompt', html: fmt(p.prompt || '') });
-    const msg = h('div', { class: 'msg' });
+    const msg = h('div', { class: 'msg', 'aria-live': 'polite' });
     let getVal, focusEl;
     const inputs = h('div');
     if (kind === 'text') {
@@ -775,6 +778,15 @@ const Y2K = (() => {
     const early = !!(p.requires && (p.requires.match(/\bch\d\b/g) || []).some(c => !S.flags[c]));
     if (early) hintBtn.hidden = true;
     const okBtn = controlButton({ class: opts.style === 'bios' ? '' : 'b98', text: opts.submitLabel || _t('确定') }, submit);
+    const ackBtn = controlButton({ class: opts.style === 'bios' ? '' : 'b98', text: opts.extraBtn ? _t('关闭') : _t('确定'), 'data-puzzle-ack': id }, () => box.acknowledge());
+    ackBtn.hidden = true;
+    box.acknowledge = () => {
+      if (!box.hasAttribute('data-awaiting-ack')) return;
+      box.removeAttribute('data-awaiting-ack');
+      ackBtn.disabled = true;
+      if (opts.onSolved) opts.onSolved();
+      dirty();
+    };
     let submitted = false;
     function submit() {
       if (submitted) return;
@@ -783,10 +795,15 @@ const Y2K = (() => {
       if (v == null || (Array.isArray(v) ? !v.length || v.every(x => !String(x).trim()) : !String(v).trim())) { msg.textContent = _t('请先作答。'); return; }
       if (!early && checkPuzzle(p, v)) {
         submitted = true; okBtn.disabled = true;
+        box.setAttribute('data-awaiting-ack', id);
+        inputs.querySelectorAll('input').forEach(input => { input.disabled = true; });
+        hintBtn.hidden = true;
+        if (opts.extraBtn) opts.extraBtn.hidden = true;
+        okBtn.hidden = true; ackBtn.hidden = false;
         msg.className = 'msg ok'; msg.innerHTML = fmt(p.solvedText || _t('正确。'));
         if (opts.onAnswer) opts.onAnswer(v);
         solvePuzzle(id);
-        later(() => opts.onSolved && opts.onSolved(), p.solvedText ? 900 : 350);
+        save('auto');
       } else {
         sfx('err');
         let t = early ? (opts.wrongText || _t('密码错误。')) : (p.wrongText || opts.wrongText || _t('不对。'));
@@ -797,12 +814,17 @@ const Y2K = (() => {
     }
     drawHints();
     if (!opts.hidePrompt) box.append(prompt);
-    box.append(inputs, msg, hintBox, h('div', { class: 'row' }, hintBtn, opts.extraBtn || null, okBtn));
+    box.append(inputs, msg, hintBox, h('div', { class: 'row' }, hintBtn, opts.extraBtn || null, okBtn, ackBtn));
     box.focusFirst = () => { if (focusEl && !touchKeyboard()) focusEl.focus(); };
     return box;
   }
   function modalRoot() { return $('#modal'); }
-  function closeModal() { const m = modalRoot(); if (m) m.innerHTML = ''; }
+  function closeModal(acknowledge = true) {
+    const m = modalRoot(), feedback = m && m.querySelector('.pz[data-awaiting-ack]');
+    if (m) m.innerHTML = '';
+    // Remove the old dialog first, since its callback may open another one.
+    if (acknowledge !== false && feedback) feedback.acknowledge();
+  }
   function askPuzzle(id, onSolved, phoneStyle, contact) {
     const p = D.puzzles[id];
     if (!p) return toast(_t('缺少谜题 ') + id);
@@ -952,7 +974,7 @@ const Y2K = (() => {
     return !!m && +m[1] < cur;
   }
   function stepDlg(c) {
-    if (running[c] || titleOn) return;
+    if (running[c] || titleOn || awaitingPuzzleFeedback()) return;
     const cur = curDlg(c);
     if (!cur) { delete S.wait[c]; return; }
     const [d, st] = cur;
@@ -1366,7 +1388,7 @@ const Y2K = (() => {
     if (S && !titleOn && lastTick) writeSave('auto');
     tickPlay(); playClockRunning = false;
     window.Y2KStats?.setPlaying(false);
-    titleOn = true; closeOverlay(); closeModal();
+    titleOn = true; closeOverlay(); closeModal(false);
     clearTimers(); running = {}; typing = {};
     clearTimeout(dirtyT); dirtyT = 0;
     clearTimeout(saveT); saveT = 0;
@@ -1671,6 +1693,7 @@ const Y2K = (() => {
     guardWinInteraction(win);
     win.setTitle = (t) => { win.title = t; tt.textContent = t; renderTasks(); };
     win.refresh = (force) => {
+      if (body.querySelector('.pz[data-awaiting-ack]')) { win.refreshPending = true; return; }
       if (!force && win.isInteracting()) { win.refreshPending = true; return; }
       if (!force && el.contains(document.activeElement) && /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) return;
       if (force) win.resetInteraction();
@@ -1697,7 +1720,12 @@ const Y2K = (() => {
     wins.forEach(x => x.el.classList.toggle('active', x === w));
     renderTasks(); closeStart();
   }
-  function closeWin(w) { w.interactionCleanup(); w.el.remove(); wins = wins.filter(x => x !== w); w.o.onClose && w.o.onClose(w); renderTasks(); }
+  function closeWin(w) {
+    const feedback = w.el.querySelector('.pz[data-awaiting-ack]');
+    w.interactionCleanup(); w.el.remove(); wins = wins.filter(x => x !== w);
+    w.o.onClose && w.o.onClose(w); renderTasks();
+    if (feedback) feedback.acknowledge();
+  }
   function closeAllWins() { wins.forEach(w => { w.interactionCleanup(); w.el.remove(); w.o.onClose && w.o.onClose(w); }); wins = []; }
   function dragify(el, handle, win) {
     handle.addEventListener('pointerdown', (e) => {
@@ -2447,7 +2475,7 @@ const Y2K = (() => {
   // ============================================================
   function refreshWins(force) { wins.forEach(w => { if (w.o.live || force) w.refresh(); }); }
   function renderAll() {
-    if (!S) return;
+    if (!S || awaitingPuzzleFeedback()) return;
     renderPhone();
     if (S.stage === 'win' && $('#desktop')) {
       if (renderedFlagVer !== flagVer) { renderedFlagVer = flagVer; renderIcons(); refreshWins(); }

@@ -42,6 +42,7 @@ async function run(browser,name){
  await ie.locator('.toolbar98').getByRole('button',{name:'前进 →',exact:true}).tap();assert((await address.inputValue()).includes('/thread.asp?id=1168'));
  await ie.locator('.bbs .nav a[href="/admin/"]').tap();
  const password=await p.evaluate(()=>Y2K.debug.D.puzzles.c1_admin.answers[0]);await ie.locator('#pz_c1_admin').fill(password);await ie.locator('.bbs').getByRole('button',{name:'登录',exact:true}).tap();
+  await p.locator('[data-puzzle-ack="c1_admin"]').tap();
  await p.waitForFunction(()=>Y2K.debug.state.flags.solved_c1_admin);
  await ie.locator('.bbs a[href="/admin/recycle.asp"]').tap();await ie.locator('.bbs a[href="/thread.asp?id=1137"]').tap();
  assert((await address.inputValue()).includes('/thread.asp?id=1137'));

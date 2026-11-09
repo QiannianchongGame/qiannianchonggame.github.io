@@ -62,6 +62,7 @@ async function ending(browser,name,route){
   const answers=await p.evaluate(()=>Y2K.debug.D.puzzles.c6_p_evidence.answerSet);
   for(const answer of answers)await p.getByRole('checkbox',{name:answer,exact:true}).check();
   await p.locator('#modal').getByRole('button',{name:'确定',exact:true}).tap();
+  await p.locator('[data-puzzle-ack="c6_p_evidence"]').tap();
   await p.waitForFunction(()=>Y2K.debug.state.wait.heman?.type==='choice');await p.locator('#phFoot button').first().tap();
  }
  await p.locator('.ending').waitFor({state:'visible'});assert.equal(await p.locator('.ending h1').innerText(),route==='C'?'归零':'格式化');
@@ -75,6 +76,7 @@ async function ending(browser,name,route){
   await p.getByRole('button',{name:'收起',exact:true}).tap();
   await p.locator('.bbs').getByRole('button',{name:'草稿箱（1）',exact:true}).tap();
   await p.locator('#pz_c6_p_wanfeng').fill('820916');await p.locator('#modal').getByRole('button',{name:'确定',exact:true}).tap();
+  await p.locator('[data-puzzle-ack="c6_p_wanfeng"]').tap();
   await p.locator('.ending').waitFor({state:'visible'});assert.equal(await p.locator('.ending h1').innerText(),'晚风');
   if(await p.locator('.finish-review').count())await p.locator('.finish-review-skip').tap();
   await p.getByRole('button',{name:'回到 3 号机',exact:true}).tap();
