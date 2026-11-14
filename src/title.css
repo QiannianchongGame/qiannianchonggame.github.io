@@ -12,7 +12,8 @@
 .song-lyrics {
   white-space: pre-line;
   text-align: center;
-  line-height: 1.9;
+  font-size: clamp(20px, 2vw, 22px);
+  line-height: 1.85;
   user-select: text;
 }
 .author-note-divider{border:0;border-top:1px solid #393d45;margin:20px 0}

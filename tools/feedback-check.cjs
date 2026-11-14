@@ -33,7 +33,7 @@ const shots=path.join(root,'test-results/feedback');fs.mkdirSync(shots,{recursiv
     await p.goto(base);
     const button=p.locator('.feedback-entry-button'),song=p.locator('.song-entry');
     const bounds=await button.boundingBox(),songBounds=await song.boundingBox();
-    assert(bounds.x>=songBounds.x+songBounds.width-1&&Math.abs(bounds.y-songBounds.y)<1,'Feedback beside the song');
+    assert(songBounds.x>=bounds.x+bounds.width-1&&Math.abs(bounds.y-songBounds.y)<1,'Feedback beside the song');
     const bar=await p.locator('.title-topbar').boundingBox(),clock=await p.locator('#title .clock').boundingBox();assert(bar.y+bar.height<=clock.y,'Toolbar does not cover the clock');
     await button.click();const panel=p.locator('.feedback-panel');await p.waitForFunction(()=>document.querySelectorAll('.feedback-entry').length===10);
     const firstPage=await panel.locator('.feedback-entry-message').allTextContents();assert(firstPage[0].includes('<img src=x'));
