@@ -62,6 +62,8 @@ for (const [id, photo] of Object.entries(photoManifest)) {
 }
 const photos = `<script>window.Y2K_PHOTOS=${safe(JSON.stringify(photoAssets))};</script>`;
 
+const song = fs.readFileSync(path.join(root, 'assets/audio/晚风明天见.mp3')).toString('base64');
+const lyrics = read('assets/audio/晚风明天见.txt').trimEnd();
 const html = `<!doctype html>
 <html lang="zh-CN">
 <head>
@@ -75,6 +77,8 @@ ${css}
 </head>
 <body>
 <noscript>这个游戏需要启用 JavaScript。This game needs JavaScript. このゲームには JavaScript が必要です。</noscript>
+<audio id="title-song" preload="none" src="data:audio/mpeg;base64,${song}"></audio>
+<template id="title-lyrics">${lyrics.replace(/&/g, '&amp;').replace(/</g, '&lt;')}</template>
 ${photos}
 ${langScript}
 ${ui}

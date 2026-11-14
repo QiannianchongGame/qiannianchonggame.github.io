@@ -1,10 +1,4 @@
 {
-  "completion_quiz": {
-    "file": "assets/ui/completion-quiz.png",
-    "overlay": null,
-    "targets": [],
-    "source": "用户提供的《千年虫1》通关测验海报，保留原图和二维码。"
-  },
   "deskmates": {
     "file": "assets/photos/deskmates.webp",
     "overlay": "date",

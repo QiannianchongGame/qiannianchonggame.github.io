@@ -3,8 +3,8 @@ window.Y2K_UI_REVIEWED = ["en", "ja"];
 window.Y2K_UI = {
   "en": {
     "评分与留言": "Ratings & messages",
-    "通关测验": "Completion quiz",
-    "《千年虫1》通关测验二维码": "QR code for the Millennium Bug 1 completion quiz",
+    "停止播放": "Stop playback",
+    "歌曲播放失败，请再试一次。": "Couldn’t play the song. Please try again.",
     "根据玩家反馈，本次修订调整了部分内容和对话，修复了部分逻辑问题和日期错误。": "Based on player feedback, this revision adjusts parts of the story and dialogue and fixes several logic and date errors.",
     "更新后个别旧存档可能无法正常读取，建议先导出存档备份。如遇进度丢失，敬请谅解。": "Some older saves may not load correctly after the update. Please export a backup first. We apologize if your progress is lost.",
     "作者的话": "A note from the author",
@@ -431,8 +431,8 @@ window.Y2K_UI = {
   },
   "ja": {
     "评分与留言": "評価とメッセージ",
-    "通关测验": "クリア後クイズ",
-    "《千年虫1》通关测验二维码": "『千年虫1』クリア後クイズのQRコード",
+    "停止播放": "再生を停止",
+    "歌曲播放失败，请再试一次。": "曲を再生できませんでした。もう一度お試しください。",
     "根据玩家反馈，本次修订调整了部分内容和对话，修复了部分逻辑问题和日期错误。": "プレイヤーの皆さんからのご意見を受け、物語と会話の一部を調整し、展開上の問題や日付の誤りを修正しました。",
     "更新后个别旧存档可能无法正常读取，建议先导出存档备份。如遇进度丢失，敬请谅解。": "更新後、一部の古いセーブデータを読み込めない場合があります。事前にセーブデータを書き出してバックアップしてください。進行状況が失われた場合はご容赦ください。",
     "作者的话": "作者より",
