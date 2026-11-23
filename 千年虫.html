@@ -516,7 +516,8 @@ table.det td.nm svg { width: 16px; height: 16px; }
 .panel.title-panel.author-note { width: min(600px, 100%); }
 .author-note .title-panel-body { font-size: 15px; line-height: 1.9; user-select: text; }
 .author-note p { margin: 0 0 16px; }
-.author-note-qq { color: var(--amber); }
+.author-note-qq, .author-note a { color: var(--amber); }
+.author-note a { overflow-wrap: anywhere; }
 .author-note-signature { text-align: right; }
 .author-note-signature time { color: #92959d; font-size: 13px; }
 .title-panel .endgrid > div > span:first-child { flex: 1; min-width: 0; overflow-wrap: anywhere; }
@@ -819,16 +820,15 @@ window.Y2K_UI = {
     "评分与留言": "Ratings & messages",
     "停止播放": "Stop playback",
     "歌曲播放失败，请再试一次。": "Couldn’t play the song. Please try again.",
-    "根据玩家反馈，本次修订调整了部分内容和对话，修复了部分逻辑问题和日期错误。": "Based on player feedback, this revision adjusts parts of the story and dialogue and fixes several logic and date errors.",
-    "更新后个别旧存档可能无法正常读取，建议先导出存档备份。如遇进度丢失，敬请谅解。": "Some older saves may not load correctly after the update. Please export a backup first. We apologize if your progress is lost.",
-    "作者的话": "A note from the author",
-    "大家好，我是《千年虫》的作者 shark，目前是北京大学的一名在校生。": "Hi everyone, I'm shark, the creator of Millennium Bug and a current student at Peking University.",
-    "谢谢大家的支持，也很高兴有这么多人喜欢这个题材。这个故事和剧本花了很长时间打磨，但仍有不少可以改进的地方。无论是剧情中没讲清楚的细节、谜题的难度，还是游玩时遇到的问题，我都很想听听大家的真实感受。": "Thank you for your support. I'm glad so many of you enjoy this kind of story. I've spent a long time working on the story and script, but there's still room for improvement. Whether it's an unclear plot detail, the difficulty of a puzzle, or a problem you encounter while playing, I'd love to hear your honest thoughts.",
-    "《千年虫》计划做成三部曲，目前第二部还在制作中。希望能把后面的故事认真写好，也期待和大家一起讨论它接下来的样子。": "Millennium Bug is planned as a trilogy, with the second game still in development. I want to give the stories ahead the care they deserve, and I look forward to hearing your thoughts on where the series goes next.",
-    "欢迎加入 QQ 交流群：": "Join our QQ group: ",
-    "聊聊剧情，交流解谜心得，也欢迎直接提意见。": "Come talk about the story, share puzzle-solving tips, and tell me what you think could be improved.",
-    "感谢你愿意花时间走进这个故事。": "Thank you for taking the time to step into this story.",
-    "2026年10月": "October 2026",
+    "《千年虫》更新公告": "Millennium Bug update",
+    "大家好，我是《千年虫》的作者 shark。": "Hi everyone, I’m shark, the creator of Millennium Bug.",
+    "首先，感谢大家对《千年虫1》的支持！游戏上线三周以来，玩家数量远超我的预期。大家的鼓励和批评我都有认真看，非常感谢各位的反馈。": "First, thank you for supporting Millennium Bug 1! In the three weeks since launch, far more people have played than I ever expected. I’ve been reading both your encouragement and your criticism. Thank you for taking the time to share them.",
+    "关于玩家反映的<strong>对话“AI 味”较重</strong>的问题，我承认确实影响了游戏体验。《千年虫》由我借助 Codex 协作开发，我主要负责剧本创作、线索和时间线整理，部分对话（主要是与何蔓的对话）借助了 AI 生成。由于个人精力有限，确实有不少处理不到位的地方。": "Some of you said that <strong>the dialogue sounded too much like AI</strong>. I agree that it took away from the experience. I developed Millennium Bug with help from Codex. I wrote the story and organized the clues and timeline, and used AI to generate some of the dialogue, mainly the conversations with He Man. With only so much time and energy, I left quite a few things rough around the edges.",
+    "<strong>今天已更新《千年虫1》</strong>，在不影响整体剧情的前提下，对部分对话进行了优化，感谢大家提出的宝贵建议。": "<strong>I updated Millennium Bug 1 today.</strong> I revised some of the dialogue while keeping the overall story intact. Thank you for your suggestions.",
+    "另外，<strong>《千年虫2》已开放试玩</strong>，目前包含序章及前三章，仍在持续制作中。希望大家体验后多提意见！": "Also, <strong>the Millennium Bug 2 demo is now available.</strong> It includes the prologue and the first three chapters, and I’m still working on the rest. I’d love to hear what you think after you play!",
+    "试玩地址：": "Play the demo:",
+    "作为新人开发者，还有很多需要学习的地方。感谢大家的包容与支持，每一条反馈我都会认真看，也会继续努力改进。": "I’m new to game development and still have a lot to learn. Thank you for your patience and support. I’ll read every comment and keep working to improve the game.",
+    "QQ 交流群：1130040971": "QQ discussion group: 1130040971",
     "排行榜": "Leaderboard",
     "文件夹": "Folder",
     "文本文档": "Text Document",
@@ -1247,16 +1247,15 @@ window.Y2K_UI = {
     "评分与留言": "評価とメッセージ",
     "停止播放": "再生を停止",
     "歌曲播放失败，请再试一次。": "曲を再生できませんでした。もう一度お試しください。",
-    "根据玩家反馈，本次修订调整了部分内容和对话，修复了部分逻辑问题和日期错误。": "プレイヤーの皆さんからのご意見を受け、物語と会話の一部を調整し、展開上の問題や日付の誤りを修正しました。",
-    "更新后个别旧存档可能无法正常读取，建议先导出存档备份。如遇进度丢失，敬请谅解。": "更新後、一部の古いセーブデータを読み込めない場合があります。事前にセーブデータを書き出してバックアップしてください。進行状況が失われた場合はご容赦ください。",
-    "作者的话": "作者より",
-    "大家好，我是《千年虫》的作者 shark，目前是北京大学的一名在校生。": "こんにちは。『千年虫』の作者、sharkです。現在、北京大学に在学しています。",
-    "谢谢大家的支持，也很高兴有这么多人喜欢这个题材。这个故事和剧本花了很长时间打磨，但仍有不少可以改进的地方。无论是剧情中没讲清楚的细节、谜题的难度，还是游玩时遇到的问题，我都很想听听大家的真实感受。": "応援ありがとうございます。この題材を気に入ってくださる方がこんなに多く、とてもうれしいです。物語と脚本には長い時間をかけましたが、まだ改善できるところがあると思っています。説明が足りない場面、謎解きの難しさ、プレイ中に困ったことなど、皆さんの率直な感想をぜひ聞かせてください。",
-    "《千年虫》计划做成三部曲，目前第二部还在制作中。希望能把后面的故事认真写好，也期待和大家一起讨论它接下来的样子。": "『千年虫』は三部作を予定しており、現在は第二作を制作中です。これからの物語も丁寧に書いていきたいと思っています。シリーズの今後についても、皆さんとお話しできるのを楽しみにしています。",
-    "欢迎加入 QQ 交流群：": "QQ交流グループへの参加もお待ちしています：",
-    "聊聊剧情，交流解谜心得，也欢迎直接提意见。": "物語の感想や謎解きのコツを語り合ったり、改善してほしい点を教えていただけたらうれしいです。",
-    "感谢你愿意花时间走进这个故事。": "この物語に触れる時間をとってくださり、ありがとうございます。",
-    "2026年10月": "2026年10月",
+    "《千年虫》更新公告": "『千年虫』更新のお知らせ",
+    "大家好，我是《千年虫》的作者 shark。": "こんにちは。『千年虫』の作者のsharkです。",
+    "首先，感谢大家对《千年虫1》的支持！游戏上线三周以来，玩家数量远超我的预期。大家的鼓励和批评我都有认真看，非常感谢各位的反馈。": "まずは『千年虫1』を応援してくださり、ありがとうございます！ 公開から3週間で、予想をはるかに超える方に遊んでいただきました。励ましの言葉も厳しいご意見も、一つひとつ読んでいます。感想を寄せてくださった皆さんに感謝しています。",
+    "关于玩家反映的<strong>对话“AI 味”较重</strong>的问题，我承认确实影响了游戏体验。《千年虫》由我借助 Codex 协作开发，我主要负责剧本创作、线索和时间线整理，部分对话（主要是与何蔓的对话）借助了 AI 生成。由于个人精力有限，确实有不少处理不到位的地方。": "プレイヤーの方から、<strong>会話に「AIっぽさ」が目立つ</strong>というご指摘をいただきました。確かに、遊んでいて話に入り込みづらいところがあったと思います。『千年虫』はCodexの力を借りて開発しました。主に私が脚本を書き、手がかりと時系列を整理し、会話の一部（主に何蔓とのやり取り）にはAIを使いました。自分一人では手が回らず、十分に練りきれなかった箇所がいくつもあります。",
+    "<strong>今天已更新《千年虫1》</strong>，在不影响整体剧情的前提下，对部分对话进行了优化，感谢大家提出的宝贵建议。": "<strong>本日、『千年虫1』を更新しました。</strong>物語全体の流れを保ちながら、一部の会話を見直しました。ご意見をくださった皆さん、ありがとうございます。",
+    "另外，<strong>《千年虫2》已开放试玩</strong>，目前包含序章及前三章，仍在持续制作中。希望大家体验后多提意见！": "また、<strong>『千年虫2』の体験版を公開しました。</strong>現在は序章から第3章まで遊べます。引き続き制作中ですので、遊んでみてのご意見をぜひお聞かせください！",
+    "试玩地址：": "体験版はこちら：",
+    "作为新人开发者，还有很多需要学习的地方。感谢大家的包容与支持，每一条反馈我都会认真看，也会继续努力改进。": "開発者としてはまだ駆け出しで、学ぶことがたくさんあります。温かく見守り、応援してくださってありがとうございます。いただいた声を一つひとつ読み、これからも改善を続けていきます。",
+    "QQ 交流群：1130040971": "QQ交流グループ：1130040971",
     "排行榜": "ランキング",
     "放大 +": "拡大 +",
     "关闭": "閉じる",
@@ -3563,18 +3562,19 @@ const Y2K = (() => {
       const navigation = performance.getEntriesByType?.('navigation')[0];
       if (navigation && navigation.type !== 'navigate') return false;
     }
-    const body = titlePanel(panel, _t('作者的话'), $('#title .menu button:not(:disabled)'), onClose);
+    const body = titlePanel(panel, _t('《千年虫》更新公告'), $('#title .menu button:not(:disabled)'), onClose);
     body.parentElement.classList.add('author-note');
+    const demoUrl = 'https://testgameqnc.github.io/';
     body.append(
-      h('p', { text: _t('根据玩家反馈，本次修订调整了部分内容和对话，修复了部分逻辑问题和日期错误。') }),
-      h('p', { text: _t('更新后个别旧存档可能无法正常读取，建议先导出存档备份。如遇进度丢失，敬请谅解。') }),
-      h('hr', { class: 'author-note-divider' }),
-      h('p', { text: _t('大家好，我是《千年虫》的作者 shark，目前是北京大学的一名在校生。') }),
-      h('p', { text: _t('谢谢大家的支持，也很高兴有这么多人喜欢这个题材。这个故事和剧本花了很长时间打磨，但仍有不少可以改进的地方。无论是剧情中没讲清楚的细节、谜题的难度，还是游玩时遇到的问题，我都很想听听大家的真实感受。') }),
-      h('p', { text: _t('《千年虫》计划做成三部曲，目前第二部还在制作中。希望能把后面的故事认真写好，也期待和大家一起讨论它接下来的样子。') }),
-      h('p', {}, _t('欢迎加入 QQ 交流群：'), h('strong', { class: 'author-note-qq', text: '1130040971' }), h('br'), _t('聊聊剧情，交流解谜心得，也欢迎直接提意见。')),
-      h('p', { text: _t('感谢你愿意花时间走进这个故事。') }),
-      h('div', { class: 'author-note-signature' }, h('div', { text: '—— shark🦈' }), h('time', { datetime: '2026-10', text: _t('2026年10月') })));
+      h('p', { text: _t('大家好，我是《千年虫》的作者 shark。') }),
+      h('p', { text: _t('首先，感谢大家对《千年虫1》的支持！游戏上线三周以来，玩家数量远超我的预期。大家的鼓励和批评我都有认真看，非常感谢各位的反馈。') }),
+      h('p', { html: _t('关于玩家反映的<strong>对话“AI 味”较重</strong>的问题，我承认确实影响了游戏体验。《千年虫》由我借助 Codex 协作开发，我主要负责剧本创作、线索和时间线整理，部分对话（主要是与何蔓的对话）借助了 AI 生成。由于个人精力有限，确实有不少处理不到位的地方。') }),
+      h('p', { html: _t('<strong>今天已更新《千年虫1》</strong>，在不影响整体剧情的前提下，对部分对话进行了优化，感谢大家提出的宝贵建议。') }),
+      h('p', { html: _t('另外，<strong>《千年虫2》已开放试玩</strong>，目前包含序章及前三章，仍在持续制作中。希望大家体验后多提意见！') }),
+      h('p', {}, h('strong', { text: _t('试玩地址：') }), ' ', h('a', { href: demoUrl, target: '_blank', rel: 'noopener noreferrer', text: demoUrl })),
+      h('p', { text: _t('作为新人开发者，还有很多需要学习的地方。感谢大家的包容与支持，每一条反馈我都会认真看，也会继续努力改进。') }),
+      h('p', {}, h('strong', { class: 'author-note-qq', text: _t('QQ 交流群：1130040971') })),
+      h('div', { class: 'author-note-signature', text: '—— shark' }));
     return true;
   }
   function hideTitle() { stopTitleSong(); titleOn = false; syncPlayClock(); const tl = $('#title'); tl.hidden = true; tl.innerHTML = ''; tl.classList.remove('panel-open'); window.Y2KStats?.setPlaying(true); showCards(); }
