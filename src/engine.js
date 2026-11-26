@@ -1409,6 +1409,12 @@ const Y2K = (() => {
       h('button', { class: 'tbtn', text: _t('结局收集'), onclick: e => titlePanel(panel, _t('结局收集'), e.currentTarget).append(endingList()) }));
     const leaderboard = h('button', { class: 'tbtn leaderboard-entry', text: _t('排行榜'), onclick: e => window.Y2KLeaderboard?.mount(titlePanel(panel, _t('排行榜'), e.currentTarget), LANG) });
     const songButton = titleSongButton(panel);
+    const support = controlButton({ class: 'tbtn support-entry', text: _t('投喂作者'), 'aria-haspopup': 'dialog' }, e => {
+      const content = $('#author-support-codes').content.cloneNode(true);
+      for (const label of content.querySelectorAll('.support-message, figcaption')) label.textContent = _t(label.textContent);
+      for (const image of content.querySelectorAll('img')) image.alt = _t(image.alt);
+      titlePanel(panel, _t('投喂作者'), e.currentTarget).append(content);
+    });
     const feedback = h('button', { class: 'tbtn feedback-entry-button', text: _t('评分与留言'), onclick: e => window.Y2KFeedback.mount(titlePanel(panel, _t('评分与留言'), e.currentTarget), LANG) });
     // 语言切换：存进 meta，然后重新载入（译文在启动时写回数据）
     const langs = h('div', { class: 'langs', role: 'group', 'aria-label': 'Language' });
@@ -1417,7 +1423,7 @@ const Y2K = (() => {
     tl.append(h('div', { class: 'title-topbar' }, h('div', { class: 'title-actions' }, leaderboard, feedback, songButton), langs), h('div', { class: 'title-content' }, clk, h('h1', { html: _t('千年<span>虫</span> 1') }), h('div', { class: 'sub', text: _t('梧城七中 · 1999—2000') }), menu, panel, window.Y2KStats?.mount(LANG),
       h('div', { class: 'foot' },
         h('div', { class: 'community', text: _t('QQ群') + '：1130040971' }),
-        h('div', { text: _t('本作纯属虚构 · 建议用电脑上的 Chrome / Edge 打开 · 进度自动保存在本浏览器') }))));
+        h('div', { text: _t('本作纯属虚构 · 建议用电脑上的 Chrome / Edge 打开 · 进度自动保存在本浏览器') }))), support);
     return panel;
   }
   function stopTitleSong() {
@@ -1459,18 +1465,19 @@ const Y2K = (() => {
       const navigation = performance.getEntriesByType?.('navigation')[0];
       if (navigation && navigation.type !== 'navigate') return false;
     }
-    const body = titlePanel(panel, _t('作者的话'), $('#title .menu button:not(:disabled)'), onClose);
+    const body = titlePanel(panel, _t('《千年虫》更新公告'), $('#title .menu button:not(:disabled)'), onClose);
     body.parentElement.classList.add('author-note');
+    const demoUrl = 'https://testgameqnc.github.io/';
     body.append(
-      h('p', { text: _t('根据玩家反馈，本次修订调整了部分内容和对话，修复了部分逻辑问题和日期错误。') }),
-      h('p', { text: _t('更新后个别旧存档可能无法正常读取，建议先导出存档备份。如遇进度丢失，敬请谅解。') }),
-      h('hr', { class: 'author-note-divider' }),
-      h('p', { text: _t('大家好，我是《千年虫》的作者 shark，目前是北京大学的一名在校生。') }),
-      h('p', { text: _t('谢谢大家的支持，也很高兴有这么多人喜欢这个题材。这个故事和剧本花了很长时间打磨，但仍有不少可以改进的地方。无论是剧情中没讲清楚的细节、谜题的难度，还是游玩时遇到的问题，我都很想听听大家的真实感受。') }),
-      h('p', { text: _t('《千年虫》计划做成三部曲，目前第二部还在制作中。希望能把后面的故事认真写好，也期待和大家一起讨论它接下来的样子。') }),
-      h('p', {}, _t('欢迎加入 QQ 交流群：'), h('strong', { class: 'author-note-qq', text: '1130040971' }), h('br'), _t('聊聊剧情，交流解谜心得，也欢迎直接提意见。')),
-      h('p', { text: _t('感谢你愿意花时间走进这个故事。') }),
-      h('div', { class: 'author-note-signature' }, h('div', { text: '—— shark🦈' }), h('time', { datetime: '2026-10', text: _t('2026年10月') })));
+      h('p', { text: _t('大家好，我是《千年虫》的作者 shark。') }),
+      h('p', { text: _t('首先，感谢大家对《千年虫1》的支持！游戏上线三周以来，玩家数量远超我的预期。大家的鼓励和批评我都有认真看，非常感谢各位的反馈。') }),
+      h('p', { html: _t('关于玩家反映的<strong>对话“AI 味”较重</strong>的问题，我承认确实影响了游戏体验。《千年虫》由我借助 Codex 协作开发，我主要负责剧本创作、线索和时间线整理，部分对话（主要是与何蔓的对话）借助了 AI 生成。由于个人精力有限，确实有不少处理不到位的地方。') }),
+      h('p', { html: _t('<strong>今天已更新《千年虫1》</strong>，在不影响整体剧情的前提下，对部分对话进行了优化，感谢大家提出的宝贵建议。') }),
+      h('p', { html: _t('另外，<strong>《千年虫2》已开放试玩</strong>，目前包含序章及前三章，仍在持续制作中。希望大家体验后多提意见！') }),
+      h('p', {}, h('strong', { text: _t('试玩地址：') }), ' ', h('a', { href: demoUrl, target: '_blank', rel: 'noopener noreferrer', text: demoUrl })),
+      h('p', { text: _t('作为新人开发者，还有很多需要学习的地方。感谢大家的包容与支持，每一条反馈我都会认真看，也会继续努力改进。') }),
+      h('p', {}, h('strong', { class: 'author-note-qq', text: _t('QQ 交流群：1130040971') })),
+      h('div', { class: 'author-note-signature', text: '—— shark' }));
     return true;
   }
   function hideTitle() { stopTitleSong(); titleOn = false; syncPlayClock(); const tl = $('#title'); tl.hidden = true; tl.innerHTML = ''; tl.classList.remove('panel-open'); window.Y2KStats?.setPlaying(true); showCards(); }

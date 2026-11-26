@@ -1,5 +1,5 @@
 /* Title content is centered as one group; toolbar stays at the top. */
-.title{justify-content:flex-start;gap:0;padding:76px max(16px,env(safe-area-inset-right,0px)) 76px max(16px,env(safe-area-inset-left,0px));background-size:cover;background-position:center}
+.title{justify-content:flex-start;gap:0;padding:76px max(16px,env(safe-area-inset-right,0px)) max(12px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));background-size:cover;background-position:center}
 .title .title-content{display:flex;flex-direction:column;align-items:center;gap:14px;flex:none;width:min(760px,100%);margin-block:auto}
 .title .title-content>div:empty{display:none}
 .title .title-content .foot{position:static;inset:auto;flex:none;margin-top:16px;max-width:620px;line-height:1.7;padding:0;color:#a0a0a0}
@@ -9,6 +9,18 @@
 .title .title-actions{display:flex;align-items:center;flex-wrap:wrap;gap:8px;min-width:0}
 .title .title-topbar .leaderboard-entry,.title .title-topbar .song-entry,.title .title-topbar .feedback-entry-button{position:static;inset:auto;flex:none;min-height:44px;margin:0;padding:9px 16px;font-size:14px;letter-spacing:.06em;white-space:nowrap;background:rgba(43,36,23,.9);border-color:#9e7c32;color:#edd49b}
 .title .song-entry:hover,.title .song-entry:focus-visible,.title .feedback-entry-button:hover,.title .feedback-entry-button:focus-visible{color:#fff1c4;background:#3a2f1b;outline:2px solid #f1d28f;outline-offset:3px}
+.title > .support-entry {
+  align-self: flex-start;
+  flex: none;
+  min-height: 44px;
+  margin-top: 20px;
+  padding: 9px 16px;
+  font-size: 14px;
+  letter-spacing: .06em;
+  color: #ead6ad;
+  border-color: #927c52;
+  background: #25251ef0;
+}
 .song-lyrics {
   white-space: pre-line;
   text-align: center;
@@ -17,6 +29,12 @@
   user-select: text;
 }
 .author-note-divider{border:0;border-top:1px solid #393d45;margin:20px 0}
+.support-message { margin: 0 0 14px; text-align: center; font-size: 15px; line-height: 1.5; }
+.support-codes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.support-codes figure { margin: 0; padding: 4px 4px 12px; background: white; color: #24262a; border-radius: 6px; text-align: center; }
+.support-codes img { display: block; width: 100%; height: auto; -webkit-touch-callout: default; user-select: auto; }
+.support-codes figcaption { font: 600 15px/1.4 var(--font-ph); }
+@media (max-width: 500px) { .support-codes { grid-template-columns: minmax(0, 230px); justify-content: center; } }
 .title .clock{font-variant-numeric:tabular-nums;white-space:nowrap}
 .title .sub{color:#aeb0b3}
 .title h1{max-width:100%;text-align:center}

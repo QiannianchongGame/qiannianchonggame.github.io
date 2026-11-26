@@ -64,6 +64,10 @@ const photos = `<script>window.Y2K_PHOTOS=${safe(JSON.stringify(photoAssets))};<
 
 const song = fs.readFileSync(path.join(root, 'assets/audio/晚风明天见.mp3')).toString('base64');
 const lyrics = read('assets/audio/晚风明天见.txt').trimEnd();
+const supportCodes = [['wechat', '微信支付'], ['alipay', '支付宝']].map(([file, label]) => {
+  const png = fs.readFileSync(path.join(root, 'assets/support', file + '.png')).toString('base64');
+  return `<figure><img src="data:image/png;base64,${png}" width="588" height="588" alt="${label}收款码"><figcaption>${label}</figcaption></figure>`;
+}).join('');
 const html = `<!doctype html>
 <html lang="zh-CN">
 <head>
@@ -74,6 +78,7 @@ const html = `<!doctype html>
 <style>
 ${css}
 </style>
+<template id="author-support-codes"><p class="support-message">游戏制作不易，欢迎投喂作者！！</p><div class="support-codes">${supportCodes}</div></template>
 </head>
 <body>
 <noscript>这个游戏需要启用 JavaScript。This game needs JavaScript. このゲームには JavaScript が必要です。</noscript>

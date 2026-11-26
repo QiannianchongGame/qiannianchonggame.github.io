@@ -508,7 +508,8 @@ table.det td.nm svg { width: 16px; height: 16px; }
 .panel.title-panel.author-note { width: min(600px, 100%); }
 .author-note .title-panel-body { font-size: 15px; line-height: 1.9; user-select: text; }
 .author-note p { margin: 0 0 16px; }
-.author-note-qq { color: var(--amber); }
+.author-note-qq, .author-note a { color: var(--amber); }
+.author-note a { overflow-wrap: anywhere; }
 .author-note-signature { text-align: right; }
 .author-note-signature time { color: #92959d; font-size: 13px; }
 .title-panel .endgrid > div > span:first-child { flex: 1; min-width: 0; overflow-wrap: anywhere; }
