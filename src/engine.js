@@ -441,6 +441,7 @@ const Y2K = (() => {
     clearTimeout(dirtyT); dirtyT = 0; clearTimeout(saveT); saveT = 0;
     closeAllWins(); closeOverlay(); closeModal(false);
     S = Object.assign(fresh(o.player), o);
+    updateHemanHistory(S);
     flagVer++; cardQ.length = 0; cardOn = false; pendingEnding = null;
     lastTick = Date.now(); playClockRunning = false;
     window.Y2KLeaderboard?.resume(S);
@@ -960,6 +961,70 @@ const Y2K = (() => {
     return v != null ? v : m.text;
   }
   function msgHtml(m) { const R = m.ref, d = R && DLG[R.d], s = d && d.steps[R.i]; return s && R.o == null && s.html ? s.html : m.html; }
+  // 旧译稿的一部分独白，在中文修订稿里改成了玩家提问。对话编号和步骤位置沿用原存档。
+  const oldHemanLines = new Map(), hemanPauses = [];
+  function prepareHemanDialogue() {
+    const updates = window.Y2K_HEMAN_ZH || {};
+    function remember(from, text, ref) {
+      if (!text) return;
+      const key = from + '|' + text;
+      oldHemanLines.set(key, oldHemanLines.has(key) ? null : ref);
+    }
+    for (const d of D.dialogues.filter(d => d.contact === 'heman')) {
+      d.steps.forEach((s, i) => {
+        const ref = { d: d.id, i };
+        for (const from of ['me', 'npc', 'sys']) remember(from, s[from], ref);
+        (s.choice || []).forEach((option, o) => {
+          remember('me', option.text, { ...ref, o });
+          (option.reply || []).forEach((line, r) => remember('npc', line, { ...ref, o, r }));
+        });
+        const edit = updates[d.id]?.[i];
+        if (!edit) return;
+        if (s.delay && edit.me) hemanPauses.push(ref);
+        if (LANG !== 'zh') return;
+        if (edit.choice) {
+          edit.choice.forEach((option, o) => Object.assign(s.choice[o], option));
+        } else {
+          delete s.npc; delete s.me; delete s.sys; delete s.delay;
+          Object.assign(s, edit);
+        }
+      });
+    }
+  }
+
+  function updateHemanHistory(state) {
+    const log = state.chat?.heman;
+    if (!Array.isArray(log)) return;
+    for (const m of log) {
+      const ref = m.ref || oldHemanLines.get(m.from + '|' + m.text);
+      const step = ref && DLG[ref.d]?.steps[ref.i];
+      if (!step) continue;
+      m.ref = ref;
+      if (ref.o == null) {
+        const from = ['me', 'npc', 'sys'].find(role => typeof step[role] === 'string');
+        if (from) m.from = from;
+      }
+      m.text = msgText(m);
+    }
+    // 两个原本只停顿的步骤现在是提问。如果老存档已经走过这里，把问题放回原来的位置。
+    for (const ref of hemanPauses) {
+      const pos = log.findIndex(m => m.ref?.d === ref.d && m.ref.i === ref.i);
+      if (LANG !== 'zh') {
+        if (pos >= 0) log.splice(pos, 1);
+        continue;
+      }
+      const progress = state.dlg?.[ref.d];
+      if (pos >= 0 || !(progress?.done || progress?.i > ref.i)) continue;
+      const next = log.findIndex(m => m.ref?.d === ref.d && m.ref.i > ref.i);
+      const prev = log.map(m => m.ref?.d === ref.d && m.ref.i < ref.i).lastIndexOf(true);
+      if (next < 0 && prev < 0) continue;
+      const at = log[next >= 0 ? next : prev].at;
+      log.splice(next >= 0 ? next : prev + 1, 0, { at, from: 'me', text: DLG[ref.d].steps[ref.i].me, ref });
+    }
+    const active = state.dlgQ?.heman?.[0], step = DLG[active]?.steps[state.dlg?.[active]?.i];
+    if (state.wait?.heman?.type === 'reply' && step && step.me === undefined) delete state.wait.heman;
+  }
+
   function runDialogues() { Object.keys(S.dlgQ).forEach(stepDlg); }
   function curDlg(c) {
     const q = S.dlgQ[c];
@@ -2523,6 +2588,7 @@ const Y2K = (() => {
   function boot() {
     bindTextInputs();
     prepAnswers();
+    prepareHemanDialogue();
     if (LANG !== 'zh') applyLang(LANGMAP[LANG]);
     applyPhotos();
     document.documentElement.lang = { zh: 'zh-CN', en: 'en', ja: 'ja' }[LANG];

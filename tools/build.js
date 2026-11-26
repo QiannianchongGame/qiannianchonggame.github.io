@@ -52,6 +52,8 @@ for (const l of ['en', 'ja']) {
 }
 const langScript = `<script>window.Y2K_LANGS=${JSON.stringify(readyLangs)};</script>`;
 const translations = langFiles.map(wrap).join('\n');
+const hemanChinese = JSON.parse(read('src/i18n/heman-zh.json'));
+const chineseChat = `<script>window.Y2K_HEMAN_ZH=${safe(JSON.stringify(hemanChinese))};</script>`;
 const stats = `<script>window.Y2K_STATS_CONFIG=${safe(read('src/stats-config.json'))};</script>\n${wrap('src/stats.js')}\n${wrap('src/leaderboard.js')}\n${wrap('src/feedback.js')}`;
 // 图片嵌入 HTML，使双击打开的离线版与网页使用完全相同的资源。
 const photoManifest = JSON.parse(read('src/photo-manifest.json'));
@@ -86,6 +88,7 @@ ${css}
 <template id="title-lyrics">${lyrics.replace(/&/g, '&amp;').replace(/</g, '&lt;')}</template>
 ${photos}
 ${langScript}
+${chineseChat}
 ${ui}
 ${stats}
 <script>
