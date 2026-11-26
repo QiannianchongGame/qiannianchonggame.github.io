@@ -1467,14 +1467,16 @@ const Y2K = (() => {
     }
     const body = titlePanel(panel, _t('《千年虫》更新公告'), $('#title .menu button:not(:disabled)'), onClose);
     body.parentElement.classList.add('author-note');
-    const demoUrl = 'https://testgameqnc.github.io/';
+    const recommendedUrl = 'https://qiannianchongdlzp.github.io/';
+    const backupUrl = 'https://automatic-wildfowl-d0ch94a37e6e3-1533818985.tcloudbaseapp.com/';
     body.append(
       h('p', { text: _t('大家好，我是《千年虫》的作者 shark。') }),
       h('p', { text: _t('首先，感谢大家对《千年虫1》的支持！游戏上线三周以来，玩家数量远超我的预期。大家的鼓励和批评我都有认真看，非常感谢各位的反馈。') }),
       h('p', { html: _t('关于玩家反映的<strong>对话“AI 味”较重</strong>的问题，我承认确实影响了游戏体验。《千年虫》由我借助 Codex 协作开发，我主要负责剧本创作、线索和时间线整理，部分对话（主要是与何蔓的对话）借助了 AI 生成。由于个人精力有限，确实有不少处理不到位的地方。') }),
       h('p', { html: _t('<strong>今天已更新《千年虫1》</strong>，在不影响整体剧情的前提下，对部分对话进行了优化，感谢大家提出的宝贵建议。') }),
-      h('p', { html: _t('另外，<strong>《千年虫2》已开放试玩</strong>，目前包含序章及前三章，仍在持续制作中。希望大家体验后多提意见！') }),
-      h('p', {}, h('strong', { text: _t('试玩地址：') }), ' ', h('a', { href: demoUrl, target: '_blank', rel: 'noopener noreferrer', text: demoUrl })),
+      h('p', { html: _t('另外，<strong>《千年虫2》已上线</strong>！《千年虫 2》有两个游玩网址。推荐地址可以查看在线人数和排行榜。如果打不开，可以用国内备用地址。') }),
+      h('p', {}, h('strong', { text: _t('推荐地址：') }), ' ', h('a', { href: recommendedUrl, target: '_blank', rel: 'noopener noreferrer', text: recommendedUrl })),
+      h('p', {}, h('strong', { text: _t('备用地址：') }), ' ', h('a', { href: backupUrl, target: '_blank', rel: 'noopener noreferrer', text: backupUrl })),
       h('p', { text: _t('作为新人开发者，还有很多需要学习的地方。感谢大家的包容与支持，每一条反馈我都会认真看，也会继续努力改进。') }),
       h('p', {}, h('strong', { class: 'author-note-qq', text: _t('QQ 交流群：1130040971') })),
       h('div', { class: 'author-note-signature', text: '—— shark' }));
