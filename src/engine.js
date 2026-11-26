@@ -1487,7 +1487,9 @@ const Y2K = (() => {
     Object.entries(LANGS).filter(([code]) => READY.includes(code)).forEach(([code, label]) => langs.append(h('button', { class: 'lbtn' + (code === LANG ? ' on' : ''), lang: code, 'aria-pressed': code === LANG ? 'true' : 'false', text: label, onclick: () => { if (code === LANG) return; const m = meta(); m.lang = code; setMeta(m); location.reload(); } })));
     tl.append(h('div', { class: 'title-topbar' }, h('div', { class: 'title-actions' }, leaderboard, feedback, songButton), langs), h('div', { class: 'title-content' }, clk, h('h1', { html: _t('千年<span>虫</span> 1') }), h('div', { class: 'sub', text: _t('梧城七中 · 1999—2000') }), menu, panel, window.Y2KStats?.mount(LANG),
       h('div', { class: 'foot' },
-        h('div', { class: 'community', text: _t('QQ群') + '：1130040971' }),
+        h('div', { class: 'community' }, h('span', { text: _t('QQ群') + '：1130040971' }),
+          controlButton({ class: 'release-notice-entry', text: _t('游戏公告'), 'aria-haspopup': 'dialog' },
+            e => showAuthorNote(panel, e.currentTarget))),
         h('div', { text: _t('本作纯属虚构 · 建议用电脑上的 Chrome / Edge 打开 · 进度自动保存在本浏览器') }))), support);
     return panel;
   }
@@ -1520,7 +1522,7 @@ const Y2K = (() => {
     update();
     return button;
   }
-  function showAuthorNote(panel, onClose) {
+  function showInitialAuthorNote(panel, onClose) {
     // 只在本标签页第一次打开时展示；不写入玩家存档，也不在返回标题时调用。
     try {
       if (sessionStorage.getItem('y2k_author_note_seen')) return false;
@@ -1530,7 +1532,11 @@ const Y2K = (() => {
       const navigation = performance.getEntriesByType?.('navigation')[0];
       if (navigation && navigation.type !== 'navigate') return false;
     }
-    const body = titlePanel(panel, _t('《千年虫》更新公告'), $('#title .menu button:not(:disabled)'), onClose);
+    showAuthorNote(panel, $('#title .menu button:not(:disabled)'), onClose);
+    return true;
+  }
+  function showAuthorNote(panel, opener, onClose) {
+    const body = titlePanel(panel, _t('《千年虫》更新公告'), opener, onClose);
     body.parentElement.classList.add('author-note');
     const recommendedUrl = 'https://qiannianchongdlzp.github.io/';
     const backupUrl = 'https://automatic-wildfowl-d0ch94a37e6e3-1533818985.tcloudbaseapp.com/';
@@ -1543,7 +1549,6 @@ const Y2K = (() => {
       h('p', { text: _t('作为一名新人游戏开发者，我还有很多需要学习和改进的地方。感谢大家一路以来的包容、鼓励与支持。每一条反馈我都会认真阅读，也会继续努力打磨作品，为大家带来更好的游戏体验。希望大家能够喜欢《千年虫2》，也期待听到你们游玩后的感受！') }),
       h('p', {}, h('strong', { class: 'author-note-qq', text: _t('QQ 交流群：1130040971') })),
       h('div', { class: 'author-note-signature', text: '—— shark' }));
-    return true;
   }
   function hideTitle() { stopTitleSong(); titleOn = false; syncPlayClock(); const tl = $('#title'); tl.hidden = true; tl.innerHTML = ''; tl.classList.remove('panel-open'); window.Y2KStats?.setPlaying(true); showCards(); }
   function titlePanel(host, title, opener, onClose) {
@@ -2621,7 +2626,7 @@ const Y2K = (() => {
     S = fresh(_t('老K'));
     const panel = showTitle();
     const openLinkedPanel = () => { if (location.hash === '#leaderboard') $('#title .leaderboard-entry')?.click(); };
-    if (!showAuthorNote(panel, openLinkedPanel)) openLinkedPanel();
+    if (!showInitialAuthorNote(panel, openLinkedPanel)) openLinkedPanel();
     window.Y2KStats?.start();
   }
 

@@ -2,6 +2,7 @@
 window.Y2K_UI_REVIEWED = ["en", "ja"];
 window.Y2K_UI = {
   "en": {
+    "游戏公告": "Game announcements",
     "投喂作者": "Support the creator",
     "游戏制作不易，欢迎投喂作者！！": "If you enjoyed the game, you can support its creator here.",
     "微信支付": "WeChat Pay",
@@ -434,6 +435,7 @@ window.Y2K_UI = {
     "手机": "Phone"
   },
   "ja": {
+    "游戏公告": "ゲームのお知らせ",
     "投喂作者": "作者を応援する",
     "游戏制作不易，欢迎投喂作者！！": "ゲームを楽しんでいただけたら、作者を応援していただけるとうれしいです！",
     "微信支付": "WeChat Pay",
