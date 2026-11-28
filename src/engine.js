@@ -1539,13 +1539,13 @@ const Y2K = (() => {
     const body = titlePanel(panel, _t('《千年虫》更新公告'), opener, onClose);
     body.parentElement.classList.add('author-note');
     const recommendedUrl = 'https://qiannianchongdlzp.github.io/';
-    const backupUrl = 'https://automatic-wildfowl-d0ch94a37e6e3-1533818985.tcloudbaseapp.com/';
+    const backupUrl = 'https://lumi.66rpg.com/works/4x6hak0n5534';
     body.append(
       h('p', { text: _t('大家好，我是《千年虫》的作者 shark。') }),
       h('p', { html: _t('首先，非常感谢大家一直以来对《千年虫1》的支持与反馈！此前由于我的疏忽，修订版未能成功上传，导致部分玩家体验到的仍是旧版本，也存在一些对话生硬、表达不够自然的问题。<strong>目前《千年虫1》已完成全部的更新和修订！</strong> 本次更新在保留原有剧情的基础上，对大量对话和文字细节进行了重新打磨，使整体表达更加自然，阅读体验也更加流畅。欢迎大家重新体验！') }),
       h('p', { html: _t('另外，<strong>《千年虫2》正式上线啦！</strong>目前提供两个游玩地址，推荐优先使用主站，支持查看实时在线人数及排行榜。如果访问不畅，也可以使用国内备用地址。') }),
       h('p', {}, h('strong', { text: _t('推荐地址：') }), h('br'), h('a', { href: recommendedUrl, target: '_blank', rel: 'noopener noreferrer', text: recommendedUrl })),
-      h('p', {}, h('strong', { text: _t('国内备用地址：') }), h('br'), h('a', { href: backupUrl, target: '_blank', rel: 'noopener noreferrer', text: backupUrl })),
+      h('p', {}, h('strong', { text: _t('备用地址（幻光文游）：') }), h('br'), h('a', { href: backupUrl, target: '_blank', rel: 'noopener noreferrer', text: backupUrl })),
       h('p', { text: _t('作为一名新人游戏开发者，我还有很多需要学习和改进的地方。感谢大家一路以来的包容、鼓励与支持。每一条反馈我都会认真阅读，也会继续努力打磨作品，为大家带来更好的游戏体验。希望大家能够喜欢《千年虫2》，也期待听到你们游玩后的感受！') }),
       h('p', {}, h('strong', { class: 'author-note-qq', text: _t('QQ 交流群：1130040971') })),
       h('div', { class: 'author-note-signature', text: '—— shark' }));

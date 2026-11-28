@@ -857,7 +857,7 @@ window.Y2K_UI = {
     "首先，非常感谢大家一直以来对《千年虫1》的支持与反馈！此前由于我的疏忽，修订版未能成功上传，导致部分玩家体验到的仍是旧版本，也存在一些对话生硬、表达不够自然的问题。<strong>目前《千年虫1》已完成全部的更新和修订！</strong> 本次更新在保留原有剧情的基础上，对大量对话和文字细节进行了重新打磨，使整体表达更加自然，阅读体验也更加流畅。欢迎大家重新体验！": "Thank you for playing Millennium Bug 1 and for all the feedback you’ve shared. I missed a problem with the upload, so some of you were still playing an older version with dialogue that could sound stiff or unnatural. <strong>All updates and revisions to Millennium Bug 1 are now complete!</strong> I’ve kept the story intact and reworked much of the dialogue and many smaller details to make the writing feel more natural and easier to read. I hope you’ll give it another play!",
     "另外，<strong>《千年虫2》正式上线啦！</strong>目前提供两个游玩地址，推荐优先使用主站，支持查看实时在线人数及排行榜。如果访问不畅，也可以使用国内备用地址。": "And <strong>Millennium Bug 2 is officially out!</strong> There are two places to play. I recommend the main site, where you can see how many people are playing and check the leaderboard. If you have trouble connecting, you can also use the backup site in mainland China.",
     "推荐地址：": "Recommended site:",
-    "国内备用地址：": "Backup site (mainland China):",
+    "备用地址（幻光文游）：": "Backup site (Lumi):",
     "作为一名新人游戏开发者，我还有很多需要学习和改进的地方。感谢大家一路以来的包容、鼓励与支持。每一条反馈我都会认真阅读，也会继续努力打磨作品，为大家带来更好的游戏体验。希望大家能够喜欢《千年虫2》，也期待听到你们游玩后的感受！": "I’m still new to making games, and I have a lot to learn. Thank you for your patience, encouragement and support along the way. I read every piece of feedback and will keep working to make these games better. I hope you enjoy Millennium Bug 2, and I’d love to hear what you think after you play!",
     "QQ 交流群：1130040971": "QQ discussion group: 1130040971",
     "排行榜": "Leaderboard",
@@ -1290,7 +1290,7 @@ window.Y2K_UI = {
     "首先，非常感谢大家一直以来对《千年虫1》的支持与反馈！此前由于我的疏忽，修订版未能成功上传，导致部分玩家体验到的仍是旧版本，也存在一些对话生硬、表达不够自然的问题。<strong>目前《千年虫1》已完成全部的更新和修订！</strong> 本次更新在保留原有剧情的基础上，对大量对话和文字细节进行了重新打磨，使整体表达更加自然，阅读体验也更加流畅。欢迎大家重新体验！": "まずは、『千年虫1』をずっと応援し、感想やご意見を寄せてくださった皆さん、本当にありがとうございます。私の不手際で修正版を正しくアップロードできず、一部の方には、会話のぎこちなさや不自然な言い回しが残った旧版を遊んでいただくことになってしまいました。<strong>『千年虫1』の更新と修正がすべて完了しました！</strong> 物語はそのままに、多くの会話や細かな表現を見直し、自然で読みやすい文章に整えました。ぜひもう一度遊んでみてください！",
     "另外，<strong>《千年虫2》正式上线啦！</strong>目前提供两个游玩地址，推荐优先使用主站，支持查看实时在线人数及排行榜。如果访问不畅，也可以使用国内备用地址。": "そして、<strong>『千年虫2』を正式に公開しました！</strong> プレイできるサイトは二つあります。メインサイトでは、現在プレイ中の人数とランキングを確認できます。つながりにくい場合は、中国国内向けの予備サイトをご利用ください。",
     "推荐地址：": "おすすめのサイト：",
-    "国内备用地址：": "中国国内向け予備サイト：",
+    "备用地址（幻光文游）：": "予備サイト（Lumi）：",
     "作为一名新人游戏开发者，我还有很多需要学习和改进的地方。感谢大家一路以来的包容、鼓励与支持。每一条反馈我都会认真阅读，也会继续努力打磨作品，为大家带来更好的游戏体验。希望大家能够喜欢《千年虫2》，也期待听到你们游玩后的感受！": "ゲームを作り始めたばかりで、まだまだ学ぶことも、改善したいところもたくさんあります。これまで温かく見守り、励まし、応援してくださってありがとうございます。いただいた感想やご意見は一つひとつ大切に読み、これからも皆さんにもっと楽しんでもらえる作品を作っていきます。『千年虫2』も気に入っていただけたらうれしいです。遊び終えたら、ぜひ感想を聞かせてください！",
     "QQ 交流群：1130040971": "QQ交流グループ：1130040971",
     "排行榜": "ランキング",
@@ -3679,13 +3679,13 @@ const Y2K = (() => {
     const body = titlePanel(panel, _t('《千年虫》更新公告'), opener, onClose);
     body.parentElement.classList.add('author-note');
     const recommendedUrl = 'https://qiannianchongdlzp.github.io/';
-    const backupUrl = 'https://automatic-wildfowl-d0ch94a37e6e3-1533818985.tcloudbaseapp.com/';
+    const backupUrl = 'https://lumi.66rpg.com/works/4x6hak0n5534';
     body.append(
       h('p', { text: _t('大家好，我是《千年虫》的作者 shark。') }),
       h('p', { html: _t('首先，非常感谢大家一直以来对《千年虫1》的支持与反馈！此前由于我的疏忽，修订版未能成功上传，导致部分玩家体验到的仍是旧版本，也存在一些对话生硬、表达不够自然的问题。<strong>目前《千年虫1》已完成全部的更新和修订！</strong> 本次更新在保留原有剧情的基础上，对大量对话和文字细节进行了重新打磨，使整体表达更加自然，阅读体验也更加流畅。欢迎大家重新体验！') }),
       h('p', { html: _t('另外，<strong>《千年虫2》正式上线啦！</strong>目前提供两个游玩地址，推荐优先使用主站，支持查看实时在线人数及排行榜。如果访问不畅，也可以使用国内备用地址。') }),
       h('p', {}, h('strong', { text: _t('推荐地址：') }), h('br'), h('a', { href: recommendedUrl, target: '_blank', rel: 'noopener noreferrer', text: recommendedUrl })),
-      h('p', {}, h('strong', { text: _t('国内备用地址：') }), h('br'), h('a', { href: backupUrl, target: '_blank', rel: 'noopener noreferrer', text: backupUrl })),
+      h('p', {}, h('strong', { text: _t('备用地址（幻光文游）：') }), h('br'), h('a', { href: backupUrl, target: '_blank', rel: 'noopener noreferrer', text: backupUrl })),
       h('p', { text: _t('作为一名新人游戏开发者，我还有很多需要学习和改进的地方。感谢大家一路以来的包容、鼓励与支持。每一条反馈我都会认真阅读，也会继续努力打磨作品，为大家带来更好的游戏体验。希望大家能够喜欢《千年虫2》，也期待听到你们游玩后的感受！') }),
       h('p', {}, h('strong', { class: 'author-note-qq', text: _t('QQ 交流群：1130040971') })),
       h('div', { class: 'author-note-signature', text: '—— shark' }));
